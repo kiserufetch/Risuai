@@ -13,6 +13,8 @@ function updateSize(){
         h: window.innerHeight
     })
     DynamicGUI.set(window.innerWidth <= 1024)
+    isPhone.set(window.innerWidth < 768)
+    isTablet.set(window.innerWidth >= 768 && window.innerWidth <= 1024)
 }
 
 export const SizeStore = writable({
@@ -22,6 +24,10 @@ export const SizeStore = writable({
 
 export const loadedStore = writable(false)
 export const DynamicGUI = writable(false)
+// Mobile foundation (Phase 1): granular reactive breakpoints derived from the
+// existing resize handler (updateSize). isPhone < 768px, isTablet 768-1024px.
+export const isPhone = writable(window.innerWidth < 768)
+export const isTablet = writable(window.innerWidth >= 768 && window.innerWidth <= 1024)
 export const sideBarClosing = writable(false)
 export const sideBarStore = writable(window.innerWidth > 1024)
 export const selectedCharID = writable(-1)

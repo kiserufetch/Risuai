@@ -2,7 +2,7 @@
     import { getCustomBackground, getEmotion } from "../../ts/util";
     
     import { DBState } from 'src/ts/stores.svelte';
-    import { CharEmotion, selectedCharID } from "../../ts/stores.svelte";
+    import { CharEmotion, selectedCharID, isPhone } from "../../ts/stores.svelte";
     import ResizeBox from './ResizeBox.svelte'
     import DefaultChatScreen from "./DefaultChatScreen.svelte";
     import defaultWallpaper from '../../etc/bg.jpg'
@@ -13,6 +13,10 @@
     import ModuleChatMenu from "../Setting/Pages/Module/ModuleChatMenu.svelte";
     let openChatList = $state(false)
     let openModuleList = $state(false)
+
+    // On phones the desktop "waifu" theme (side-by-side portrait) is too cramped;
+    // fall back to the bottom-docked "waifuMobile" layout. Other themes unchanged.
+    let effTheme = $derived($isPhone && DBState.db.theme === 'waifu' ? 'waifuMobile' : DBState.db.theme)
 
     const wallPaper = `background: url(${defaultWallpaper})`
     const externalStyles = 
@@ -32,7 +36,7 @@
     });
 </script>
 
-{#if DBState.db.theme === 'waifu'}
+{#if effTheme === 'waifu'}
     <div class="grow h-full flex justify-center relative" style="{bgImg.length < 4 ? wallPaper : bgImg}">
         <SideBarArrow />
         <BackgroundDom />
@@ -47,7 +51,7 @@
             <DefaultChatScreen customStyle={`${externalStyles}backdrop-filter: blur(4px);`} bind:openChatList bind:openModuleList/>
         </div>
     </div>
-{:else if DBState.db.theme === 'waifuMobile'}
+{:else if effTheme === 'waifuMobile'}
     <div class="grow h-full relative" style={bgImg.length < 4 ? wallPaper : bgImg}>
         <SideBarArrow />
         <BackgroundDom />

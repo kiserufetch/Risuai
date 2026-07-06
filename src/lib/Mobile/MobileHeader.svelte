@@ -6,7 +6,7 @@
     import { MobileGUIStack, MobileSearch, selectedCharID, SettingsMenuIndex, MobileSideBar } from "src/ts/stores.svelte";
 
 </script>
-<div class="w-full px-4 h-16 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2">
+<div class="w-full px-4 h-16 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2" style="height: calc(4rem + var(--safe-top)); padding-top: var(--safe-top); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
     {#if $selectedCharID !== -1 && $MobileSideBar > 0}
         <button onclick={() => {
             MobileSideBar.set(0)

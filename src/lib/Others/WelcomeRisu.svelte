@@ -19,7 +19,7 @@
     {
         const browserLang = navigator.language
         const browserLangShort = browserLang.split('-')[0]
-        const usableLangs = ['de', 'en', 'ko', 'cn', 'vi', 'zh-Hant']
+        const usableLangs = ['de', 'en', 'ko', 'cn', 'vi', 'zh-Hant', 'ru']
         if(usableLangs.includes(browserLangShort)){
             changeLanguage(browserLangShort)
             DBState.db.language = browserLangShort
@@ -205,6 +205,11 @@
                             DBState.db.language='vi'
                             step = 1
                         }}>• Tiếng Việt</button>
+                        <button class="hover:text-green-500 transition-colors" onclick={() => {
+                            changeLanguage('ru')
+                            DBState.db.language='ru'
+                            step = 1
+                        }}>• Русский</button>
                     </div>
 
                 {:else}

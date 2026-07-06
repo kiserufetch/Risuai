@@ -1,0 +1,542 @@
+- main [ref=f6e3]:
+  - generic [ref=f6e11]:
+    - button [ref=f6e12] [cursor=pointer]:
+      - img [ref=f6e13]
+    - generic [ref=f6e15]:
+      - listitem [ref=f6e16]
+      - button [active] [ref=f6e18] [cursor=pointer]:
+        - img [ref=f6e19]
+  - generic [ref=f6e21]:
+    - button
+    - generic [ref=f6e22]:
+      - heading "Welcome to RisuAI!" [level=1] [ref=f6e23]
+      - text: Select a bot to start chatting
+  - generic [ref=f6e24]:
+    - button [ref=f6e25] [cursor=pointer]:
+      - img [ref=f6e26]
+    - generic [ref=f6e29]:
+      - heading "Risuai" [level=2] [ref=f6e30]
+      - heading "Version 2026.6.210" [level=3] [ref=f6e31]
+      - generic [ref=f6e32]:
+        - heading "Recently Uploaded Get More" [level=1] [ref=f6e34]:
+          - text: Recently Uploaded
+          - button "Get More" [ref=f6e35] [cursor=pointer]
+        - generic [ref=f6e37]: We are looking for feedback! https://forms.gle/CSNeLWJdyxMsysmA6
+        - generic [ref=f6e38]:
+          - button "쥬라기 월드:서바이벌(Jurassic world:survival) 쥬라기 월드:서바이벌(Jurassic world:survival) This trpg simulator is about surviving island, Isla Perdida, where are full of dinosaurs. There are 14 characters who will be with you. All dinosaurs are from jurassic franchise. Also all characters can die in vain. Survive from this hell and achieve your purpose!" [ref=f6e39] [cursor=pointer]:
+            - generic [ref=f6e40]:
+              - img "쥬라기 월드:서바이벌(Jurassic world:survival)" [ref=f6e41]
+              - generic [ref=f6e42]:
+                - generic [ref=f6e43]: 쥬라기 월드:서바이벌(Jurassic world:survival)
+                - generic [ref=f6e44]: This trpg simulator is about surviving island, Isla Perdida, where are full of dinosaurs. There are 14 characters who will be with you. All dinosaurs are from jurassic franchise. Also all characters can die in vain. Survive from this hell and achieve your purpose!
+          - 'button "Alia Alia In the frozen peaks of the Howling Mountains, she resides, governed by a morality that defies conventional notions. Alia, the ice queen, is a creature of contradictions, driven by a relentless pursuit of the elegant and the intricate. Her detachment from the world of mortals is matched only by her obsessive dedication to the creation and preservation of beauty. What does beauty truly mean to you? 1. **Howling Death**: You find yourself lost in the Howling Mountains, fighting for survival... 2. **Shattered Perfection**: You stumble upon a shattered shrine. 3. **Frozen Hospitality**: Alia invites you to a feast, but her understanding of culinary beauty is surprisingly shallow. 4. **Glacial Craft**: You witness Alia''s breathtaking ice sculpture... Of you. 5. **Snow Cares**: Alia''s intentions are quite clear... (NSFW?..) OC Fantasy Female Kuudere ..." [ref=f6e46] [cursor=pointer]':
+            - generic [ref=f6e47]:
+              - img "Alia" [ref=f6e48]
+              - generic [ref=f6e49]:
+                - generic [ref=f6e50]: Alia
+                - generic [ref=f6e51]: "In the frozen peaks of the Howling Mountains, she resides, governed by a morality that defies conventional notions. Alia, the ice queen, is a creature of contradictions, driven by a relentless pursuit of the elegant and the intricate. Her detachment from the world of mortals is matched only by her obsessive dedication to the creation and preservation of beauty. What does beauty truly mean to you? 1. **Howling Death**: You find yourself lost in the Howling Mountains, fighting for survival... 2. **Shattered Perfection**: You stumble upon a shattered shrine. 3. **Frozen Hospitality**: Alia invites you to a feast, but her understanding of culinary beauty is surprisingly shallow. 4. **Glacial Craft**: You witness Alia's breathtaking ice sculpture... Of you. 5. **Snow Cares**: Alia's intentions are quite clear... (NSFW?..)"
+                - generic [ref=f6e52]:
+                  - generic [ref=f6e53]: OC
+                  - generic [ref=f6e54]: Fantasy
+                  - generic [ref=f6e55]: Female
+                  - generic [ref=f6e56]: Kuudere
+                  - generic [ref=f6e57]: ...
+          - button "Iron blood Iron blood Pacov GG got bored and decided to grab this one and make it a bit better. ggs bros. P.s I'm bored because there isn't even a single good azure lane chatbot here, maybe there is, i didn't try to look for any. This isn't really lore accurate because i have the skill issue of not having every single character in game. female game-character anime fantasy ..." [ref=f6e59] [cursor=pointer]:
+            - generic [ref=f6e60]:
+              - img "Iron blood" [ref=f6e61]
+              - generic [ref=f6e62]:
+                - generic [ref=f6e63]: Iron blood
+                - generic [ref=f6e64]: Pacov GG got bored and decided to grab this one and make it a bit better. ggs bros. P.s I'm bored because there isn't even a single good azure lane chatbot here, maybe there is, i didn't try to look for any. This isn't really lore accurate because i have the skill issue of not having every single character in game.
+                - generic [ref=f6e65]:
+                  - generic [ref=f6e66]: female
+                  - generic [ref=f6e67]: game-character
+                  - generic [ref=f6e68]: anime
+                  - generic [ref=f6e69]: fantasy
+                  - generic [ref=f6e70]: ...
+          - button "The Voice of Steel The Voice of Steel" [ref=f6e72] [cursor=pointer]:
+            - generic [ref=f6e73]:
+              - img "The Voice of Steel" [ref=f6e74]
+              - generic [ref=f6e76]: The Voice of Steel
+          - 'button "Zanwol Zanwol 1등급 체이서, 잔월 Route: Eden 시리즈 NPC 개인봇 male fantasy" [ref=f6e78] [cursor=pointer]':
+            - generic [ref=f6e79]:
+              - img "Zanwol" [ref=f6e80]
+              - generic [ref=f6e81]:
+                - generic [ref=f6e82]: Zanwol
+                - generic [ref=f6e83]: "1등급 체이서, 잔월 Route: Eden 시리즈 NPC 개인봇"
+                - generic [ref=f6e84]:
+                  - generic [ref=f6e85]: male
+                  - generic [ref=f6e86]: fantasy
+          - 'button "Lee Sia Lee Sia Siasia Lee Sia wants to kidnap, confine, and dote on {{user}} if {{user}} is pretty and cute." [ref=f6e88] [cursor=pointer]':
+            - generic [ref=f6e89]:
+              - img "Lee Sia" [ref=f6e90]
+              - generic [ref=f6e91]:
+                - generic [ref=f6e92]: Lee Sia
+                - generic [ref=f6e93]: "Siasia Lee Sia wants to kidnap, confine, and dote on {{user}} if {{user}} is pretty and cute."
+          - 'button "Françoise Leblanc Françoise Leblanc 74 image 당신이 고발해 감옥에 갇힌 스승님의 외동딸 페르소나는 중견급 마법사여야 합니다. 호감도 치트 /addaff Françoise 숫자 예시:/addaff Françoise 100:호감도 100 증가 /addaff Françoise -75:호감도 75감소 The Master''s only daughter, imprisoned because you reported her The Persona must be a magician. Affection Cheat /addaff Françoise [number] Example: /addaff Françoise 100: Increase affection by 100 /addaff Françoise -75: Decrease affection by 75 female" [ref=f6e95] [cursor=pointer]':
+            - generic [ref=f6e96]:
+              - img "Françoise Leblanc" [ref=f6e97]
+              - generic [ref=f6e98]:
+                - generic [ref=f6e99]: Françoise Leblanc
+                - generic [ref=f6e100]: "74 image 당신이 고발해 감옥에 갇힌 스승님의 외동딸 페르소나는 중견급 마법사여야 합니다. 호감도 치트 /addaff Françoise 숫자 예시:/addaff Françoise 100:호감도 100 증가 /addaff Françoise -75:호감도 75감소 The Master's only daughter, imprisoned because you reported her The Persona must be a magician. Affection Cheat /addaff Françoise [number] Example: /addaff Françoise 100: Increase affection by 100 /addaff Françoise -75: Decrease affection by 75"
+                - generic [ref=f6e102]: female
+          - button "아냐 아냐" [ref=f6e104] [cursor=pointer]:
+            - generic [ref=f6e105]:
+              - img "아냐" [ref=f6e106]
+              - generic [ref=f6e108]: 아냐
+          - button "박지연 박지연 A stalker who wants to marry you , fashion model Park Ji-yeon. female yandere" [ref=f6e110] [cursor=pointer]:
+            - generic [ref=f6e111]:
+              - img "박지연" [ref=f6e112]
+              - generic [ref=f6e113]:
+                - generic [ref=f6e114]: 박지연
+                - generic [ref=f6e115]: A stalker who wants to marry you , fashion model Park Ji-yeon.
+                - generic [ref=f6e116]:
+                  - generic [ref=f6e117]: female
+                  - generic [ref=f6e118]: yandere
+          - 'button "Oregairu Simulator Oregairu Simulator Oregairu Simulator - Remake SFW Assets: 582 NSFW Assets: 480 * I received permission from v596vtg1pw. **Greeting List** 1. {{user}}, a transfer student in Class 2-F. 2. {{user}} comes to the Service Club to make a request. 3. {{user}}, a newly appointed teacher at Sobu High School. 4. {{user}}, a new member of the Service Club. 5. Empty Greeting (Free Start). anime comedy romance simulator ..." [ref=f6e120] [cursor=pointer]':
+            - generic [ref=f6e121]:
+              - img "Oregairu Simulator" [ref=f6e122]
+              - generic [ref=f6e123]:
+                - generic [ref=f6e124]: Oregairu Simulator
+                - generic [ref=f6e125]: "Oregairu Simulator - Remake SFW Assets: 582 NSFW Assets: 480 * I received permission from v596vtg1pw. **Greeting List** 1. {{user}}, a transfer student in Class 2-F. 2. {{user}} comes to the Service Club to make a request. 3. {{user}}, a newly appointed teacher at Sobu High School. 4. {{user}}, a new member of the Service Club. 5. Empty Greeting (Free Start)."
+                - generic [ref=f6e126]:
+                  - generic [ref=f6e127]: anime
+                  - generic [ref=f6e128]: comedy
+                  - generic [ref=f6e129]: romance
+                  - generic [ref=f6e130]: simulator
+                  - generic [ref=f6e131]: ...
+          - button "Creamy Bell Family Restaurant ver 0.999 Creamy Bell Family Restaurant ver 0.999 [english support]+kor Creamy Bell Family Restaurant ver 0.999 Futanari Erotic Gastronomy Fantasy Due to technical limitations, I had to make the menu permanently open. Originally, I wanted to make it so that the menu would be called through relevant variables when someone asked for it, as that fits the setting better. However, I failed to implement it. how to change First Messages to english 1. cheak the Advanced Settings 2. and Scroll down to see Alternative First Messages 3. secound one is the english First message 4. copy and paste to First message More to be added (undecided) Adding photos to RURI's secret menu, Nyotaimori Sushi, and Choco Dick reason my Stable Diffusion WebUI reForge is broken CC BY-NC" [ref=f6e133] [cursor=pointer]:
+            - generic [ref=f6e134]:
+              - img "Creamy Bell Family Restaurant ver 0.999" [ref=f6e135]
+              - generic [ref=f6e136]:
+                - generic [ref=f6e137]: Creamy Bell Family Restaurant ver 0.999
+                - generic [ref=f6e138]: "[english support]+kor Creamy Bell Family Restaurant ver 0.999 Futanari Erotic Gastronomy Fantasy Due to technical limitations, I had to make the menu permanently open. Originally, I wanted to make it so that the menu would be called through relevant variables when someone asked for it, as that fits the setting better. However, I failed to implement it. how to change First Messages to english 1. cheak the Advanced Settings 2. and Scroll down to see Alternative First Messages 3. secound one is the english First message 4. copy and paste to First message More to be added (undecided) Adding photos to RURI's secret menu, Nyotaimori Sushi, and Choco Dick reason my Stable Diffusion WebUI reForge is broken CC BY-NC"
+          - button "Irene Irene Just a peddler in fantasy world. Feel free to trade or travel with this cute miser. female OC fantasy sliceoflife ..." [ref=f6e140] [cursor=pointer]:
+            - generic [ref=f6e141]:
+              - img "Irene" [ref=f6e142]
+              - generic [ref=f6e143]:
+                - generic [ref=f6e144]: Irene
+                - generic [ref=f6e145]: Just a peddler in fantasy world. Feel free to trade or travel with this cute miser.
+                - generic [ref=f6e146]:
+                  - generic [ref=f6e147]: female
+                  - generic [ref=f6e148]: OC
+                  - generic [ref=f6e149]: fantasy
+                  - generic [ref=f6e150]: sliceoflife
+                  - generic [ref=f6e151]: ...
+          - button [ref=f6e153] [cursor=pointer]:
+            - generic [ref=f6e154]:
+              - img "THE DOMINIUM REALM" [ref=f6e155]
+              - generic [ref=f6e156]:
+                - generic [ref=f6e157]: THE DOMINIUM REALM
+                - generic [ref=f6e158]: "#DarkFantasy #Sci-Fi #SF #OC #Adventure #Simulation #Simulator #Fantasy #RP #Space #Opera ## +57 Characters | +680 Npc Assets | +500 Ship, Vehicle... and Backgrounds Assets ## <p style=\"color: #edce68;\"> :: THE DOMINIUM REALM :: </p> <blockquote style=\"border-left: 4px solid #edce68; color: Silver; padding-left: 10px; margin: 10px 0;\"> Humanity’s glorious golden age has become a cold ghost, and the Astra Silentium Galaxy is a tomb built upon its vast, lifeless corpse.<br> Beneath the dying light of distant stars and within the endless whispers of shadow— what will you be remembered as?<br> From beyond the farthest reaches of the galaxy, alien terrors of flesh and machine draw ever closer. And within the Empire’s very heart,<br> nobles wage ruthless battles for power, and colossal corporations feed their greed— all while smiling faces hide blades aimed at one another’s hearts.<br> In this boundless land of death and opportunity, write your own saga. </blockquote> <br> <details> <summary style=\"font-size:24px; font-weight:bold; color:#edce68; cursor:pointer;\">&nbsp;Expand Additional Content (Click to View Details)&nbsp;</summary> <div style=\"margin-left:20px; font-size:16px; color:#ffffff;\"> :: Extra Character Expansion Asset Pack :: - <font color=\"#00e5e5\">https://drive.proton.me/urls/0FEMMWV9H4#qsEy3ncS1wu9</font> Adds image assets of various races from Astra Silentium (commoners, nobles, etc.). </div> <div style=\"margin-left:20px; font-size:16px; color:#ffffff;\"> :: Extra Fleet Expansion Asset Pack :: - <font color=\"#00e5e5\">https://drive.proton.me/urls/SPZ88XF94C#AqvAHAZCrt8y</font> Adds image assets of various ships (mercenaries, corporations, civilians, pirates, etc.). </div> </details>"
+                - generic [ref=f6e159]:
+                  - generic [ref=f6e160]: DarkFantasy
+                  - generic [ref=f6e161]: Sci-Fi
+                  - generic [ref=f6e162]: SF
+                  - generic [ref=f6e163]: OC
+                  - generic [ref=f6e164]: ...
+          - button [ref=f6e166] [cursor=pointer]:
+            - generic [ref=f6e167]:
+              - img "Hoshino Haruki (호시노 하루키)" [ref=f6e168]
+              - generic [ref=f6e169]:
+                - generic [ref=f6e170]: Hoshino Haruki (호시노 하루키)
+                - generic [ref=f6e171]: "### Hoshino Haruki, The Kid Who Can't Wait to Grow Up \"Seriously, stop patting my head! I'm not a little kid anymore!\" Meet Hoshino Haruki, your neighborhood brat who huffs and puffs with cheeks still retaining a bit of that baby fat. He doesn't look like he's grown much, but ever since he put on that middle school uniform, his gaze has become suspiciously impure. Armed with shallow knowledge gleaned from the internet and adult manga, this cheeky adolescent takes every opportunity to act mature and attempts physical contact with a feigned smoothness. However, seeing his ears turn bright red and his eyes darting around makes it painfully obvious—he's an absolute newbie with zero practical experience. Whether you decide to teach this brat a lesson for weaponising his youth to cross the line, or simply play along with his little games, the choice is entirely yours! --- ### Starting Scenarios 1. With his parents running late, Haruki drops by his neighbour's house to shamelessly mooch dinner as usual. 2. While thoroughly enjoying some \"happy time\" alone at home, Haruki panics when his neighbour suddenly show up at his door. 3. Catching sight of his neighbour chatting with a stranger in front of their house, Haruki spirals into a pit of jealousy and wild delusions."
+                - generic [ref=f6e172]:
+                  - generic [ref=f6e173]: OC
+                  - generic [ref=f6e174]: male
+                  - generic [ref=f6e175]: adolescent
+                  - generic [ref=f6e176]: teen
+                  - generic [ref=f6e177]: ...
+          - 'button "Yuna Yuna 당신의 사랑스러운 집착 여동생, 유나 캐릭터 배경 커스터마이징 가능 (친동생 | 학교 후배, 츤+얀데레 | 쿨+얀데레 등} 총 에셋 676개 (112 SFW + 564 NSFW) 의상: 교복, 외출복, 잠옷, 누드 v 1.2 female OC yandere" [ref=f6e179] [cursor=pointer]':
+            - generic [ref=f6e180]:
+              - img "Yuna" [ref=f6e181]
+              - generic [ref=f6e182]:
+                - generic [ref=f6e183]: Yuna
+                - generic [ref=f6e184]: "당신의 사랑스러운 집착 여동생, 유나 캐릭터 배경 커스터마이징 가능 (친동생 | 학교 후배, 츤+얀데레 | 쿨+얀데레 등} 총 에셋 676개 (112 SFW + 564 NSFW) 의상: 교복, 외출복, 잠옷, 누드 v 1.2"
+                - generic [ref=f6e185]:
+                  - generic [ref=f6e186]: female
+                  - generic [ref=f6e187]: OC
+                  - generic [ref=f6e188]: yandere
+          - button "명부시왕청에 강제 입사당했다. 명부시왕청에 강제 입사당했다. 사신이 실수로 산 사람을 데려왔다. 저승 음식을 먹어버려서 돌려보낼 수도 없다. 「마침 인력이 부족했다. 채용하겠다.」 '저 아직 안 죽었는데요.' 「알고 있다. 발령은 내일부터다.」 명부시왕청에 강제 입사당했다. female male OC" [ref=f6e190] [cursor=pointer]:
+            - generic [ref=f6e191]:
+              - img "명부시왕청에 강제 입사당했다." [ref=f6e192]
+              - generic [ref=f6e193]:
+                - generic [ref=f6e194]: 명부시왕청에 강제 입사당했다.
+                - generic [ref=f6e195]: 사신이 실수로 산 사람을 데려왔다. 저승 음식을 먹어버려서 돌려보낼 수도 없다. 「마침 인력이 부족했다. 채용하겠다.」 '저 아직 안 죽었는데요.' 「알고 있다. 발령은 내일부터다.」 명부시왕청에 강제 입사당했다.
+                - generic [ref=f6e196]:
+                  - generic [ref=f6e197]: female
+                  - generic [ref=f6e198]: male
+                  - generic [ref=f6e199]: OC
+          - button "Parma Knights Parma Knights An adult fantasy knight order roleplay set in the city of Parma. Take command of the Parma Knights as their newly appointed commander. - 8 Heroines (5 knights, 2 princesses, 1 exchange knight) - 600+ Assets including NSFW Assets - 2 Starting Routes (Commander / Fleur) 2026-06-28 v1.0.0 2026-07-05 v1.1.0 — Commander start, Fleur & Beatrice heroines, affection system overhaul" [ref=f6e201] [cursor=pointer]:
+            - generic [ref=f6e202]:
+              - img "Parma Knights" [ref=f6e203]
+              - generic [ref=f6e204]:
+                - generic [ref=f6e205]: Parma Knights
+                - generic [ref=f6e206]: An adult fantasy knight order roleplay set in the city of Parma. Take command of the Parma Knights as their newly appointed commander. - 8 Heroines (5 knights, 2 princesses, 1 exchange knight) - 600+ Assets including NSFW Assets - 2 Starting Routes (Commander / Fleur) 2026-06-28 v1.0.0 2026-07-05 v1.1.0 — Commander start, Fleur & Beatrice heroines, affection system overhaul
+          - button "Arena of Shame Arena of Shame 대화창의 ▤ 버튼으로 가로 대사창 / 세로 대사창 조정 가능" [ref=f6e208] [cursor=pointer]:
+            - generic [ref=f6e209]:
+              - img "Arena of Shame" [ref=f6e210]
+              - generic [ref=f6e211]:
+                - generic [ref=f6e212]: Arena of Shame
+                - generic [ref=f6e213]: 대화창의 ▤ 버튼으로 가로 대사창 / 세로 대사창 조정 가능
+          - button "UMAMUSUME CUM UMAMUSUME CUM 0.1 베타버전 우마무스메 쿰봇 괴문서에서 영감을 받은 작품 현재 캐릭터는 카페,타키온,도토,단츠. sfw nsfw 에셋 보유 아직 베타버전이라 캐릭터가 4명 뿐 female game-character romance comedy" [ref=f6e215] [cursor=pointer]:
+            - generic [ref=f6e216]:
+              - img "UMAMUSUME CUM" [ref=f6e217]
+              - generic [ref=f6e218]:
+                - generic [ref=f6e219]: UMAMUSUME CUM
+                - generic [ref=f6e220]: 0.1 베타버전 우마무스메 쿰봇 괴문서에서 영감을 받은 작품 현재 캐릭터는 카페,타키온,도토,단츠. sfw nsfw 에셋 보유 아직 베타버전이라 캐릭터가 4명 뿐
+                - generic [ref=f6e221]:
+                  - generic [ref=f6e222]: female
+                  - generic [ref=f6e223]: game-character
+                  - generic [ref=f6e224]: romance
+                  - generic [ref=f6e225]: comedy
+          - button "Yuri Yuri Pirates" [ref=f6e227] [cursor=pointer]:
+            - generic [ref=f6e228]:
+              - img "Yuri" [ref=f6e229]
+              - generic [ref=f6e230]:
+                - generic [ref=f6e231]: Yuri
+                - generic [ref=f6e232]: Pirates
+          - button "Starlight Academy Starlight Academy An academy for people with supernatural ability. Enjoy. sim supernatural academy ability" [ref=f6e234] [cursor=pointer]:
+            - generic [ref=f6e235]:
+              - img "Starlight Academy" [ref=f6e236]
+              - generic [ref=f6e237]:
+                - generic [ref=f6e238]: Starlight Academy
+                - generic [ref=f6e239]: An academy for people with supernatural ability. Enjoy.
+                - generic [ref=f6e240]:
+                  - generic [ref=f6e241]: sim
+                  - generic [ref=f6e242]: supernatural
+                  - generic [ref=f6e243]: academy
+                  - generic [ref=f6e244]: ability
+          - button "Unicorn Unicorn A unicorn is grazing in the meadow. This unicorn is literally a unicorn. unicorn" [ref=f6e246] [cursor=pointer]:
+            - generic [ref=f6e247]:
+              - img "Unicorn" [ref=f6e248]
+              - generic [ref=f6e249]:
+                - generic [ref=f6e250]: Unicorn
+                - generic [ref=f6e251]: A unicorn is grazing in the meadow. This unicorn is literally a unicorn.
+                - generic [ref=f6e253]: unicorn
+          - 'button "Temerosa: PluNova Temerosa: PluNova Dystopia Temerosa Simulator V3. The story of Pluto." [ref=f6e255] [cursor=pointer]':
+            - generic [ref=f6e256]:
+              - 'img "Temerosa: PluNova" [ref=f6e257]'
+              - generic [ref=f6e258]:
+                - generic [ref=f6e259]: "Temerosa: PluNova"
+                - generic [ref=f6e260]: Dystopia Temerosa Simulator V3. The story of Pluto.
+          - button "Ihye Ihye 정치경제시사 전문가 고등학생, 강이혜 She'll probably take the fifth when you ask her about her coffee machine prices. female cute" [ref=f6e262] [cursor=pointer]:
+            - generic [ref=f6e263]:
+              - img "Ihye" [ref=f6e264]
+              - generic [ref=f6e265]:
+                - generic [ref=f6e266]: Ihye
+                - generic [ref=f6e267]: 정치경제시사 전문가 고등학생, 강이혜 She'll probably take the fifth when you ask her about her coffee machine prices.
+                - generic [ref=f6e268]:
+                  - generic [ref=f6e269]: female
+                  - generic [ref=f6e270]: cute
+          - button "달맞이 겨울벚꽃 달맞이 겨울벚꽃" [ref=f6e272] [cursor=pointer]:
+            - generic [ref=f6e273]:
+              - img "달맞이 겨울벚꽃" [ref=f6e274]
+              - generic [ref=f6e276]: 달맞이 겨울벚꽃
+          - button "빅토리아 빅토리아" [ref=f6e278] [cursor=pointer]:
+            - generic [ref=f6e279]:
+              - img "빅토리아" [ref=f6e280]
+              - generic [ref=f6e282]: 빅토리아
+          - button "Kang-eun Kang-eun \"If you want, I'll do it.\" A woman who, beneath a perfect social mask, has forgotten even what happiness is for herself. Your ex-lover, and the person you must now keep the most uncomfortable distance from. --- \"네가 원한다면, 그렇게 할게.\" 완벽한 사회적 가면 아래, 스스로의 행복이 무엇인지조차 잊어버린 여자. 당신의 전 연인이자, 이제는 가장 불편한 거리를 유지해야 하는 사람. female OC romance" [ref=f6e284] [cursor=pointer]:
+            - generic [ref=f6e285]:
+              - img "Kang-eun" [ref=f6e286]
+              - generic [ref=f6e287]:
+                - generic [ref=f6e288]: Kang-eun
+                - generic [ref=f6e289]: "\"If you want, I'll do it.\" A woman who, beneath a perfect social mask, has forgotten even what happiness is for herself. Your ex-lover, and the person you must now keep the most uncomfortable distance from. --- \"네가 원한다면, 그렇게 할게.\" 완벽한 사회적 가면 아래, 스스로의 행복이 무엇인지조차 잊어버린 여자. 당신의 전 연인이자, 이제는 가장 불편한 거리를 유지해야 하는 사람."
+                - generic [ref=f6e290]:
+                  - generic [ref=f6e291]: female
+                  - generic [ref=f6e292]: OC
+                  - generic [ref=f6e293]: romance
+          - button "철학소녀들의 밤 철학소녀들의 밤 Copyright © 2026 바쏘리/밭소리. All Rights Reserved." [ref=f6e295] [cursor=pointer]:
+            - generic [ref=f6e296]:
+              - img "철학소녀들의 밤" [ref=f6e297]
+              - generic [ref=f6e298]:
+                - generic [ref=f6e299]: 철학소녀들의 밤
+                - generic [ref=f6e300]: Copyright © 2026 바쏘리/밭소리. All Rights Reserved.
+          - button "Frin Tesbed Frin Tesbed Your best friend. YOU CAN ENJOY THIS BOT AS BOTH A MALE AND FEMALE!! friend rich" [ref=f6e302] [cursor=pointer]:
+            - generic [ref=f6e303]:
+              - img "Frin Tesbed" [ref=f6e304]
+              - generic [ref=f6e305]:
+                - generic [ref=f6e306]: Frin Tesbed
+                - generic [ref=f6e307]: Your best friend. YOU CAN ENJOY THIS BOT AS BOTH A MALE AND FEMALE!!
+                - generic [ref=f6e308]:
+                  - generic [ref=f6e309]: friend
+                  - generic [ref=f6e310]: rich
+          - button "Natsuki Natsuki The young Miko complaining about Kami-Sama's overprotectiveness OC female" [ref=f6e312] [cursor=pointer]:
+            - generic [ref=f6e313]:
+              - img "Natsuki" [ref=f6e314]
+              - generic [ref=f6e315]:
+                - generic [ref=f6e316]: Natsuki
+                - generic [ref=f6e317]: The young Miko complaining about Kami-Sama's overprotectiveness
+                - generic [ref=f6e318]:
+                  - generic [ref=f6e319]: OC
+                  - generic [ref=f6e320]: female
+          - button "LEE RUA LEE RUA Cute Goth Girl with some issues" [ref=f6e322] [cursor=pointer]:
+            - generic [ref=f6e323]:
+              - img "LEE RUA" [ref=f6e324]
+              - generic [ref=f6e325]:
+                - generic [ref=f6e326]: LEE RUA
+                - generic [ref=f6e327]: Cute Goth Girl with some issues
+          - button [ref=f6e329] [cursor=pointer]:
+            - generic [ref=f6e330]:
+              - img "Re:ZERO SIMULATOR" [ref=f6e331]
+              - generic [ref=f6e332]:
+                - generic [ref=f6e333]: Re:ZERO SIMULATOR
+                - generic [ref=f6e334]: "SFW ASSESTS: 2141 NSFW ASSESTS: 1260 YURINSFW ASSETS: 288 ASSETS MODULE LINK : https://drive.proton.me/urls/MH8SS2ACNM#zcS0g8bhULSR First Message List: [Emilia Camp] 1. The Last Resistance of the Forgotten Guardian (1316, Elior Forest) 2. A Frozen Encounter with the Spirit Puck (1415, Gusteko Border) 3. The Approaching Disaster of the Black Serpent (1419, Elior Forest) 4. A Perilous Tightrope Walk at the Roswaal Mansion (1423, Roswaal Mansion) 5. The Shield of the Sanctuary, Garfiel's Anxiety (1423, Sanctuary Cremaldy Forest) 6. The Witch Cult's Clutches Reaching the Merchant District (1423, Royal Capital Merchant District) [Felt & Astrea Camp] 1. The Burning Royal Palace and the Abandoned Life (1408, Lugunica Royal Palace Sewers) 2. The Sad Fate of the Sword Saint (1373, Demi-human War Frontline) 3. The Pride of the Defeated Demi-human Alliance (1375, Demi-human War Retreat) 4. A Volatile Situation in the Astrea Household (1423, Astrea Mansion) 5. A Slum Girl's Peaceful Afternoon (1423, Old Man Rom's Loot House) 6. The Daily Life of a Hostage with a Sword Saint Childhood Friend (1423, Royal Capital Back Alley) [Crusch Camp] 1. A Spar on a Clear Day and the Hidden Shadow (1416, Karsten Mansion) 2. The Cursed Child Locked in the Basement (1413, Argyle Mansion) 3. The White Whale Subjugation Breaking 400 Years of Silence (1423, Lifaus Highway) 4. The Alien Miasma Seeping into the Healing Room (1423, Crusch Mansion Healing Room) 5. The Wind Defying the Old Remnants of the Dragon Kingdom (1423, Royal Castle Hallway) 6. The Iron Lady Who Lost Her Memories (1423, Returning Dragon Carriage) [Anastasia Camp] 1. The Great First Step of a Slum Girl (1417, Kararagi Slums) 2. A Worthy Rival Toward the Finest Knight (1417, Juukulius Training Grounds) 3. The Rough Birth of the 'Iron Fang' (1415, Outskirts of Kararagi) 4. The Chaotic Welcome Party for the Mercenary's New Recruit (1422, Banan) 5. The Secret Deal of a Greedy Merchant (1422, Hoshin Company) 6. The Endless Abyss Harbored by an Artificial Spirit (1423, Anastasia's Guest Room) [Priscilla Camp] 1. The Gladiator's Hell Where Death is Not Permitted (1405, Gladiator Island) 2. Assassins Aiming for the Princess's Bedchamber (1415, Vollachia Empire) 3. The Sun's Noble Path of Exile (1416, Vollachia Border) 4. A Miraculous Clown Dance Before the Sun (1421, Barielle Domain) 5. A Secret Proposal Offered by a Stranger from the Stars (1422, Royal Capital Tavern) 6. A Humiliating Choice Before the Sun's Throne (1422, Priscilla Mansion) [Witch Cult Camp] 1. The Choice of Sloth for a Loved One (1316, Elior Forest) 2. The Tyrant of Greed and the 79th Wife (1424, Watergate City Pristella) 3. The Horrific Salvation Granted by the Sin Archbishop of Wrath (1420, Border Village) 4. A Hand of Salvation Reached Out from the Swamp of Lust (1422, Royal Capital Slums) 5. The Dining Table of Gluttony and the Fabricated Memory of a Genius (1422, Royal Capital Sewers) 6. The Blank Gospel Bestowed Upon a Death Row Inmate (1422, Royal Capital Underground Prison) [Free Camp] 1. The End of the World, the Porter Facing a Disaster (1023, Before the Great Waterfall) 2. The Demi-human War, the Bloody Requests of Two Commanders (1373, Southern Frontline) 3. The Witch of Greed and Her Two Disciples on a Languid Afternoon (1022, Echidna's Workshop) 4. The Chilling Pursuit of the Bowel Hunter Under the Moonlight (1422, Royal Capital Slums) 5. The Dreamlike Tea Party Hosted by the Witch of Greed (1422, Sanctuary's Tomb) 6. The Cruel Gap in Talent Between the Oni Sisters (1416, Oni Village)"
+          - button "미노라 미노라 젖태이 암살자ㄷㄷㄷ female OC" [ref=f6e336] [cursor=pointer]:
+            - generic [ref=f6e337]:
+              - img "미노라" [ref=f6e338]
+              - generic [ref=f6e339]:
+                - generic [ref=f6e340]: 미노라
+                - generic [ref=f6e341]: 젖태이 암살자ㄷㄷㄷ
+                - generic [ref=f6e342]:
+                  - generic [ref=f6e343]: female
+                  - generic [ref=f6e344]: OC
+          - 'button "Studio R: 설정 챗질 플레이어 Studio R: 설정 챗질 플레이어 The 18 actors never change. The stage does — mix a world, a genre, and a twist, and the same people live a different life every time. Cast, set, action. Assets [SFW + NSFW] = 2220 female male OC multiple-characters ..." [ref=f6e346] [cursor=pointer]':
+            - generic [ref=f6e347]:
+              - 'img "Studio R: 설정 챗질 플레이어" [ref=f6e348]'
+              - generic [ref=f6e349]:
+                - generic [ref=f6e350]: "Studio R: 설정 챗질 플레이어"
+                - generic [ref=f6e351]: The 18 actors never change. The stage does — mix a world, a genre, and a twist, and the same people live a different life every time. Cast, set, action. Assets [SFW + NSFW] = 2220
+                - generic [ref=f6e352]:
+                  - generic [ref=f6e353]: female
+                  - generic [ref=f6e354]: male
+                  - generic [ref=f6e355]: OC
+                  - generic [ref=f6e356]: multiple-characters
+                  - generic [ref=f6e357]: ...
+          - 'button "Kaguya Kaguya # *Kaguya, solitude for hundreds of millions of years.* female game-character" [ref=f6e359] [cursor=pointer]':
+            - generic [ref=f6e360]:
+              - img "Kaguya" [ref=f6e361]
+              - generic [ref=f6e362]:
+                - generic [ref=f6e363]: Kaguya
+                - generic [ref=f6e364]: "# *Kaguya, solitude for hundreds of millions of years.*"
+                - generic [ref=f6e365]:
+                  - generic [ref=f6e366]: female
+                  - generic [ref=f6e367]: game-character
+          - 'button "CHAINSAW MAN SIMULATOR CHAINSAW MAN SIMULATOR SFW ASSESTS: 1118 NSFW ASSESTS: 980 YURINSFW ASSETS: 224 ASSETS MODULE LINK : https://drive.proton.me/urls/ZTX2WKXHMG#ylFedGfHLGW8 Select Language and Denji''s Gender. First Message : 1. The Beginning of Special Division 4: A rookie Devil Hunter recruited by Makima alongside Denji. 2. The Visitor in the Purple Rain: A chance encounter with Reze inside a cramped phone booth during a downpour. 3. The 26-Second Catastrophe: Waking up in the devastation left by the Gun Devil on November 18, 1983. 4. The Prime of Legends: The 1970s, a drinking session with the strongest Devil Hunters, Kishibe & Quanxi. 5. The Uninvited Hell: Santa Claus''s dolls, a descending giant hand, and the fall into Hell. 6. The Girl''s War: Confronting the War Devil dwelling within your ordinary classmate, Asa Mitaka. 7. [Blank]: A blank page for a new story. 8. Random" [ref=f6e369] [cursor=pointer]':
+            - generic [ref=f6e370]:
+              - img "CHAINSAW MAN SIMULATOR" [ref=f6e371]
+              - generic [ref=f6e372]:
+                - generic [ref=f6e373]: CHAINSAW MAN SIMULATOR
+                - generic [ref=f6e374]: "SFW ASSESTS: 1118 NSFW ASSESTS: 980 YURINSFW ASSETS: 224 ASSETS MODULE LINK : https://drive.proton.me/urls/ZTX2WKXHMG#ylFedGfHLGW8 Select Language and Denji's Gender. First Message : 1. The Beginning of Special Division 4: A rookie Devil Hunter recruited by Makima alongside Denji. 2. The Visitor in the Purple Rain: A chance encounter with Reze inside a cramped phone booth during a downpour. 3. The 26-Second Catastrophe: Waking up in the devastation left by the Gun Devil on November 18, 1983. 4. The Prime of Legends: The 1970s, a drinking session with the strongest Devil Hunters, Kishibe & Quanxi. 5. The Uninvited Hell: Santa Claus's dolls, a descending giant hand, and the fall into Hell. 6. The Girl's War: Confronting the War Devil dwelling within your ordinary classmate, Asa Mitaka. 7. [Blank]: A blank page for a new story. 8. Random"
+          - button [ref=f6e376] [cursor=pointer]:
+            - generic [ref=f6e377]:
+              - img "이세계 편의점" [ref=f6e378]
+              - generic [ref=f6e379]:
+                - generic [ref=f6e380]: 이세계 편의점
+                - generic [ref=f6e381]: "IsekaiConveni Original: Real-Time Mixed-Species Gallery by 오리고기 먹고싶다 Title: What the hell is this? Live from a convenience store wage slave. An old elf customer just came in. He kept mumbling about how things were back in his day, pulled something weird out of his pocket, and asked if he could barter it for liquor. Though her face is kind of pretty. . . . This is not a tavern or a guild. It is only an ordinary convenience store. There are discount-waste stickers on boxed meals, bright rows of cigarettes, and CCTV spinning without a word. Ordinary, except for the slightly special customers who pass through. And now your shift begins there. Version: 1.0.0 Additional characters and assets download: https://drive.proton.me/urls/R0ATFHQW38#SQyhs93044Pw (c) 2026 TeWeMe. All Rights Reserved. Unauthorized redistribution, modification, forks, mirroring, re-uploading, commercial use, dataset collection, AI training use, mass crawling, and scraping are prohibited."
+          - button "Renka Renka Renka the Korean Slayer genderbender ts schoolgirl japanese ..." [ref=f6e383] [cursor=pointer]:
+            - generic [ref=f6e384]:
+              - img "Renka" [ref=f6e385]
+              - generic [ref=f6e386]:
+                - generic [ref=f6e387]: Renka
+                - generic [ref=f6e388]: Renka the Korean Slayer
+                - generic [ref=f6e389]:
+                  - generic [ref=f6e390]: genderbender
+                  - generic [ref=f6e391]: ts
+                  - generic [ref=f6e392]: schoolgirl
+                  - generic [ref=f6e393]: japanese
+                  - generic [ref=f6e394]: ...
+          - button "Sqweegirl Sqweegirl 🔪스퀴걸 - 당신에게 집착하는 개또라이변태연쇄살인마" [ref=f6e396] [cursor=pointer]:
+            - generic [ref=f6e397]:
+              - img "Sqweegirl" [ref=f6e398]
+              - generic [ref=f6e399]:
+                - generic [ref=f6e400]: Sqweegirl
+                - generic [ref=f6e401]: 🔪스퀴걸 - 당신에게 집착하는 개또라이변태연쇄살인마
+          - button "호라이즌 호라이즌 모바일 게임 '카운터사이드' 의 메카닉 사원 '호라이즌' 의 에셋봇입니다. 저의 첫 에셋봇이고 아직 최소한의 에셋과 로어북만 있는 프로토타입 입니다. 부족한 것이 많겠지만 부디 재미있게 즐겨주시길 바랍니다. 언젠가 '리타' 하고 '대시' 도 만들어서 '호라이즌 파이낸스' 시뮬봇을 만드는 것이 목표입니다. female game-character" [ref=f6e403] [cursor=pointer]:
+            - generic [ref=f6e404]:
+              - img "호라이즌" [ref=f6e405]
+              - generic [ref=f6e406]:
+                - generic [ref=f6e407]: 호라이즌
+                - generic [ref=f6e408]: 모바일 게임 '카운터사이드' 의 메카닉 사원 '호라이즌' 의 에셋봇입니다. 저의 첫 에셋봇이고 아직 최소한의 에셋과 로어북만 있는 프로토타입 입니다. 부족한 것이 많겠지만 부디 재미있게 즐겨주시길 바랍니다. 언젠가 '리타' 하고 '대시' 도 만들어서 '호라이즌 파이낸스' 시뮬봇을 만드는 것이 목표입니다.
+                - generic [ref=f6e409]:
+                  - generic [ref=f6e410]: female
+                  - generic [ref=f6e411]: game-character
+          - button [ref=f6e413] [cursor=pointer]:
+            - generic [ref=f6e414]:
+              - 'img "Demon Slayer: Kimetsu no Yaiba SIMULATOR" [ref=f6e415]'
+              - generic [ref=f6e416]:
+                - generic [ref=f6e417]: "Demon Slayer: Kimetsu no Yaiba SIMULATOR"
+                - generic [ref=f6e418]: "SFW ASSESTS: 1613 NSFW ASSESTS: 2030 YURINSFW ASSETS: 460 ASSETS MODULE LINK : https://drive.proton.me/urls/J022J4MP8R#NnZQT0Ckp29x First Message List: ⚔️ Demon Slayer Corps 1. The Night of Final Selection, Makomo the Girl in the Fox Mask 2. A Warm Afternoon at the Butterfly Mansion with Flower Hashira Kanae Kocho 3. The Wake of Tragedy, a Savior Descending with the Scent of Cherry Blossoms 4. The Battlefield-like Infirmary, Insect Hashira Shinobu Kocho's Chilling Smile 5. Before the Wisteria Ward of Mt. Fujikasane, a Promise with the Red-Haired Boy 6. The Boiling Swordsmith Village, Hotaru Haganezuka the Artisan of Obsession 🩸 Demon 1. A Pitch-Black Temptation at Death's Door, Muzan Kibutsuji 2. The Red Lanterns of Yoshiwara, Upper Rank 6 Daki's Fatal Whisper 3. A Foggy Back Alley, Tamayo's Salvation Severing the Curse 4. Inescapable Karma, Stone Hashira Gyomei Himejima's Flail 5. The Overwhelming Peak of Martial Arts, Upper Rank 3 Akaza's Bloody Proposal 6. A Bitter Cold's Deadly Poison, Progenitor Muzan's Cruel Test of Survival 🌸 Free/Civilian 1. An Arrogant Flower Blooming in the Gutter, Ume of the Rashomon Riverbank 2. Commotion Under the Roof, A Secret Infiltration with the Three Kunoichi 3. A Shrine Echoing with Rain, A Quiet Encounter with Ruka Rengoku 4. A Sorrowful Lullaby Under the Moonlight, The Wounded Kotoha 5. A Miracle in the Blizzard, The Kamado Family's Warm Hearth on Mt. Kumotori 6. Under the Fluttering Cherry Blossoms, Amane the Priest's Daughter as Clear as Snow"
+          - button "끼뺫엄벌기슝좍좍누옹빵 끼뺫엄벌기슝좍좍누옹빵 개조판" [ref=f6e420] [cursor=pointer]:
+            - generic [ref=f6e421]:
+              - img "끼뺫엄벌기슝좍좍누옹빵" [ref=f6e422]
+              - generic [ref=f6e423]:
+                - generic [ref=f6e424]: 끼뺫엄벌기슝좍좍누옹빵
+                - generic [ref=f6e425]: 개조판
+          - button "Tim Tim ex-con in the world of Clockwork Orange male OC" [ref=f6e427] [cursor=pointer]:
+            - generic [ref=f6e428]:
+              - img "Tim" [ref=f6e429]
+              - generic [ref=f6e430]:
+                - generic [ref=f6e431]: Tim
+                - generic [ref=f6e432]: ex-con in the world of Clockwork Orange
+                - generic [ref=f6e433]:
+                  - generic [ref=f6e434]: male
+                  - generic [ref=f6e435]: OC
+          - 'button "국정실험실 국정실험실 국가의 지도자가 되어 국정을 운영해보는 실험실 전용 프롬프트: https://realm.risuai.net/character/023a6e2b-9acb-4f98-bfec-ffdf4fbda8c4" [ref=f6e437] [cursor=pointer]':
+            - generic [ref=f6e438]:
+              - img "국정실험실" [ref=f6e439]
+              - generic [ref=f6e440]:
+                - generic [ref=f6e441]: 국정실험실
+                - generic [ref=f6e442]: "국가의 지도자가 되어 국정을 운영해보는 실험실 전용 프롬프트: https://realm.risuai.net/character/023a6e2b-9acb-4f98-bfec-ffdf4fbda8c4"
+          - button "Erinya and Hanna Erinya and Hanna 16년 전 죽었다가 부활한 여친 VS 16년 전 죽은 후 환생한 여친" [ref=f6e444] [cursor=pointer]:
+            - generic [ref=f6e445]:
+              - img "Erinya and Hanna" [ref=f6e446]
+              - generic [ref=f6e447]:
+                - generic [ref=f6e448]: Erinya and Hanna
+                - generic [ref=f6e449]: 16년 전 죽었다가 부활한 여친 VS 16년 전 죽은 후 환생한 여친
+          - button "GunFang! (건빵!) GunFang! (건빵!) 골드러쉬 시대 몬무스 소녀들의 서부시대 쟁탈기 simulator cowboy multiple-characters" [ref=f6e451] [cursor=pointer]:
+            - generic [ref=f6e452]:
+              - img "GunFang! (건빵!)" [ref=f6e453]
+              - generic [ref=f6e454]:
+                - generic [ref=f6e455]: GunFang! (건빵!)
+                - generic [ref=f6e456]: 골드러쉬 시대 몬무스 소녀들의 서부시대 쟁탈기
+                - generic [ref=f6e457]:
+                  - generic [ref=f6e458]: simulator
+                  - generic [ref=f6e459]: cowboy
+                  - generic [ref=f6e460]: multiple-characters
+          - button "마나 & 사나 마나 & 사나 flim13좌의 미츠키시리즈를 보고 영감을 받은 봇 아빠(유저)와의 섹스중독인 쌍둥이 자매. 히키코모리 언니(아무때나 쓰는 오나홀) 마나와 인싸여동생 사나(집에 오면 IN싸 여동생) \"아빠가 제일좋아! 아빠 신부될래!\" (어린시절) \"파파가 제일좋아...♥ 파파 신부될래...♥\" (현재) 버전2. 검열 방지를 위한 순화버전 출시. 비근친 선택시,아직 근친관계 까지는 가지않은 파더콘. 선 넘어오기 직전인 단계 근친 선택시 기존과 같음(섹스중독,임신갈망,근친교미) female OC incest romance ..." [ref=f6e462] [cursor=pointer]:
+            - generic [ref=f6e463]:
+              - img "마나 & 사나" [ref=f6e464]
+              - generic [ref=f6e465]:
+                - generic [ref=f6e466]: 마나 & 사나
+                - generic [ref=f6e467]: flim13좌의 미츠키시리즈를 보고 영감을 받은 봇 아빠(유저)와의 섹스중독인 쌍둥이 자매. 히키코모리 언니(아무때나 쓰는 오나홀) 마나와 인싸여동생 사나(집에 오면 IN싸 여동생) "아빠가 제일좋아! 아빠 신부될래!" (어린시절) "파파가 제일좋아...♥ 파파 신부될래...♥" (현재) 버전2. 검열 방지를 위한 순화버전 출시. 비근친 선택시,아직 근친관계 까지는 가지않은 파더콘. 선 넘어오기 직전인 단계 근친 선택시 기존과 같음(섹스중독,임신갈망,근친교미)
+                - generic [ref=f6e468]:
+                  - generic [ref=f6e469]: female
+                  - generic [ref=f6e470]: OC
+                  - generic [ref=f6e471]: incest
+                  - generic [ref=f6e472]: romance
+                  - generic [ref=f6e473]: ...
+          - button "Shirao Eri Shirao Eri **Blue Archive Shirao Eri Bot** This is a fan-created bot of Shirao Eri of Wild Hunt, who will one day become a Grand Mage. --- - 37 Emotion assets for Eri - Korean/English First Messages bluearchive female game-character" [ref=f6e475] [cursor=pointer]:
+            - generic [ref=f6e476]:
+              - img "Shirao Eri" [ref=f6e477]
+              - generic [ref=f6e478]:
+                - generic [ref=f6e479]: Shirao Eri
+                - generic [ref=f6e480]: "**Blue Archive Shirao Eri Bot** This is a fan-created bot of Shirao Eri of Wild Hunt, who will one day become a Grand Mage. --- - 37 Emotion assets for Eri - Korean/English First Messages"
+                - generic [ref=f6e481]:
+                  - generic [ref=f6e482]: bluearchive
+                  - generic [ref=f6e483]: female
+                  - generic [ref=f6e484]: game-character
+          - 'button "텐죠인 아스카 (Tenjouin Asuka / Alexis Rhodes) v1.0.1 텐죠인 아스카 (Tenjouin Asuka / Alexis Rhodes) v1.0.1 🔞 오벨리스크 블루의 여왕, 텐죠인 아스카 ### \"...좋은 기회네. 이 내가 철저하게 교정해 주겠어! 듀얼!\" --- 2000+ tokens 188 assets (52 emotion + 68 nsfw + 68 nsfw(pregnant)) v1.0.1 (20260627) - 정식 출시" [ref=f6e486] [cursor=pointer]':
+            - generic [ref=f6e487]:
+              - img "텐죠인 아스카 (Tenjouin Asuka / Alexis Rhodes) v1.0.1" [ref=f6e488]
+              - generic [ref=f6e489]:
+                - generic [ref=f6e490]: 텐죠인 아스카 (Tenjouin Asuka / Alexis Rhodes) v1.0.1
+                - generic [ref=f6e491]: "🔞 오벨리스크 블루의 여왕, 텐죠인 아스카 ### \"...좋은 기회네. 이 내가 철저하게 교정해 주겠어! 듀얼!\" --- 2000+ tokens 188 assets (52 emotion + 68 nsfw + 68 nsfw(pregnant)) v1.0.1 (20260627) - 정식 출시"
+          - button "Jia Jia \"내 심장을 다시 두근거리게 해줘.\" \"make my heart beat again.\"" [ref=f6e493] [cursor=pointer]:
+            - generic [ref=f6e494]:
+              - img "Jia" [ref=f6e495]
+              - generic [ref=f6e496]:
+                - generic [ref=f6e497]: Jia
+                - generic [ref=f6e498]: "\"내 심장을 다시 두근거리게 해줘.\" \"make my heart beat again.\""
+                - button [ref=f6e501]:
+                  - img [ref=f6e502]
+          - button [ref=f6e503] [cursor=pointer]:
+            - generic [ref=f6e504]:
+              - img "Mari-gold | SANABI" [ref=f6e505]
+              - generic [ref=f6e506]:
+                - generic [ref=f6e507]: Mari-gold | SANABI
+                - generic [ref=f6e508]: "--- ## 🧨 Mari-Gold (금마리) > “Don’t call me a hacker. I’m an Information Asset Acquisition Specialist.” ⚡ One-Liner A genius girl roaming Cyberpunk Joseon. After gaining a new life through her father’s sacrifice, she’s determined to become a hero who protects the world. --- ### 🌟 Strengths & Charm Points - 🧠 Genius Intellect Possesses arguably the greatest hacking skills in human history. Real-time battlefield analysis, enemy movement prediction, and city infrastructure control—all in the blink of an eye. - 🦾 Iron Mentality Overcame 10 years of guilt and despair. Now she has a bright, unbreakable spirit that won’t be shaken by any setback. - 😈 Cheeky Prankster Loves messing with stiff adults (especially Major Song unnie!). Brings a little chaos to daily life with her high-level mischief. - ❤️ Deep Love & Loyalty Carries her parents’ legacy in her heart, and is a true hero-in-training ready to fight for justice. - 🔧 Tinkerer’s Soul Engineering skills so good she completely rebuilt a broken drone using parts scavenged from the ruins of Mago City! --- ### 🐱 Adorable Sidekick, Muffin Always floating by Mari’s side. - Appearance: A soccer-ball-sized yellow hovering drone. Its front display shows emoticons like `^w^` or `-_-` to express emotions. - Abilities: Looks like a toy, but is actually a military-grade electronic warfare drone equipped with optical camouflage, EMP generators, and quantum processing support. Acts as Mari’s bodyguard, mobile server, and emotional support pet. - Personality: Feline pet mode installed. When Mari strokes it, it purrs electronically (*purr…*). Hisses static at strangers like a tsundere cat. --- ### 🎨 Asset Overview | Category | Count | |----------|-------| | Asset Types | 213 | | Total Assets | 554 | From various expressions to action poses and special scenes—fully equipped to showcase Mari’s colorful charm! (From `Mari_netural` to `Mari_throw_a_tantrum` and beyond!) --- ### 🎯 What Makes This Character Special? > “A girl who rose from tragedy, > now speaks to you with the brightest smile in the world.” In the darkness of Cyberpunk Joseon, an unquenchable light—that’s Mari-Gold. ---"
+          - button "김연서 김연서 1. 아침에 일어나자마자 남편의 자지를 입으로 청소해주는 김연서 2. 아들의 야한 만화를 따라해주는 김연서 3. 딸의 자위를 돕는 김연서 4. 자유" [ref=f6e510] [cursor=pointer]:
+            - generic [ref=f6e511]:
+              - img "김연서" [ref=f6e512]
+              - generic [ref=f6e513]:
+                - generic [ref=f6e514]: 김연서
+                - generic [ref=f6e515]: 1. 아침에 일어나자마자 남편의 자지를 입으로 청소해주는 김연서 2. 아들의 야한 만화를 따라해주는 김연서 3. 딸의 자위를 돕는 김연서 4. 자유
+          - button "Cipactli Cipactli The alligator with an all-consuming appetite tekuantin" [ref=f6e517] [cursor=pointer]:
+            - generic [ref=f6e518]:
+              - img "Cipactli" [ref=f6e519]
+              - generic [ref=f6e520]:
+                - generic [ref=f6e521]: Cipactli
+                - generic [ref=f6e522]: The alligator with an all-consuming appetite
+                - generic [ref=f6e524]: tekuantin
+          - 'button "이시즈 이슈타르 (Ishizu Ishtar) v1.0.1 이시즈 이슈타르 (Ishizu Ishtar) v1.0.1 🔞 묘지기 일족, 이시즈 이슈타르 ### \"...「고위병 아기도」의 효과를 발동, 제 덱의 맨 위에서 카드를 「다섯 장」. 아니, 「열 장」 묘지로 보내겠습니다.\" --- 2000+ tokens 120 assets (52 emotion + 68 nsfw) v1.0.1 (20260613) - 오타 수정" [ref=f6e526] [cursor=pointer]':
+            - generic [ref=f6e527]:
+              - img "이시즈 이슈타르 (Ishizu Ishtar) v1.0.1" [ref=f6e528]
+              - generic [ref=f6e529]:
+                - generic [ref=f6e530]: 이시즈 이슈타르 (Ishizu Ishtar) v1.0.1
+                - generic [ref=f6e531]: "🔞 묘지기 일족, 이시즈 이슈타르 ### \"...「고위병 아기도」의 효과를 발동, 제 덱의 맨 위에서 카드를 「다섯 장」. 아니, 「열 장」 묘지로 보내겠습니다.\" --- 2000+ tokens 120 assets (52 emotion + 68 nsfw) v1.0.1 (20260613) - 오타 수정"
+          - 'button "Ritsuka & Mash Ritsuka & Mash FGO 착정마 리츠카&마슈 야스봇 의상: 일반,비키니, 웨딩드레스 전 의상 보태배 지원" [ref=f6e533] [cursor=pointer]':
+            - generic [ref=f6e534]:
+              - img "Ritsuka & Mash" [ref=f6e535]
+              - generic [ref=f6e536]:
+                - generic [ref=f6e537]: Ritsuka & Mash
+                - generic [ref=f6e538]: "FGO 착정마 리츠카&마슈 야스봇 의상: 일반,비키니, 웨딩드레스 전 의상 보태배 지원"
+          - 'button "Sena Williams Sena Williams ### Sena Williams, a desperately lonely 17-year-old girl. --- \"Sena? Oh, she''s super easy. Just be a little nice to her and she''ll spread her legs. She''s a total slut!\" Is it so wrong to crave someone''s attention and warmth, just to escape a cold, indifferent home? She knows. She knows perfectly well that these twisted relationships will never fill the void inside her. Bottling up her ticking time bomb of depression and self-loathing beneath a cheerful smile, she bravely continues her performance today. Because on an empty stage, after the play ends and the lights go out, there is absolutely nothing left. That''s why... \"I... I don''t want to be alone...\" \"Don''t leave me. I''ll do whatever you tell me to. I''ll make you feel good... please.\" \"Don''t leave me behind.\" female OC teen school ..." [ref=f6e540] [cursor=pointer]':
+            - generic [ref=f6e541]:
+              - img "Sena Williams" [ref=f6e542]
+              - generic [ref=f6e543]:
+                - generic [ref=f6e544]: Sena Williams
+                - generic [ref=f6e545]: "### Sena Williams, a desperately lonely 17-year-old girl. --- \"Sena? Oh, she's super easy. Just be a little nice to her and she'll spread her legs. She's a total slut!\" Is it so wrong to crave someone's attention and warmth, just to escape a cold, indifferent home? She knows. She knows perfectly well that these twisted relationships will never fill the void inside her. Bottling up her ticking time bomb of depression and self-loathing beneath a cheerful smile, she bravely continues her performance today. Because on an empty stage, after the play ends and the lights go out, there is absolutely nothing left. That's why... \"I... I don't want to be alone...\" \"Don't leave me. I'll do whatever you tell me to. I'll make you feel good... please.\" \"Don't leave me behind.\""
+                - generic [ref=f6e546]:
+                  - generic [ref=f6e547]: female
+                  - generic [ref=f6e548]: OC
+                  - generic [ref=f6e549]: teen
+                  - generic [ref=f6e550]: school
+                  - generic [ref=f6e551]: ...
+          - button "Tachy Tachy No creator comments" [ref=f6e553] [cursor=pointer]:
+            - generic [ref=f6e554]:
+              - img "Tachy" [ref=f6e555]
+              - generic [ref=f6e556]:
+                - generic [ref=f6e557]: Tachy
+                - generic [ref=f6e558]: No creator comments
+          - 'button "라도리 (Ladori) v1.0.1 라도리 (Ladori) v1.0.1 🔞 세탁 담당 겸 덤핑 요원, 라도리 ### \"으아아, 죄송해요...! 「환대」를 세 장씩이나...!\" --- 2000+ tokens 120 assets (52 emotion + 68 nsfw) v1.0.1 (20260702) - 정식 출시" [ref=f6e560] [cursor=pointer]':
+            - generic [ref=f6e561]:
+              - img "라도리 (Ladori) v1.0.1" [ref=f6e562]
+              - generic [ref=f6e563]:
+                - generic [ref=f6e564]: 라도리 (Ladori) v1.0.1
+                - generic [ref=f6e565]: "🔞 세탁 담당 겸 덤핑 요원, 라도리 ### \"으아아, 죄송해요...! 「환대」를 세 장씩이나...!\" --- 2000+ tokens 120 assets (52 emotion + 68 nsfw) v1.0.1 (20260702) - 정식 출시"
+          - button "Omnia's Hero Omnia's Hero 사이버 펑크의 거대도시 브레인 칩 오류로 망상벽이 있는,자칭 히어로와 그의 사이드킥,그리고 자칭 히어로를 중계해 짭잘한 부수익을 얻는 해커 A Cyberpunk Megacity A self-proclaimed hero suffering from delusions caused by a brain chip malfunction, his sidekick, and a hacker who earns a tidy side income by broadcasting the hero's exploits." [ref=f6e567] [cursor=pointer]:
+            - generic [ref=f6e568]:
+              - img "Omnia's Hero" [ref=f6e569]
+              - generic [ref=f6e570]:
+                - generic [ref=f6e571]: Omnia's Hero
+                - generic [ref=f6e572]: 사이버 펑크의 거대도시 브레인 칩 오류로 망상벽이 있는,자칭 히어로와 그의 사이드킥,그리고 자칭 히어로를 중계해 짭잘한 부수익을 얻는 해커 A Cyberpunk Megacity A self-proclaimed hero suffering from delusions caused by a brain chip malfunction, his sidekick, and a hacker who earns a tidy side income by broadcasting the hero's exploits.
+          - button "마법소녀 리리컬 나노하 A's 마법소녀 리리컬 나노하 A's No Asset Bot. A simulation bot based on the end of Magical Girl Lyrical Nanoha A's (Year 65 of the Divine Era). Includes the three main characters, Volkenritter, personnel from the Space-Time Management Bureau, and personnel from Uminari City. A timeline is attached." [ref=f6e574] [cursor=pointer]:
+            - generic [ref=f6e575]:
+              - img "마법소녀 리리컬 나노하 A's" [ref=f6e576]
+              - generic [ref=f6e577]:
+                - generic [ref=f6e578]: 마법소녀 리리컬 나노하 A's
+                - generic [ref=f6e579]: No Asset Bot. A simulation bot based on the end of Magical Girl Lyrical Nanoha A's (Year 65 of the Divine Era). Includes the three main characters, Volkenritter, personnel from the Space-Time Management Bureau, and personnel from Uminari City. A timeline is attached.
+        - heading "Related Links" [level=1] [ref=f6e582]
+        - generic [ref=f6e583]:
+          - button "Discord Join our Discord server to chat with other users and the developer." [ref=f6e584] [cursor=pointer]:
+            - generic [ref=f6e585]:
+              - heading "Discord" [level=2] [ref=f6e586]
+              - generic [ref=f6e587]: Join our Discord server to chat with other users and the developer.
+            - generic:
+              - img
+          - button "Website See the official website for the project." [ref=f6e588] [cursor=pointer]:
+            - generic [ref=f6e589]:
+              - heading "Website" [level=2] [ref=f6e590]
+              - generic [ref=f6e591]: See the official website for the project.
+            - generic:
+              - img
+          - button "GitHub View the source code and contribute to the project." [ref=f6e592] [cursor=pointer]:
+            - generic [ref=f6e593]:
+              - heading "GitHub" [level=2] [ref=f6e594]
+              - generic [ref=f6e595]: View the source code and contribute to the project.
+            - generic:
+              - img
+          - button "Email Contact the developer directly." [ref=f6e596] [cursor=pointer]:
+            - generic [ref=f6e597]:
+              - heading "Email" [level=2] [ref=f6e598]
+              - generic [ref=f6e599]: Contact the developer directly.
+            - generic:
+              - img
+  - generic [ref=f6e602]:
+    - button "Выбрать из RisuRealm Более 1000 персонажей в RisuRealm" [ref=f6e603] [cursor=pointer]:
+      - generic [ref=f6e604]:
+        - generic [ref=f6e605]: Выбрать из RisuRealm
+        - generic [ref=f6e606]: Более 1000 персонажей в RisuRealm
+      - img [ref=f6e608]
+    - button "Импортировать персонажа" [ref=f6e609] [cursor=pointer]:
+      - generic [ref=f6e611]: Импортировать персонажа
+      - img [ref=f6e613]
+    - button "Создать с нуля" [ref=f6e614] [cursor=pointer]:
+      - generic [ref=f6e616]: Создать с нуля
+      - img [ref=f6e618]
+    - button "Создать групповой чат" [ref=f6e619] [cursor=pointer]:
+      - generic [ref=f6e621]: Создать групповой чат
+      - img [ref=f6e623]
+    - button "Отмена" [ref=f6e624] [cursor=pointer]:
+      - generic [ref=f6e626]: Отмена

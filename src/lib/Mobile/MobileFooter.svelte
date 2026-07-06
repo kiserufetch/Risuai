@@ -7,7 +7,7 @@
 </script>
 {#if $selectedCharID === -1}
 
-    <div class="w-full p-4 text-lg border-t border-t-darkborderc bg-darkbg flex items-center justify-center text-textcolor2">
+    <div class="w-full p-4 text-lg border-t border-t-darkborderc bg-darkbg flex items-center justify-center text-textcolor2" style="padding-bottom: calc(1rem + var(--safe-bottom)); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
         <button class="flex justify-center items-center flex-col gap-2 w-20" class:text-textcolor={$MobileGUIStack === 0} onclick={() => {
             MobileGUIStack.set(0)
         }}>
@@ -31,7 +31,7 @@
 {/if}
 
 {#if $selectedCharID !== -1 && $MobileSideBar === 2}
-    <div class="w-full p-4 text-lg border-t border-t-darkborderc bg-darkbg flex items-center justify-center text-textcolor2 truncate">
+    <div class="w-full p-4 text-lg border-t border-t-darkborderc bg-darkbg flex items-center justify-center text-textcolor2 truncate" style="padding-bottom: calc(1rem + var(--safe-bottom)); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
         <button class="flex justify-center items-center flex-col gap-2 w-16 max-w-16" class:text-textcolor={$CharConfigSubMenu === 0} onclick={() => {
             CharConfigSubMenu.set(0)
         }}>

@@ -23,7 +23,12 @@ import { AccountStorage } from "./storage/accountStorage"
 
 const EXTERNAL_HUB_URL = 'https://sv.risuai.xyz';
 const NIGHTLY_HUB_URL = 'https://nightly.sv.risuai.xyz'
-export const hubURL = isNodeServer
+// The hub only allows CORS from whitelisted origins (localhost, *.risuai.xyz, Tauri).
+// In web dev the app may be opened from other origins (phone via ngrok/LAN IP), which
+// the hub rejects with 403, so route hub traffic through the dev server proxy instead
+// (configured in vite.config.ts), like the node server already does.
+const useHubProxy = isNodeServer || (import.meta.env.DEV && !isTauri)
+export const hubURL = useHubProxy
     ? '/hub-proxy'
     : (window.location.hostname === 'nightly.risuai.xyz' || localStorage.getItem('hub') === 'nightly')
     ? NIGHTLY_HUB_URL 

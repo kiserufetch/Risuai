@@ -36,6 +36,8 @@
     import IrisModal from './lib/Others/IrisModal.svelte';
     import Legal from './lib/Others/Legal.svelte';
     import CustomSidebarConfig from './lib/Others/CustomSidebarConfig.svelte';
+    import { onMount } from 'svelte';
+    import { trackKeyboard } from './ts/mobileKeyboard';
 
 
   
@@ -44,6 +46,12 @@
     let aprilFools = $state(new Date().getMonth() === 3 && new Date().getDate() === 1)
     let aprilFoolsPage = $state(0)
     let keepingSessionAlive = $state(false)
+
+    onMount(() => {
+        // Mobile foundation: start tracking the on-screen keyboard so the chat
+        // input bar can sit above it via the --kb-inset CSS variable.
+        trackKeyboard()
+    })
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->

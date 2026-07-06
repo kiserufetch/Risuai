@@ -1,0 +1,9 @@
+- main [ref=f2e3]:
+  - generic [ref=f2e13]:
+    - generic [ref=f2e17]:
+      - generic [ref=f2e20]: Airisu
+      - paragraph [ref=f2e22]: Добро пожаловать в Risuai! Я Айрису, я помогу вам с настройкой Risuai. Для начала, как я могу к вам обращаться?
+    - generic [ref=f2e23]:
+      - textbox [ref=f2e24]
+      - button [ref=f2e25] [cursor=pointer]:
+        - img [ref=f2e26]

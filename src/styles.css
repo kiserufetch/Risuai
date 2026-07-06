@@ -180,6 +180,23 @@ body {
   --risu-height-size: 100%;
   --risu-font-family: Arial, sans-serif, serif;
 
+  /* Mobile foundation (Phase 1) ----------------------------------------- */
+  /* Safe-area insets (notch / home indicator). These report 0 until the viewport
+     meta opts into edge-to-edge with viewport-fit=cover, deferred to a later
+     phase so the default-layout chrome (chat input bar) can compensate first. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  /* On-screen keyboard height, updated at runtime by ts/mobileKeyboard.ts. */
+  --kb-inset: 0px;
+  /* Minimum comfortable touch target (WCAG AAA / Apple HIG). Applied opt-in via
+     the .risu-touch-target utility, never as a global rule (a blanket coarse
+     rule inflates compact controls and inline buttons). App height itself is
+     governed by the existing --risu-height-size / heightMode system. */
+  --touch-min: 44px;
+  /* --------------------------------------------------------------------- */
+
   --risu-theme-neutral-50: #f9fafb;
   --risu-theme-neutral-100: #f3f4f6;
   --risu-theme-neutral-200: #e5e7eb;
@@ -234,6 +251,15 @@ body {
   --risu-theme-success-700: #15803d;
   --risu-theme-success-800: #166534;
   --risu-theme-success-900: #14532d;
+}
+
+/* Opt-in helper for a full 44x44 touch target. Apply to mobile nav / chat-action
+   controls that need a larger tap area. Intentionally NOT a global coarse-pointer
+   rule: a blanket min-height inflates compact controls (e.g. h-8 toolbar buttons)
+   via cascade-layer precedence and breaks inline buttons inside text labels. */
+.risu-touch-target {
+  min-width: var(--touch-min);
+  min-height: var(--touch-min);
 }
 
 .x-risu-language-json {

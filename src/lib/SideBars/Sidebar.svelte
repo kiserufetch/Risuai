@@ -2,6 +2,7 @@
     import {
     CharEmotion,
     DynamicGUI,
+    isPhone,
     botMakerMode,
     selectedCharID,
     settingsOpen,
@@ -819,7 +820,8 @@
 </div>
 {/if}
 <div
-  class="setting-area h-full flex-col overflow-y-auto overflow-x-hidden bg-darkbg py-6 text-textcolor max-h-full"
+  class="setting-area h-full flex-col overflow-y-auto overflow-x-hidden overscroll-contain bg-darkbg py-6 text-textcolor max-h-full"
+  style:max-width={$isPhone ? '88vw' : undefined}
   class:risu-sidebar={!$sideBarClosing}
   class:w-96={$sideBarSize === 0}
   class:w-110={$sideBarSize === 1}

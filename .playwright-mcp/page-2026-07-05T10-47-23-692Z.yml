@@ -1,0 +1,21 @@
+- main [ref=f2e3]:
+  - generic [ref=f2e13]:
+    - generic [ref=f2e17]:
+      - generic [ref=f2e20]: Airisu
+      - paragraph [ref=f2e22]: Добро пожаловать в Risuai! Я Айрису, я помогу вам с настройкой Risuai. Для начала, как я могу к вам обращаться?
+    - generic [ref=f2e38]:
+      - generic [ref=f2e41]: Tester
+      - paragraph [ref=f2e43]: Tester
+    - generic [ref=f2e47]:
+      - generic [ref=f2e50]: Airisu
+      - paragraph [ref=f2e52]: Добро пожаловать, Tester! Хотите, чтобы я помог с настройкой, или настроите сами?
+    - generic [ref=f2e53]:
+      - button "Помоги мне с настройкой Рекомендуется для новых пользователей" [ref=f2e54] [cursor=pointer]:
+        - heading "Помоги мне с настройкой" [level=1] [ref=f2e55]
+        - generic [ref=f2e56]: Рекомендуется для новых пользователей
+      - button "Настрою сам" [ref=f2e57] [cursor=pointer]:
+        - heading "Настрою сам" [level=1] [ref=f2e58]
+    - generic [ref=f2e23]:
+      - textbox [active] [ref=f2e24]
+      - button [ref=f2e25] [cursor=pointer]:
+        - img [ref=f2e26]

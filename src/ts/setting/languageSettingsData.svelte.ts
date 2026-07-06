@@ -40,6 +40,7 @@ export const languageSettingsItems: SettingItem[] = [
                 { value: 'cn', label: '中文' },
                 { value: 'zh-Hant', label: '中文(繁體)' },
                 { value: 'vi', label: 'Tiếng Việt' },
+                { value: 'ru', label: 'Русский' },
                 { value: 'translang', label: '[Translate in your own language]' },
             ],
         },

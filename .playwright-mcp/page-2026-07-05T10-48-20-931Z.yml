@@ -1,0 +1,50 @@
+- main [ref=f2e3]:
+  - generic [ref=f2e130]:
+    - button [ref=f2e131] [cursor=pointer]:
+      - img [ref=f2e132]
+    - generic [ref=f2e134]:
+      - listitem [ref=f2e135]
+      - button [ref=f2e137] [cursor=pointer]:
+        - img [ref=f2e138]
+  - generic [ref=f2e140]:
+    - button
+    - generic [ref=f2e141]:
+      - heading "Welcome to RisuAI!" [level=1] [ref=f2e142]
+      - text: Select a bot to start chatting
+  - generic [ref=f2e143]:
+    - button [ref=f2e144] [cursor=pointer]:
+      - img [ref=f2e145]
+    - generic [ref=f2e148]:
+      - heading "Risuai" [level=2] [ref=f2e149]
+      - heading "Version 2026.6.210" [level=3] [ref=f2e150]
+      - generic [ref=f2e151]:
+        - heading "Recently Uploaded Get More" [level=1] [ref=f2e153]:
+          - text: Recently Uploaded
+          - button "Get More" [ref=f2e154] [cursor=pointer]
+        - generic [ref=f2e155]: Failed to load RisuRealm...
+        - heading "Related Links" [level=1] [ref=f2e157]
+        - generic [ref=f2e158]:
+          - button "Discord Join our Discord server to chat with other users and the developer." [ref=f2e159] [cursor=pointer]:
+            - generic [ref=f2e160]:
+              - heading "Discord" [level=2] [ref=f2e161]
+              - generic [ref=f2e162]: Join our Discord server to chat with other users and the developer.
+            - generic:
+              - img
+          - button "Website See the official website for the project." [ref=f2e163] [cursor=pointer]:
+            - generic [ref=f2e164]:
+              - heading "Website" [level=2] [ref=f2e165]
+              - generic [ref=f2e166]: See the official website for the project.
+            - generic:
+              - img
+          - button "GitHub View the source code and contribute to the project." [ref=f2e167] [cursor=pointer]:
+            - generic [ref=f2e168]:
+              - heading "GitHub" [level=2] [ref=f2e169]
+              - generic [ref=f2e170]: View the source code and contribute to the project.
+            - generic:
+              - img
+          - button "Email Contact the developer directly." [ref=f2e171] [cursor=pointer]:
+            - generic [ref=f2e172]:
+              - heading "Email" [level=2] [ref=f2e173]
+              - generic [ref=f2e174]: Contact the developer directly.
+            - generic:
+              - img
