@@ -135,6 +135,7 @@ export function setDatabase(data:Database){
     if(checkNullish(data.iconsize)){
         data.iconsize = 100
     }
+    data.mobileContentZoom ??= 80
     if(checkNullish(data.theme)){
         data.theme = ''
     }
@@ -827,6 +828,7 @@ export interface Database{
     fullScreen:boolean
     playMessage:boolean
     iconsize:number
+    mobileContentZoom:number
     theme: string
     subModel:string
     emotionPrompt: string,

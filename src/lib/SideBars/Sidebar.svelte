@@ -363,12 +363,17 @@
   class:flex={!hidden}
 >
 <button
-  class="flex items-center justify-center py-2 flex-col gap-1 w-full mt-4"
+  class="flex items-center justify-center py-2 flex-col gap-1 w-full mt-4 transition-colors hover:bg-selected/60"
   class:text-textcolor2={!(
     $selectedCharID < 0 &&
     $PlaygroundStore === 0 &&
     !$settingsOpen
   )}
+  class:text-primary-400={
+    $selectedCharID < 0 &&
+    $PlaygroundStore === 0 &&
+    !$settingsOpen
+  }
   onclick={() => {
     reseter();
     selectedCharID.set(-1)
@@ -380,8 +385,9 @@
   <span class="text-xs">{language.home}</span>
 </button>
 <button
-  class="flex items-center justify-center py-2 flex-col gap-1 w-full"
+  class="flex items-center justify-center py-2 flex-col gap-1 w-full transition-colors hover:bg-selected/60"
   class:text-textcolor2={!$settingsOpen}
+  class:text-primary-400={$settingsOpen}
   onclick={() => {
     if ($settingsOpen) {
       reseter();
@@ -396,10 +402,11 @@
   <span class="text-xs">{language.settings}</span>
 </button>
 <button
-  class="flex items-center justify-center py-2 flex-col gap-1 w-full"
+  class="flex items-center justify-center py-2 flex-col gap-1 w-full transition-colors hover:bg-selected/60"
   class:text-textcolor2={!(
     $selectedCharID >= 0
   )}
+  class:text-primary-400={$selectedCharID >= 0}
   onclick={() => {
     reseter();
     openGrid();
@@ -410,11 +417,15 @@
   <span class="text-xs">{language.character}</span>
 </button>
 <button
-  class="flex items-center justify-center py-2 flex-col gap-1 w-full"
+  class="flex items-center justify-center py-2 flex-col gap-1 w-full transition-colors hover:bg-selected/60"
   class:text-textcolor2={!(
     $selectedCharID < 0 &&
     $PlaygroundStore !== 0
   )}
+  class:text-primary-400={
+    $selectedCharID < 0 &&
+    $PlaygroundStore !== 0
+  }
   onclick={() => {
     reseter();
     selectedCharID.set(-1)
@@ -436,14 +447,14 @@
 >
   {#if !DBState.db.hamburgerButtonBottom}
   <button
-    class="flex h-8 min-h-8 w-14 min-w-14 cursor-pointer text-white mt-2 items-center justify-center rounded-md bg-textcolor2 transition-colors hover:bg-blue-500"
+    class="flex h-8 min-h-8 w-14 min-w-14 cursor-pointer text-white mt-2 items-center justify-center rounded-lg bg-textcolor2 transition-colors hover:bg-primary-600"
     onclick={() => {
       menuMode = 1 - menuMode;
     }}><ListIcon />
   </button>
   <div class="mt-2 border-b border-b-selected w-full relative text-white ">
     {#if menuMode === 1}
-      <div class="absolute w-20 min-w-20 flex border-b-selected border-b bg-bgcolor flex-col items-center pt-2 rounded-b-md z-20 pb-2">
+      <div class="absolute w-20 min-w-20 flex border-b-selected border-b bg-bgcolor flex-col items-center pt-2 rounded-b-xl shadow-lg z-20 pb-2">
         <BarIcon
         onClick={() => {
           if ($settingsOpen) {
@@ -501,12 +512,12 @@
     <div class="h-4 min-h-4 w-14" role="listitem" ondragover={(e) => {
       e.preventDefault()
       e.dataTransfer.dropEffect = 'move'
-      e.currentTarget.classList.add('bg-green-500')
+      e.currentTarget.classList.add('bg-primary-500')
     }} ondragleave={(e) => {
-      e.currentTarget.classList.remove('bg-green-500')
+      e.currentTarget.classList.remove('bg-primary-500')
     }} ondrop={(e) => {
       e.preventDefault()
-      e.currentTarget.classList.remove('bg-green-500')
+      e.currentTarget.classList.remove('bg-primary-500')
       const da = currentDrag
       if(da){
         inserter(da,{index:0})
@@ -527,6 +538,11 @@
         <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
         <div
             role="button" tabindex="0"
+            class="transition-shadow duration-150"
+            class:ring-2={char.type === 'normal' && $selectedCharID === char.index && sideBarMode !== 1}
+            class:ring-primary-500={char.type === 'normal' && $selectedCharID === char.index && sideBarMode !== 1}
+            class:rounded-full={IconRounded}
+            class:rounded-xl={!IconRounded}
             onclick={() => {
               if(char.type === "normal"){
                 changeChar(char.index, {reseter});
@@ -641,8 +657,8 @@
       </div>
       {#if char.type === 'folder' && openFolders.includes(char.id)}
         {#key char.color}
-        <div class="p-1 flex flex-col items-center py-1 mt-1 rounded-lg relative">
-          <div class="absolute top-0 left-1 border border-selected w-full h-full rounded-lg z-0 {
+        <div class="p-1 flex flex-col items-center py-1 mt-1 rounded-xl relative">
+          <div class="absolute top-0 left-1 border border-selected w-full h-full rounded-xl z-0 {
             char.color === 'red' ? 'bg-red-700/20' :
             char.color === 'yellow' ? 'bg-yellow-700/20' :
             char.color === 'green' ? 'bg-green-700/20' :
@@ -655,12 +671,12 @@
           <div class="h-4 min-h-4 w-14 relative z-10" role="listitem" ondragover={(e) => {
             e.preventDefault()
             e.dataTransfer.dropEffect = 'move'
-            e.currentTarget.classList.add('bg-green-500')
+            e.currentTarget.classList.add('bg-primary-500')
           }} ondragleave={(e) => {
-            e.currentTarget.classList.remove('bg-green-500')
+            e.currentTarget.classList.remove('bg-primary-500')
           }} ondrop={(e) => {
             e.preventDefault()
-            e.currentTarget.classList.remove('bg-green-500')
+            e.currentTarget.classList.remove('bg-primary-500')
             const da = currentDrag
             if(da && char.type === 'folder'){
               inserter(da,{index:0,folder:char.id})
@@ -681,6 +697,11 @@
               <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
               <div
                   role="button" tabindex="0"
+                  class="transition-shadow duration-150"
+                  class:ring-2={$selectedCharID === char2.index && sideBarMode !== 1}
+                  class:ring-primary-500={$selectedCharID === char2.index && sideBarMode !== 1}
+                  class:rounded-full={IconRounded}
+                  class:rounded-xl={!IconRounded}
                   onclick={() => {
                     if(char2.type === "normal"){
                       changeChar(char2.index, {reseter});
@@ -706,12 +727,12 @@
             <div class="h-4 min-h-4 w-14 relative z-20" role="listitem" ondragover={(e) => {
               e.preventDefault()
               e.dataTransfer.dropEffect = 'move'
-              e.currentTarget.classList.add('bg-green-500')
+              e.currentTarget.classList.add('bg-primary-500')
             }} ondragleave={(e) => {
-              e.currentTarget.classList.remove('bg-green-500')
+              e.currentTarget.classList.remove('bg-primary-500')
             }} ondrop={(e) => {
               e.preventDefault()
-              e.currentTarget.classList.remove('bg-green-500')
+              e.currentTarget.classList.remove('bg-primary-500')
               const da = currentDrag
               if(da && char.type === 'folder'){
                 inserter(da,{index:ind+1,folder:char.id})
@@ -724,12 +745,12 @@
       <div class="h-4 min-h-4 w-14" role="listitem" ondragover={((e) => {
         e.preventDefault()
         e.dataTransfer.dropEffect = 'move'
-        e.currentTarget.classList.add('bg-green-500')
+        e.currentTarget.classList.add('bg-primary-500')
       })} ondragleave={(e) => {
-        e.currentTarget.classList.remove('bg-green-500')
+        e.currentTarget.classList.remove('bg-primary-500')
       }} ondrop={(e) => {
         e.preventDefault()
-        e.currentTarget.classList.remove('bg-green-500')
+        e.currentTarget.classList.remove('bg-primary-500')
         const da = currentDrag
         if(da){
           inserter(da,{index:ind+1})
@@ -757,7 +778,7 @@
   {#if DBState.db.hamburgerButtonBottom}
   <div class="border-t border-t-selected w-full relative text-white ">
     {#if menuMode === 1}
-      <div class="absolute bottom-full w-20 min-w-20 flex border-t-selected border-t bg-bgcolor flex-col items-center pt-2 rounded-t-md z-20 pb-2">
+      <div class="absolute bottom-full w-20 min-w-20 flex border-t-selected border-t bg-bgcolor flex-col items-center pt-2 rounded-t-xl shadow-lg z-20 pb-2">
         <BarIcon
         onClick={() => {
           if ($settingsOpen) {
@@ -811,7 +832,7 @@
     {/if}
   </div>
   <button
-    class="flex h-8 min-h-8 w-14 min-w-14 cursor-pointer text-white mb-2 mt-2 items-center justify-center rounded-md bg-textcolor2 transition-colors hover:bg-blue-500"
+    class="flex h-8 min-h-8 w-14 min-w-14 cursor-pointer text-white mb-2 mt-2 items-center justify-center rounded-lg bg-textcolor2 transition-colors hover:bg-primary-600"
     onclick={() => {
       menuMode = 1 - menuMode;
     }}><ListIcon />
@@ -869,30 +890,30 @@
         <span class="text-textcolor2 mb-4">{language.connectionOpenInfo}</span>
         <div class="flex">
           <span>ID: </span>
-          <span class="text-blue-600">{$RoomIdStore}</span>
+          <span class="text-primary-400">{$RoomIdStore}</span>
         </div>
         <div>
           {#if $ConnectionIsHost}
             <span class="text-emerald-600">{language.connectionHost}</span>
           {:else}
-            <span class="text-gray-500">{language.connectionGuest}</span>
+            <span class="text-textcolor2">{language.connectionGuest}</span>
           {/if}
         </div>
       </div>
     {:else}
-      <div class="w-full h-8 min-h-8 border-l border-b border-r border-selected relative bottom-6 rounded-b-md flex">
+      <div class="w-full h-8 min-h-8 border-l border-b border-r border-selected relative bottom-6 rounded-b-lg flex overflow-hidden">
         <button onclick={() => {
           devTool = false
           botMakerMode.set(false)
-        }} class="grow border-r border-r-selected rounded-bl-md" class:text-textcolor2={$botMakerMode || devTool}>{language.Chat}</button>
+        }} class="grow border-r border-r-selected rounded-bl-lg transition-colors hover:bg-selected/60" class:text-textcolor2={$botMakerMode || devTool}>{language.Chat}</button>
         <button onclick={() => {
           devTool = false
           botMakerMode.set(true)
-        }} class="grow rounded-br-md" class:text-textcolor2={!$botMakerMode || devTool}>{language.character}</button>
+        }} class="grow rounded-br-lg transition-colors hover:bg-selected/60" class:text-textcolor2={!$botMakerMode || devTool}>{language.character}</button>
         {#if DBState.db.enableDevTools}
           <button onclick={() => {
             devTool = true
-          }} class="border-l border-l-selected rounded-br-md px-1" class:text-textcolor2={!devTool}>
+          }} class="border-l border-l-selected rounded-br-lg px-1 transition-colors hover:bg-selected/60" class:text-textcolor2={!devTool}>
             <WrenchIcon size={18} />
           </button>
         {/if}

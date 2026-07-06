@@ -1,5 +1,5 @@
 <div 
-    class={"border border-darkborderc relative n-scroll focus-within:border-borderc rounded-md shadow-xs text-textcolor bg-transparent focus-within:ring-borderc focus-within:ring-2 focus-within:outline-hidden transition-colors duration-200 z-20 focus-within:z-40" + ((className) ? (' ' + className) : '')} 
+    class={"border border-darkborderc relative n-scroll focus-within:border-primary-500 rounded-lg shadow-xs text-textcolor bg-darkbg/40 focus-within:ring-primary-500/25 focus-within:ring-2 focus-within:outline-hidden transition-colors duration-200 z-20 focus-within:z-40" + ((className) ? (' ' + className) : '')} 
     class:text-sm={size === 'sm' || (size === 'default' && $textAreaTextSize === 1)}
     class:text-md={size === 'md' || (size === 'default' && $textAreaTextSize === 2)}
     class:text-lg={size === 'lg' || (size === 'default' && $textAreaTextSize === 3)}
@@ -40,7 +40,7 @@
 >
     {#if !highlight || $disableHighlight}
         <textarea
-            class="w-full h-full bg-transparent focus-within:outline-hidden resize-none absolute top-0 left-0 z-50 overflow-y-auto"
+            class="w-full h-full bg-transparent focus-within:outline-hidden resize-none absolute top-0 left-0 z-50 overflow-y-auto placeholder:text-textcolor2/60"
             class:px-4={padding}
             class:py-2={padding}
             {autocomplete}
@@ -128,9 +128,9 @@
         translate="no"
     >{value ?? ''}</div>
 {/if}
-    <div class="hidden absolute z-100 bg-bgcolor border border-darkborderc p-2 flex-col" bind:this={autoCompleteDom}>
+    <div class="hidden absolute z-100 bg-bgcolor border border-darkborderc rounded-lg shadow-lg p-2 flex-col" bind:this={autoCompleteDom}>
         {#each autocompleteContents as content, i}
-            <button class="w-full text-left py-1 px-2 bg-bgcolor" class:text-blue-500={selectingAutoComplete === i} onclick={() => {
+            <button class="w-full text-left py-1 px-2 bg-bgcolor rounded-md" class:text-primary-400={selectingAutoComplete === i} onclick={() => {
                 insertContent(content)
             }}>{content}</button>
         {/each}

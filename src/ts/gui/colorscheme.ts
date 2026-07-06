@@ -21,20 +21,32 @@ export interface ColorScheme{
 
 
 export const defaultColorScheme: ColorScheme = {
-    bgcolor: "#282a36",
-    darkbg: "#21222c",
-    borderc: "#6272a4",
-    selected: "#44475a",
-    draculared: "#ff5555",
-    textcolor: "#f8f8f2",
-    textcolor2: "#64748b",
-    darkBorderc: "#4b5563",
-    darkbutton: "#374151",
+    bgcolor: "#0f1117",
+    darkbg: "#0a0c10",
+    borderc: "#6366f1",
+    selected: "#1e2130",
+    draculared: "#ef4444",
+    textcolor: "#ededf0",
+    textcolor2: "#8a8f9e",
+    darkBorderc: "#262a3a",
+    darkbutton: "#171a24",
     type:'dark'
 }
 
 const colorShemes = {
     "default": defaultColorScheme,
+    "dracula": {
+        bgcolor: "#282a36",
+        darkbg: "#21222c",
+        borderc: "#6272a4",
+        selected: "#44475a",
+        draculared: "#ff5555",
+        textcolor: "#f8f8f2",
+        textcolor2: "#64748b",
+        darkBorderc: "#4b5563",
+        darkbutton: "#374151",
+        type:'dark'
+    },
     "dark": {
         bgcolor: "#1a1a1a",
         darkbg: "#141414",
@@ -295,7 +307,7 @@ export function updateTextThemeAndCSS(){
 
     switch(db.font){
         case "default":{
-            root.style.setProperty('--risu-font-family', 'Arial, sans-serif');
+            root.style.setProperty('--risu-font-family', "'Inter Variable', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif");
             break
         }
         case "timesnewroman":{

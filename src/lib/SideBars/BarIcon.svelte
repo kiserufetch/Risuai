@@ -19,7 +19,7 @@
 <style>
   .ico {
     cursor: pointer;
-    border-radius: 0.375rem;
+    border-radius: 0.75rem;
     height: 3.5rem;
     width: 3.5rem;
     min-height: 3.5rem;
@@ -35,13 +35,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition-property: background-color, border-color, color, fill, stroke;
+    transition-property: background-color, border-color, color, fill, stroke, filter;
     transition-duration: 150ms;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .ico:hover {
-    --tw-bg-opacity: 1;
-    background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
+    background-color: var(--risu-theme-primary-600);
+    filter: brightness(1.1);
   }
 </style>

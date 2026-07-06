@@ -39,7 +39,7 @@
 </script>
 
 {#if popupStore.children}
-    <div class="bg-darkbg border-darkborderc border rounded-md p-4 gap-2 flex flex-col fixed z-50 items-start" style={styleString}>
+    <div class="bg-darkbg border-darkborderc border rounded-xl shadow-lg p-2 gap-1 flex flex-col fixed z-50 items-stretch" style={styleString}>
         {@render popupStore.children()}
     </div>
 {/if}

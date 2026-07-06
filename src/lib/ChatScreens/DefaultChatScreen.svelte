@@ -32,6 +32,7 @@
     import Button from '../UI/GUI/Button.svelte';
     import PluginDefinedIcon from '../Others/PluginDefinedIcon.svelte';
     import { getAdditionalChatLoadPages, getInitialChatLoadPages } from 'src/ts/chatLoadPages';
+    import { isMobile } from 'src/ts/platform';
 
     const loadPlaygroundMenu = () => import('../Playground/PlaygroundMenu.svelte').then(m => m.default);
     
@@ -584,21 +585,22 @@
             }
         }}>
             <div
-                    class="{DBState.db.fixedChatTextarea ? 'sticky pt-2 pb-2 right-0 bottom-0 bg-bgcolor' : 'mt-2 mb-2'} flex items-stretch w-full"
+                    class="{DBState.db.fixedChatTextarea ? 'sticky pt-2 pb-2 right-0 bottom-0 bg-bgcolor' : 'mt-2 mb-2'} flex items-end w-full"
                     style="{DBState.db.fixedChatTextarea ? 'z-index:29;' : ''}"
             >
                 {#if DBState.db.useChatSticker && currentCharacter.type !== 'group'}
                     <div onclick={()=>{toggleStickers = !toggleStickers}}
-                         class={"ml-4 bg-textcolor2 flex justify-center items-center  w-12 h-12 rounded-md hover:bg-blue-500 transition-colors "+(toggleStickers ? 'text-green-500':'text-textcolor')}>
+                         class={"ml-2 md:ml-4 flex justify-center items-center w-10 h-10 md:w-12 md:h-12 rounded-xl cursor-pointer hover:bg-selected/60 transition-colors "+(toggleStickers ? 'text-primary-400':'text-textcolor')}>
                         <Laugh/>
                     </div>
                 {/if}
 
-                <textarea class="peer text-input-area focus:border-textcolor transition-colors outline-hidden text-textcolor p-2 min-w-0 border border-r-0 bg-transparent rounded-md rounded-r-none input-text text-xl grow ml-4 border-darkborderc resize-none overflow-y-hidden overflow-x-hidden max-w-full placeholder:text-sm"
+                <div class="grow min-w-0 mx-2 md:mx-4 flex items-end rounded-2xl border border-darkborderc bg-darkbg focus-within:border-primary-500 transition-colors">
+                <textarea class="text-input-area outline-hidden text-textcolor py-2 px-3 min-w-0 border-0 bg-transparent input-text text-base md:text-lg grow self-center resize-none overflow-y-hidden overflow-x-hidden max-w-full placeholder:text-sm"
                           bind:value={messageInput}
                           bind:this={inputEle}
                           onkeydown={(e) => {
-                        if(e.key.toLocaleLowerCase() === "enter" && !e.isComposing){
+                        if(e.key.toLocaleLowerCase() === "enter" && !e.isComposing && !isMobile){
                             if(DBState.db.sendWithEnter && (!e.shiftKey)){
                                 send()
                                 e.preventDefault()
@@ -659,18 +661,16 @@
                 {#if $doingChat || doingChatInputTranslate}
                     <button
                             aria-labelledby="cancel"
-                            class="peer-focus:border-textcolor  flex justify-center border-y border-darkborderc items-center text-textcolor p-3 hover:bg-blue-500 hover:text-white transition-colors" onclick={abortChat}
-                            style:height={inputHeight}
+                            class="m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl bg-primary-600 hover:bg-primary-500 text-white transition-colors" onclick={abortChat}
                     >
                         <div class="loadmove chat-process-stage-{$chatProcessStage}" class:autoload={autoMode}></div>
                     </button>
                 {:else}
                     <button
                             onclick={send}
-                            class="flex justify-center border-y border-darkborderc items-center text-textcolor p-3 peer-focus:border-textcolor hover:bg-blue-500 hover:text-white transition-colors button-icon-send"
-                            style:height={inputHeight}
+                            class="m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl bg-primary-600 hover:bg-primary-500 text-white transition-colors button-icon-send"
                     >
-                        <Send />
+                        <Send size={20} />
                     </button>
                 {/if}
                 {#if DBState.db.characters[$selectedCharID]?.chaId !== '§playground'}
@@ -679,8 +679,7 @@
                             openMenu = !openMenu
                             e.stopPropagation()
                         }}
-                            class="peer-focus:border-textcolor mr-2 flex border-y border-r border-darkborderc justify-center items-center text-textcolor p-3 rounded-r-md hover:bg-blue-500 hover:text-white transition-colors"
-                            style:height={inputHeight}
+                            class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl text-textcolor2 hover:bg-selected/60 hover:text-textcolor transition-colors"
                     >
                         <MenuIcon />
                     </button>
@@ -692,23 +691,23 @@
                         })
                         DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage] = DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage]
                     }}
-                         class="peer-focus:border-textcolor mr-2 flex border-y border-r border-darkborderc justify-center items-center text-textcolor p-3 rounded-r-md hover:bg-blue-500 hover:text-white transition-colors"
-                         style:height={inputHeight}
+                         class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl cursor-pointer text-textcolor2 hover:bg-selected/60 hover:text-textcolor transition-colors"
                     >
                         <Plus />
                     </div>
                 {/if}
+                </div>
             </div>
             {#if DBState.db.useAutoTranslateInput && DBState.db.characters[$selectedCharID]?.chaId !== '§playground'}
                 <div class="flex items-center mt-2 mb-2">
                     <label for='messageInputTranslate' class="text-textcolor ml-4">
                         <LanguagesIcon />
                     </label>
-                    <textarea id = 'messageInputTranslate' class="text-textcolor rounded-md p-2 min-w-0 bg-transparent input-text text-xl grow ml-4 mr-2 border-darkbutton resize-none focus:bg-selected overflow-y-hidden overflow-x-hidden max-w-full"
+                    <textarea id = 'messageInputTranslate' class="text-textcolor rounded-2xl py-2 px-3 min-w-0 bg-darkbg input-text text-base md:text-lg grow ml-4 mr-2 md:mr-4 border border-darkborderc focus:border-primary-500 outline-hidden resize-none overflow-y-hidden overflow-x-hidden max-w-full transition-colors"
                               bind:value={messageInputTranslate}
                               bind:this={inputTranslateEle}
                               onkeydown={(e) => {
-                            if(e.key.toLocaleLowerCase() === "enter" && (!e.shiftKey)){
+                            if(e.key.toLocaleLowerCase() === "enter" && (!e.shiftKey) && !isMobile){
                                 if(DBState.db.sendWithEnter){
                                     send()
                                     e.preventDefault()

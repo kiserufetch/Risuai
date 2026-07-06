@@ -33,10 +33,10 @@
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<span class="flex shrink-0 items-center justify-center avatar"
+<span class="flex shrink-0 items-center justify-center avatar transition duration-150 hover:brightness-110"
       class:border = {bordered}
       class:border-selected={bordered}
-      class:rounded-md={bordered}
+      class:rounded-xl={bordered}
       oncontextmenu={oncontextmenu}
       onclick={onClick} use:tooltipRight={name}
       role="button"
@@ -47,7 +47,7 @@
     {#if src === "slot"}
       {#await backgroundimg}
       <div
-        class="bg-skin-border sidebar-avatar rounded-md bg-top flex items-center justify-center {
+        class="bg-skin-border sidebar-avatar rounded-xl bg-top flex items-center justify-center {
           color === 'red' ? 'bg-red-700/50' :
           color === 'yellow' ? 'bg-yellow-700/50' :
           color === 'green' ? 'bg-green-700/50' :
@@ -60,11 +60,11 @@
         style:width={size + "px"}
         style:height={size + "px"}
         style:minWidth={size + "px"}
-        class:rounded-md={!rounded} class:rounded-full={rounded}
+        class:rounded-xl={!rounded} class:rounded-full={rounded}
       ></div>
       {:then resolvedBgImg}
       <div
-        class="bg-skin-border sidebar-avatar rounded-md bg-top flex items-center justify-center {
+        class="bg-skin-border sidebar-avatar rounded-xl bg-top flex items-center justify-center {
           color === 'red' ? 'bg-red-700/50' :
           color === 'yellow' ? 'bg-yellow-700/50' :
           color === 'green' ? 'bg-green-700/50' :
@@ -80,7 +80,7 @@
         style:background-image={resolvedBgImg ? `url('${resolvedBgImg}')` : undefined}
         style:background-size={resolvedBgImg ? "cover" : undefined}
         style:background-position={resolvedBgImg ? "center" : undefined}
-        class:rounded-md={!rounded} class:rounded-full={rounded}
+        class:rounded-xl={!rounded} class:rounded-full={rounded}
       >
       {#if !resolvedBgImg}
         {@render children?.()}
@@ -90,31 +90,31 @@
     {:else}
       {#await src}
         <div
-          class="bg-skin-border sidebar-avatar rounded-md bg-top"
+          class="bg-skin-border sidebar-avatar rounded-xl bg-top"
           style:width={size + "px"}
           style:height={size + "px"}
           style:minWidth={size + "px"}
-          class:rounded-md={!rounded} class:rounded-full={rounded} 
+          class:rounded-xl={!rounded} class:rounded-full={rounded} 
 ></div>
       {:then img}
         <img
           src={img}
-          class="bg-skin-border sidebar-avatar rounded-md object-cover object-top"
+          class="bg-skin-border sidebar-avatar rounded-xl object-cover object-top"
           style:width={size + "px"}
           style:height={size + "px"}
           style:minWidth={size + "px"}
-          class:rounded-md={!rounded} class:rounded-full={rounded} 
+          class:rounded-xl={!rounded} class:rounded-full={rounded} 
           alt="avatar"
         />
       {/await}
     {/if}
   {:else}
     <div
-      class="bg-skin-border sidebar-avatar rounded-md bg-top"
+      class="bg-skin-border sidebar-avatar rounded-xl bg-top"
       style:width={size + "px"}
       style:height={size + "px"}
       style:minWidth={size + "px"}
-      class:rounded-md={!rounded} class:rounded-full={rounded} 
+      class:rounded-xl={!rounded} class:rounded-full={rounded} 
 ></div>
   {/if}
 </span>

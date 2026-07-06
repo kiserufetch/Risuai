@@ -893,6 +893,7 @@ export const languageRussian = {
     globalRegexScript: "Глобальный regex",
     accessibility: "Доступность",
     sendWithEnter: "Отправлять по Enter",
+    mobileContentZoom: "Масштаб кастомного UI на телефоне",
     fixedChatTextarea: "Закреплено внизу окна чата (если снято, Shift + Enter отправляет сообщение.)",
     clickToEdit: "Клик по тексту для редактирования",
     enableBlockPartialEdit: "Включить блочное частичное редактирование (наведите, чтобы редактировать отдельные блоки)",

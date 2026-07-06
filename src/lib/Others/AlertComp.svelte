@@ -187,22 +187,22 @@
 }}></svelte:window>
 
 {#if $alertStore.type !== 'none' &&  $alertStore.type !== 'toast' &&  $alertStore.type !== 'cardexport' && $alertStore.type !== 'branches' && $alertStore.type !== 'selectModule' && $alertStore.type !== 'pukmakkurit' && $alertStore.type !== 'requestlogs'}
-    <div class="absolute w-full h-full z-50 bg-black/50 flex justify-center items-center" class:vis={ $alertStore.type === 'wait2'}>
-        <div class="bg-darkbg p-4 break-any rounded-md flex flex-col max-w-3xl  max-h-full overflow-y-auto">
+    <div class="absolute w-full h-full z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center" class:vis={ $alertStore.type === 'wait2'}>
+        <div class="bg-darkbg p-4 break-any rounded-xl border border-darkborderc shadow-2xl flex flex-col max-w-3xl  max-h-full overflow-y-auto">
             {#if $alertStore.type === 'error'}
-                <h2 class="text-red-700 mt-0 mb-2 w-40 max-w-full">Error</h2>
+                <h2 class="text-draculared mt-0 mb-2 w-40 max-w-full">Error</h2>
             {:else if $alertStore.type === 'ask'}
-                <h2 class="text-green-700 mt-0 mb-2 w-40 max-w-full">Confirm</h2>
+                <h2 class="text-primary-400 mt-0 mb-2 w-40 max-w-full">Confirm</h2>
             {:else if $alertStore.type === 'pluginconfirm'}
-                <h2 class="text-green-700 mt-0 mb-2 w-40 max-w-full">Plugin Import</h2>
+                <h2 class="text-primary-400 mt-0 mb-2 w-40 max-w-full">Plugin Import</h2>
             {:else if $alertStore.type === 'selectChar'}
-                <h2 class="text-green-700 mt-0 mb-2 w-40 max-w-full">Select</h2>
+                <h2 class="text-primary-400 mt-0 mb-2 w-40 max-w-full">Select</h2>
             {:else if $alertStore.type === 'input'}
-                <h2 class="text-green-700 mt-0 mb-2 w-40 max-w-full">Input</h2>
+                <h2 class="text-primary-400 mt-0 mb-2 w-40 max-w-full">Input</h2>
             {/if}
             {#if $alertStore.type === 'markdown'}
                 <div class="overflow-y-auto">
-                    <span class="text-gray-300 chattext prose chattext2" class:prose-invert={$ColorSchemeTypeStore}>
+                    <span class="text-textcolor chattext prose chattext2" class:prose-invert={$ColorSchemeTypeStore}>
                         {#await ParseMarkdown($alertStore.msg) then msg}
                             {@html msg}                        
                         {/await}
@@ -214,13 +214,13 @@
 
                 <div class="text-textcolor">
                     You should accept
-                    <a role="button" tabindex="0" class="text-green-600 hover:text-green-500 transition-colors duration-200 cursor-pointer" onclick={() => {
+                    <a role="button" tabindex="0" class="text-primary-400 hover:text-primary-300 transition-colors duration-200 cursor-pointer" onclick={() => {
                         openURL('https://account.sionyw.com/terms')
                     }}>Terms of Service</a>
 
                     and
 
-                    <a role="button" tabindex="0" class="text-green-600 hover:text-green-500 transition-colors duration-200 cursor-pointer" onclick={() => {
+                    <a role="button" tabindex="0" class="text-primary-400 hover:text-primary-300 transition-colors duration-200 cursor-pointer" onclick={() => {
                         openURL('https://account.sionyw.com/privacy')
                     }}>Privacy Policy</a>
 
@@ -228,7 +228,7 @@
                 </div>
 
                 {#if localStorage.getItem('tos2') && Date.now() - new Date('2026-05-15').getTime() < 0}
-                    <div class="text-gray-500 mt-4 text-sm">
+                    <div class="text-textcolor2 mt-4 text-sm">
                         You can still continue using Risuai using original terms until {new Date('2026-05-15').toLocaleDateString()}.
                     </div>
                 {/if}
@@ -251,9 +251,9 @@
                     <p class="confirm-message">{confirmMessage}</p>
                 </div>
             {:else if $alertStore.type !== 'select' && $alertStore.type !== 'requestdata' && $alertStore.type !== 'addchar' && $alertStore.type !== 'hypaV2' && $alertStore.type !== 'chatOptions'}
-                <span class="text-gray-300 whitespace-pre-wrap">{$alertStore.msg}</span>
+                <span class="text-textcolor whitespace-pre-wrap">{$alertStore.msg}</span>
                 {#if $alertStore.submsg && $alertStore.type !== 'progress'}
-                    <span class="text-gray-500 text-sm">{$alertStore.submsg}</span>
+                    <span class="text-textcolor2 text-sm">{$alertStore.submsg}</span>
                 {/if}
 
                 {#if $alertStore.type === 'error' && $alertStore.stackTrace}
@@ -287,11 +287,11 @@
                 {/if}
             {/if}
             {#if $alertStore.type === 'progress'}
-                <div class="w-full min-w-64 md:min-w-138 h-2 bg-darkbg border border-darkborderc rounded-md mt-6">
-                    <div class="h-full bg-linear-to-r from-blue-500 to-purple-800 saving-animation transition-[width]" style:width={$alertStore.submsg + '%'}></div>
+                <div class="w-full min-w-64 md:min-w-138 h-2 bg-darkbg border border-darkborderc rounded-full mt-6">
+                    <div class="h-full rounded-full bg-linear-to-r from-primary-400 to-primary-600 saving-animation transition-[width]" style:width={$alertStore.submsg + '%'}></div>
                 </div>
                 <div class="w-full flex justify-center mt-6">
-                    <span class="text-gray-500 text-sm">{$alertStore.submsg + '%'}</span>
+                    <span class="text-textcolor2 text-sm">{$alertStore.submsg + '%'}</span>
                 </div>
             {/if}
 
@@ -376,7 +376,7 @@
                     </datalist>
                 {/if}
             {:else if $alertStore.type === 'login'}
-                <div class="fixed top-0 left-0 bg-black/50 w-full h-full flex justify-center items-center">
+                <div class="fixed top-0 left-0 bg-black/60 backdrop-blur-sm w-full h-full flex justify-center items-center">
                     <iframe src={hubURL + '/hub/login'} title="login" class="w-full h-full">
                     </iframe>
                 </div>
@@ -426,7 +426,7 @@
                     <Button selected={generationInfoMenuIndex === 3} size="sm" onclick={() => {generationInfoMenuIndex = 3}}>
                         {language.prompt}
                     </Button>
-                    <button class="ml-auto" onclick={() => {
+                    <button class="ml-auto text-textcolor2 hover:text-textcolor transition-colors" onclick={() => {
                         alertStore.set({
                             type: 'none',
                             msg: ''
@@ -437,8 +437,8 @@
                     <div class="mt-4 flex justify-center w-full">
                         <div class="w-32 h-32 border-darkborderc border-4 rounded-lg" style:background={
                             `linear-gradient(0deg,
-                            rgb(59,130,246) 0%,
-                            rgb(59,130,246) ${($alertGenerationInfoStore.genInfo.inputTokens / $alertGenerationInfoStore.genInfo.maxContext) * 100}%,
+                            var(--risu-theme-primary-500) 0%,
+                            var(--risu-theme-primary-500) ${($alertGenerationInfoStore.genInfo.inputTokens / $alertGenerationInfoStore.genInfo.maxContext) * 100}%,
                             rgb(34 197 94) ${($alertGenerationInfoStore.genInfo.inputTokens / $alertGenerationInfoStore.genInfo.maxContext) * 100}%,
                             rgb(34 197 94) ${(($alertGenerationInfoStore.genInfo.outputTokens + $alertGenerationInfoStore.genInfo.inputTokens) / $alertGenerationInfoStore.genInfo.maxContext) * 100}%,
                             rgb(156 163 175) ${(($alertGenerationInfoStore.genInfo.outputTokens + $alertGenerationInfoStore.genInfo.inputTokens) / $alertGenerationInfoStore.genInfo.maxContext) * 100}%,
@@ -448,8 +448,8 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-y-2 gap-x-4 mt-4">
-                        <span class="text-blue-500">{language.inputTokens}</span>
-                        <span class="text-blue-500 justify-self-end">{$alertGenerationInfoStore.genInfo.inputTokens ?? '?'} {language.tokens}</span>
+                        <span class="text-primary-400">{language.inputTokens}</span>
+                        <span class="text-primary-400 justify-self-end">{$alertGenerationInfoStore.genInfo.inputTokens ?? '?'} {language.tokens}</span>
                         <span class="text-green-500">{language.outputTokens}</span>
                         <span class="text-green-500 justify-self-end">{$alertGenerationInfoStore.genInfo.outputTokens ?? '?'} {language.tokens}</span>
                         <span class="text-gray-400">{language.maxContextSize}</span>
@@ -459,8 +459,8 @@
                 {/if}
                 {#if generationInfoMenuIndex === 1}
                 <div class="grid grid-cols-2 gap-y-2 gap-x-4 mt-4">
-                    <span class="text-blue-500">Index</span>
-                    <span class="text-blue-500 justify-self-end">{$alertGenerationInfoStore.idx}</span>
+                    <span class="text-primary-400">Index</span>
+                    <span class="text-primary-400 justify-self-end">{$alertGenerationInfoStore.idx}</span>
                     <span class="text-amber-500">Model</span>
                     <span class="text-amber-500 justify-self-end">{$alertGenerationInfoStore.genInfo.model}</span>
                     <span class="text-green-500">ID</span>
@@ -500,47 +500,47 @@
                 {#if generationInfoMenuIndex === 2}
                     {#await getFetchData($alertStore.msg) then data} 
                         {#if !data}
-                            <span class="text-gray-300 text-lg mt-2">{language.errors.requestLogRemoved}</span>
-                            <span class="text-gray-500">{language.errors.requestLogRemovedDesc}</span>
+                            <span class="text-textcolor text-lg mt-2">{language.errors.requestLogRemoved}</span>
+                            <span class="text-textcolor2">{language.errors.requestLogRemovedDesc}</span>
                         {:else}
                             <h1 class="text-2xl font-bold my-4">URL</h1>
-                            <code class="text-gray-300 border border-darkborderc p-2 rounded-md whitespace-pre-wrap">{data.url}</code>
+                            <code class="text-textcolor2 border border-darkborderc p-2 rounded-lg whitespace-pre-wrap">{data.url}</code>
                             <h1 class="text-2xl font-bold my-4">Request Body</h1>
-                            <code class="text-gray-300 border border-darkborderc p-2 rounded-md whitespace-pre-wrap">{beautifyJSON(data.body)}</code>
+                            <code class="text-textcolor2 border border-darkborderc p-2 rounded-lg whitespace-pre-wrap">{beautifyJSON(data.body)}</code>
                             <h1 class="text-2xl font-bold my-4">Response</h1>
-                            <code class="text-gray-300 border border-darkborderc p-2 rounded-md whitespace-pre-wrap">{beautifyJSON(data.response)}</code>
+                            <code class="text-textcolor2 border border-darkborderc p-2 rounded-lg whitespace-pre-wrap">{beautifyJSON(data.response)}</code>
                         {/if}
                     {/await}
                 {/if}
                 {#if generationInfoMenuIndex === 3}
                     {#if Object.keys(DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo || {}).length === 0}
-                        <div class="text-gray-300 text-lg mt-2">{language.promptInfoEmptyMessage}</div>
+                        <div class="text-textcolor text-lg mt-2">{language.promptInfoEmptyMessage}</div>
                     {:else}
                         <div class="grid grid-cols-2 gap-y-2 gap-x-4 mt-4">
-                            <span class="text-blue-500">Preset Name</span>
-                            <span class="text-blue-500 justify-self-end">{DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptName}</span>
+                            <span class="text-primary-400">Preset Name</span>
+                            <span class="text-primary-400 justify-self-end">{DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptName}</span>
                             <span class="text-purple-500">Toggles</span>
-                            <div class="col-span-2 max-h-32 overflow-y-auto border border-stone-500 rounded-sm p-2 bg-gray-900">
+                            <div class="col-span-2 max-h-32 overflow-y-auto border border-darkborderc rounded-lg p-2 bg-darkbg/50">
                                 {#if DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptToggles.length === 0}
-                                    <div class="text-gray-500 italic text-center py-4">{language.promptInfoEmptyToggle}</div>
+                                    <div class="text-textcolor2 italic text-center py-4">{language.promptInfoEmptyToggle}</div>
                                 {:else}
                                     <div class="grid grid-cols-2 gap-y-2 gap-x-4">
                                         {#each DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptToggles as toggle}
-                                        <span class="text-gray-200 truncate">{toggle.key}</span>
-                                        <span class="text-gray-200 justify-self-end truncate">{toggle.value}</span>
+                                        <span class="text-textcolor truncate">{toggle.key}</span>
+                                        <span class="text-textcolor justify-self-end truncate">{toggle.value}</span>
                                         {/each}
                                     </div>
                                 {/if}
                             </div>
                             <span class="text-red-500">Prompt Text</span>
-                            <div class="col-span-2 max-h-80 overflow-y-auto border border-stone-500 rounded-sm p-4 bg-gray-900">
+                            <div class="col-span-2 max-h-80 overflow-y-auto border border-darkborderc rounded-lg p-4 bg-darkbg/50">
                                 {#if !DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptText}
-                                    <div class="text-gray-500 italic text-center py-4">{language.promptInfoEmptyText}</div>
+                                    <div class="text-textcolor2 italic text-center py-4">{language.promptInfoEmptyText}</div>
                                 {:else}
                                     {#each DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message[$alertGenerationInfoStore.idx].promptInfo.promptText as block}
                                         <div class="mb-2">
-                                            <div class="font-bold text-gray-600">{block.role}</div>
-                                            <pre class="whitespace-pre-wrap text-sm bg-stone-900 p-2 rounded-sm border border-stone-500">{block.content}</pre>
+                                            <div class="font-bold text-textcolor2">{block.role}</div>
+                                            <pre class="whitespace-pre-wrap text-sm bg-darkbg p-2 rounded-lg border border-darkborderc">{block.content}</pre>
                                         </div>
                                     {/each}
                                 {/if}
@@ -556,7 +556,7 @@
                     <Button selected={generationInfoMenuIndex === 1} size="sm" onclick={() => {generationInfoMenuIndex = 1}}>
                         Summarized
                     </Button>
-                    <button class="ml-auto" onclick={() => {
+                    <button class="ml-auto text-textcolor2 hover:text-textcolor transition-colors" onclick={() => {
                         alertStore.set({
                             type: 'none',
                             msg: ''
@@ -573,7 +573,7 @@
                     </div>
                 {:else}
                     {#each DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].hypaV2Data.mainChunks as chunk, i} <!-- Summarized should be mainChunks, afaik. Be aware of that chunks are created with mainChunks, however this editing would not change related chunks. -->
-                        <div class="flex flex-col p-2 rounded-md border-darkborderc border">
+                        <div class="flex flex-col p-2 rounded-lg border-darkborderc border">
                             {#if i === 0}
                                 <span class="text-green-500">Active</span>
                             {:else}
@@ -586,7 +586,7 @@
             {:else if $alertStore.type === 'addchar'}
                 <div class="w-2xl flex flex-col max-w-full">
 
-                    <button class="border-darkborderc border py-12 px-8 flex rounded-md hover:ring-2 justify-center items-center" onclick={(e) => {
+                    <button class="border-darkborderc border py-12 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors justify-center items-center" onclick={(e) => {
                         e.stopPropagation()
                         e.preventDefault()
                         alertStore.set({
@@ -602,7 +602,7 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={((e) => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={((e) => {
                         e.stopPropagation()
                         e.preventDefault()
                         alertStore.set({
@@ -617,7 +617,7 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={(e) => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={(e) => {
                         e.stopPropagation()
                         e.preventDefault()
                         alertStore.set({
@@ -632,7 +632,7 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={(e) => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={(e) => {
                         e.stopPropagation()
                         e.preventDefault()
                         alertStore.set({
@@ -647,7 +647,7 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={(e) => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={(e) => {
                         e.stopPropagation()
                         e.preventDefault()
                         alertStore.set({
@@ -665,7 +665,7 @@
                     <h1 class="text-xl mb-4 font-bold">
                         {language.chatOptions}
                     </h1>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={() => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={() => {
                         alertStore.set({
                             type: 'none',
                             msg: '0'
@@ -678,7 +678,7 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={() => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={() => {
                         alertStore.set({
                             type: 'none',
                             msg: '1'
@@ -692,7 +692,7 @@
                         </div>
                     </button>
                     {#if DBState.db.useExperimental}
-                        <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={() => {
+                        <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={() => {
                             alertStore.set({
                                 type: 'none',
                                 msg: '2'
@@ -706,7 +706,7 @@
                             </div>
                         </button>
                     {/if}
-                    <button class="border-darkborderc border py-2 px-8 flex rounded-md hover:ring-2 items-center mt-2" onclick={() => {
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={() => {
                         alertStore.set({
                             type: 'none',
                             msg: 'cancel'
@@ -723,15 +723,15 @@
 
 {:else if $alertStore.type === 'cardexport'}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div  class="fixed top-0 left-0 h-full w-full bg-black/50 flex flex-col z-50 items-center justify-center" role="button" tabindex="0" onclick={close}>
-        <div class="bg-darkbg rounded-md p-4 max-w-full flex flex-col w-2xl" role="button" tabindex="0" onclick={(e) => {
+    <div  class="fixed top-0 left-0 h-full w-full bg-black/60 backdrop-blur-sm flex flex-col z-50 items-center justify-center" role="button" tabindex="0" onclick={close}>
+        <div class="bg-darkbg rounded-xl border border-darkborderc shadow-2xl p-4 max-w-full flex flex-col w-2xl" role="button" tabindex="0" onclick={(e) => {
             e.stopPropagation()
         }}>
             <h1 class="font-bold text-2xl w-full">
                 <span>
                     {language.shareExport}
                 </span>
-                <button class="float-right text-textcolor2 hover:text-green-500" onclick={() => {
+                <button class="float-right text-textcolor2 hover:text-textcolor transition-colors" onclick={() => {
                     alertStore.set({
                         type: 'none',
                         msg: JSON.stringify({
@@ -768,18 +768,18 @@
             {/if}
             <div class="flex items-center flex-wrap mt-2">
                 {#if $alertStore.submsg === 'preset'}
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1" class:ring-1={cardExportType === ''} onclick={() => {cardExportType = ''}}>Risupreset</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === ''} onclick={() => {cardExportType = ''}}>Risupreset</button>
                 {:else if $alertStore.submsg === 'module'}
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1" class:ring-1={cardExportType === ''} onclick={() => {cardExportType = ''}}>RisuM</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === ''} onclick={() => {cardExportType = ''}}>RisuM</button>
                 {:else}
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1" class:ring-1={cardExportType === ''} onclick={() => {
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === 'realm'} onclick={() => {cardExportType = 'realm'}}>RisuRealm</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === ''} onclick={() => {
                         cardExportType = ''
                         cardExportType2 = 'charxJpeg'
                     }}>Character Card V3</button>
-                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1" class:ring-1={cardExportType === 'ccv2'} onclick={() => {cardExportType = 'ccv2'}}>Character Card V2</button>
+                    <button class="bg-bgcolor px-2 py-4 rounded-lg ml-2 flex-1 ring-primary-500 hover:bg-selected/60 transition-colors" class:ring-1={cardExportType === 'ccv2'} onclick={() => {cardExportType = 'ccv2'}}>Character Card V2</button>
                 {/if}
             </div>
             {#if $alertStore.submsg === '' && cardExportType === ''}
@@ -804,7 +804,7 @@
     </div>
 
 {:else if $alertStore.type === 'toast'}
-    <div class="toast-anime absolute right-0 bottom-0 bg-darkbg p-4 break-any rounded-md flex flex-col max-w-3xl  max-h-11/12 overflow-y-auto z-50 text-textcolor"
+    <div class="toast-anime absolute right-0 bottom-0 bg-darkbg p-4 break-any rounded-xl border border-darkborderc shadow-2xl flex flex-col max-w-3xl  max-h-11/12 overflow-y-auto z-50 text-textcolor"
         onanimationend={() => {
             alertStore.set({
                 type: 'none',
@@ -823,22 +823,22 @@
     <!-- Log Generator by dootaang, GPL3 -->
     <!-- Svelte, Typescript version by Kwaroran -->
     
-    <div class="absolute w-full h-full z-50 bg-black/50 flex justify-center items-center">
-        <div class="bg-darkbg p-4 break-any rounded-md flex flex-col max-w-3xl  max-h-full overflow-y-auto">
-            <h2 class="text-green-700 mt-0 mb-2 w-40 max-w-full">{language.preview}</h2>
+    <div class="absolute w-full h-full z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-darkbg p-4 break-any rounded-xl border border-darkborderc shadow-2xl flex flex-col max-w-3xl  max-h-full overflow-y-auto">
+            <h2 class="text-primary-400 mt-0 mb-2 w-40 max-w-full">{language.preview}</h2>
 
         </div>
     </div>
 {:else if $alertStore.type === 'branches'}
     <div class="absolute w-full h-full z-50 bg-black/80 flex justify-center items-center overflow-x-auto overflow-y-auto">
         {#if branchHover !== null}
-            <div class="z-30 whitespace-pre-wrap p-4 text-textcolor bg-darkbg border-darkborderc border rounded-md absolute" style="top: {branchHover.y * 80 + 24}px; left: {(branchHover.x + 1) * 80 + 24}px">
+            <div class="z-30 whitespace-pre-wrap p-4 text-textcolor bg-darkbg border-darkborderc border rounded-xl shadow-2xl absolute" style="top: {branchHover.y * 80 + 24}px; left: {(branchHover.x + 1) * 80 + 24}px">
                 {branchHover.content}
             </div>
         {/if}
 
         <div class="x-50 right-2 top-2 absolute">
-            <button class="bg-darkbg border-darkborderc border p-2 rounded-md" onclick={() => {
+            <button class="bg-darkbg border-darkborderc border p-2 rounded-lg hover:bg-selected/60 transition-colors" onclick={() => {
                 alertStore.set({
                     type: 'none',
                     msg: ''
@@ -887,7 +887,7 @@
 
                     </div>
                 {:else}
-                    <div class="w-0 h-20 border-x border-x-blue-500 absolute" style="top: {(obj.y-1) * 80 + 24}px; left: {obj.x * 80 + 45}px">
+                    <div class="w-0 h-20 border-x border-x-primary-500 absolute" style="top: {(obj.y-1) * 80 + 24}px; left: {obj.x * 80 + 45}px">
 
                     </div>
                 {/if}
@@ -903,8 +903,8 @@
     </div>
 {:else if $alertStore.type === 'requestlogs'}
     {@const logs = getFetchLogs()}
-    <div class="fixed inset-0 z-50 bg-black/80 flex justify-center items-start overflow-y-auto p-4">
-        <div class="bg-darkbg rounded-lg w-full max-w-4xl my-4 flex flex-col max-h-[90vh]">
+    <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-start overflow-y-auto p-4">
+        <div class="bg-darkbg rounded-xl border border-darkborderc shadow-2xl w-full max-w-4xl my-4 flex flex-col max-h-[90vh]">
             <div class="flex items-center justify-between p-4 border-b border-darkborderc sticky top-0 bg-darkbg z-10">
                 <h1 class="text-xl font-bold text-textcolor">{language.ShowLog}</h1>
                 <div class="flex items-center gap-2">
@@ -918,7 +918,7 @@
                     }}>
                         {allExpanded ? language.collapseAll : language.expandAll}
                     </Button>
-                    <button class="text-textcolor2 hover:text-textcolor p-1" onclick={() => {
+                    <button class="text-textcolor2 hover:text-textcolor transition-colors p-1" onclick={() => {
                         alertStore.set({ type: 'none', msg: '' })
                     }}>
                         <XIcon />
@@ -934,7 +934,7 @@
                             {@const isExpanded = expandedLogs.has(i)}
                             <div class="border border-darkborderc rounded-lg overflow-hidden">
                                 <button
-                                    class="w-full flex items-center justify-between p-3 hover:bg-bgcolor/50 transition-colors"
+                                    class="w-full flex items-center justify-between p-3 hover:bg-selected/60 transition-colors"
                                     onclick={() => {
                                         const newSet = new Set(expandedLogs)
                                         if(isExpanded) {
@@ -969,7 +969,7 @@
                                                 <div class="flex items-center justify-between mb-2">
                                                     <span class="text-textcolor text-sm font-semibold">URL</span>
                                                     <button
-                                                        class="p-1 rounded hover:bg-bgcolor transition-colors {copiedKey === `${i}-url` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
+                                                        class="p-1 rounded-lg hover:bg-selected/60 transition-colors {copiedKey === `${i}-url` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
                                                         onclick={(e) => { e.stopPropagation(); copyToClipboard(log.url, `${i}-url`) }}
                                                         title="Copy"
                                                     >
@@ -986,7 +986,7 @@
                                                 <div class="flex items-center justify-between mb-2">
                                                     <span class="text-textcolor text-sm font-semibold">Request Body</span>
                                                     <button
-                                                        class="p-1 rounded hover:bg-bgcolor transition-colors {copiedKey === `${i}-body` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
+                                                        class="p-1 rounded-lg hover:bg-selected/60 transition-colors {copiedKey === `${i}-body` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
                                                         onclick={(e) => { e.stopPropagation(); copyToClipboard(log.body, `${i}-body`) }}
                                                         title="Copy"
                                                     >
@@ -1003,7 +1003,7 @@
                                                 <div class="flex items-center justify-between mb-2">
                                                     <span class="text-textcolor text-sm font-semibold">Request Header</span>
                                                     <button
-                                                        class="p-1 rounded hover:bg-bgcolor transition-colors {copiedKey === `${i}-header` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
+                                                        class="p-1 rounded-lg hover:bg-selected/60 transition-colors {copiedKey === `${i}-header` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
                                                         onclick={(e) => { e.stopPropagation(); copyToClipboard(log.header, `${i}-header`) }}
                                                         title="Copy"
                                                     >
@@ -1020,7 +1020,7 @@
                                                 <div class="flex items-center justify-between mb-2">
                                                     <span class="text-textcolor text-sm font-semibold">Response</span>
                                                     <button
-                                                        class="p-1 rounded hover:bg-bgcolor transition-colors {copiedKey === `${i}-response` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
+                                                        class="p-1 rounded-lg hover:bg-selected/60 transition-colors {copiedKey === `${i}-response` ? 'text-green-500' : 'text-textcolor2 hover:text-textcolor'}"
                                                         onclick={(e) => { e.stopPropagation(); copyToClipboard(log.response, `${i}-response`) }}
                                                         title="Copy"
                                                     >

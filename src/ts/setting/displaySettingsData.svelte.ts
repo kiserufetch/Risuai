@@ -166,6 +166,14 @@ export const displaySizeSettingsItems: SettingItem[] = [
         keywords: ['icon', 'size'],
     },
     {
+        id: 'display.mobileContentZoom',
+        type: 'slider',
+        labelKey: 'mobileContentZoom',
+        bindKey: 'mobileContentZoom',
+        options: { min: 50, max: 100, step: 5 },
+        keywords: ['mobile', 'zoom', 'scale', 'custom', 'ui'],
+    },
+    {
         id: 'display.textAreaSize',
         type: 'slider',
         labelKey: 'textAreaSize',

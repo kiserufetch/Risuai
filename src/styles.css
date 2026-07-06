@@ -168,17 +168,18 @@ body {
   --FontColorQuote1: #8c8d93;
   --FontColorQuote2: #8c8d93;
   --risu-animation-speed: 0.2s;
-  --risu-theme-bgcolor: #282a36;
-  --risu-theme-darkbg: #21222c;
-  --risu-theme-borderc: #6272a4;
-  --risu-theme-selected: #44475a;
-  --risu-theme-draculared: #ff5555;
-  --risu-theme-textcolor: #f5f5f5;
-  --risu-theme-textcolor2: #64748b;
-  --risu-theme-darkborderc: #4b5563;
-  --risu-theme-darkbutton: #374151;
+  --risu-theme-bgcolor: #0f1117;
+  --risu-theme-darkbg: #0a0c10;
+  --risu-theme-borderc: #6366f1;
+  --risu-theme-selected: #1e2130;
+  --risu-theme-draculared: #ef4444;
+  --risu-theme-textcolor: #ededf0;
+  --risu-theme-textcolor2: #8a8f9e;
+  --risu-theme-darkborderc: #262a3a;
+  --risu-theme-darkbutton: #171a24;
   --risu-height-size: 100%;
-  --risu-font-family: Arial, sans-serif, serif;
+  --risu-font-family: 'Inter Variable', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
 
   /* Mobile foundation (Phase 1) ----------------------------------------- */
   /* Safe-area insets (notch / home indicator). These report 0 until the viewport
@@ -208,16 +209,16 @@ body {
   --risu-theme-neutral-800: #1f2937;
   --risu-theme-neutral-900: #111827;
 
-  --risu-theme-primary-50: #eff6ff;
-  --risu-theme-primary-100: #dbeafe;
-  --risu-theme-primary-200: #bfdbfe;
-  --risu-theme-primary-300: #93c5fd;
-  --risu-theme-primary-400: #60a5fa;
-  --risu-theme-primary-500: #3b82f6;
-  --risu-theme-primary-600: #2563eb;
-  --risu-theme-primary-700: #1d4ed8;
-  --risu-theme-primary-800: #1e40af;
-  --risu-theme-primary-900: #1e3a8a;
+  --risu-theme-primary-50: #eef2ff;
+  --risu-theme-primary-100: #e0e7ff;
+  --risu-theme-primary-200: #c7d2fe;
+  --risu-theme-primary-300: #a5b4fc;
+  --risu-theme-primary-400: #818cf8;
+  --risu-theme-primary-500: #6366f1;
+  --risu-theme-primary-600: #4f46e5;
+  --risu-theme-primary-700: #4338ca;
+  --risu-theme-primary-800: #3730a3;
+  --risu-theme-primary-900: #312e81;
 
   --risu-theme-secondary-50: #f5f3ff;
   --risu-theme-secondary-100: #ede9fe;
@@ -403,7 +404,7 @@ body {
 }
 
 .x-risu-button-default {
-  @apply border text-textcolor rounded-md shadow-xs focus:outline-hidden focus:ring-2 transition-colors duration-200 border-darkborderc px-4 py-2 bg-darkbutton hover:bg-borderc focus:ring-borderc;
+  @apply border text-textcolor rounded-lg shadow-xs focus:outline-hidden focus:ring-2 transition-colors duration-200 border-darkborderc px-4 py-2 bg-darkbutton hover:bg-primary-600 focus:ring-primary-500/60;
 }
 
 .loadmove {
@@ -570,4 +571,15 @@ body {
 
 annotation {
   display: none;
+}
+
+/* Compact chat controls on phones (see docs/mobile-adaptation.md) */
+@media (max-width: 767.98px) {
+  .chat-controls {
+    gap: 0.375rem;
+  }
+  .chat-controls svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
 }

@@ -27,6 +27,7 @@
     "@breezystack/lamejs": "^1.2.7",
     "@browsermt/bergamot-translator": "^0.4.9",
     "@dqbd/tiktoken": "^1.0.22",
+    "@fontsource-variable/inter": "^5.2.8",
     "@huggingface/jinja": "^0.2.2",
     "@huggingface/transformers": "^3.8.1",
     "@lucide/svelte": "^0.562.0",
