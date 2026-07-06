@@ -5,6 +5,7 @@ import type { alertData } from "./alert";
 import { moduleUpdate } from "./process/modules";
 import { resetScriptCache } from "./process/scripts";
 import type { hubType } from "./characterCards";
+import type { SpicyChatListDocument } from "./spicychat";
 import type { PluginSafetyErrors } from "./plugins/pluginSafety";
 
 function updateSize(){
@@ -49,6 +50,8 @@ export const ReloadChatPointer = writable({} as Record<number, number>)
 export const ScrollToMessageStore = $state({ value: -1 })
 export const OpenRealmStore = writable(false)
 export const RealmInitialOpenChar = writable<null | hubType>(null)
+export const OpenSpicyChatStore = writable(false)
+export const SpicyChatInitialOpenChar = writable<null | SpicyChatListDocument>(null)
 export const ShowRealmFrameStore = writable('')
 export const PlaygroundStore = writable(0)
 export const HideIconStore = writable(false)

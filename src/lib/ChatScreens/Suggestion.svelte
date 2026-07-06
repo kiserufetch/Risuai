@@ -12,7 +12,7 @@
     import { getUserName, replacePlaceholders } from "../../ts/util";
     import { onDestroy } from 'svelte';
     import { ParseMarkdown } from "src/ts/parser/parser.svelte";
-    import {defaultAutoSuggestPrompt} from "../../ts/storage/defaultPrompts.js";
+    import {correctAutoSuggestPromptLanguage, defaultAutoSuggestPrompt} from "../../ts/storage/defaultPrompts.js";
 
     interface Props {
         send: () => any;
@@ -67,7 +67,7 @@
         let lastMessages:Message[] = messages.slice(Math.max(messages.length - 10, 0));
         if(lastMessages.length === 0)
             return
-        const prompt = DBState.db.autoSuggestPrompt && DBState.db.autoSuggestPrompt.length > 0 ? DBState.db.autoSuggestPrompt : defaultAutoSuggestPrompt
+        const prompt = correctAutoSuggestPromptLanguage(DBState.db.autoSuggestPrompt && DBState.db.autoSuggestPrompt.length > 0 ? DBState.db.autoSuggestPrompt : defaultAutoSuggestPrompt)
         let promptbody:OpenAIChat[] = [
             {
                 role:'system',
@@ -83,7 +83,7 @@
             promptbody = [
                 {
                     role: 'system',
-                    content: replacePlaceholders(DBState.db.autoSuggestPrompt, currentChar.name)
+                    content: replacePlaceholders(correctAutoSuggestPromptLanguage(DBState.db.autoSuggestPrompt), currentChar.name)
                 },
                 ...lastMessages.map(({ role, data }) => ({
                     role: role === "user" ? "user" as const : "assistant" as const,

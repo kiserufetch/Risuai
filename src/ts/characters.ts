@@ -5,7 +5,7 @@ import { language } from "../lang";
 import { checkNullish, findCharacterbyId, getUserName, selectMultipleFile, selectSingleFile } from "./util";
 import { v4 as uuidv4, v4 } from 'uuid';
 import { getImageType } from "./media";
-import { DBState, MobileGUIStack, OpenRealmStore, selectedCharID } from "./stores.svelte";
+import { DBState, MobileGUIStack, OpenRealmStore, OpenSpicyChatStore, selectedCharID } from "./stores.svelte";
 import { AppendableBuffer, changeChatTo, checkCharOrder, downloadFile, getFileSrc, requiresFullEncoderReload } from "./globalApi.svelte";
 import { updateInlayScreen } from "./process/inlayScreen";
 import { parseMarkdownSafe } from "./parser/parser.svelte";
@@ -839,7 +839,15 @@ export async function addCharacter(arg:{
     const r = await alertAddCharacter()
     if(r === 'importFromRealm'){
         selectedCharID.set(-1)
+        OpenSpicyChatStore.set(false)
         OpenRealmStore.set(true)
+        MobileGUIStack.set(0)
+        return
+    }
+    if(r === 'importFromSpicyChat'){
+        selectedCharID.set(-1)
+        OpenRealmStore.set(false)
+        OpenSpicyChatStore.set(true)
         MobileGUIStack.set(0)
         return
     }

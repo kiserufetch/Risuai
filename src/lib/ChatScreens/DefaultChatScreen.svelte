@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import Suggestion from './Suggestion.svelte';
-    import { CameraIcon, DatabaseIcon, DicesIcon, GlobeIcon, ImagePlusIcon, LanguagesIcon, Laugh, MenuIcon, MicOffIcon, PackageIcon, Plus, RefreshCcwIcon, ReplyIcon, Send, StepForwardIcon, XIcon, BrainIcon, ArrowDown, SparkleIcon } from "@lucide/svelte";
+    import { CameraIcon, DatabaseIcon, DicesIcon, GlobeIcon, ImagePlusIcon, LanguagesIcon, Laugh, LoaderCircleIcon, MenuIcon, MessageCircleReplyIcon, MicOffIcon, PackageIcon, Plus, RefreshCcwIcon, ReplyIcon, Send, StepForwardIcon, XIcon, BrainIcon, ArrowDown, SparkleIcon } from "@lucide/svelte";
     import { selectedCharID, PlaygroundStore, createSimpleCharacter, hypaV3ModalOpen, ScrollToMessageStore, additionalChatMenu, additionalFloatingActionButtons, easyPanelStore, chatPanelStore } from "../../ts/stores.svelte";
     import { tick } from 'svelte';
     import Chat from "./Chat.svelte";
@@ -33,6 +33,7 @@
     import PluginDefinedIcon from '../Others/PluginDefinedIcon.svelte';
     import { getAdditionalChatLoadPages, getInitialChatLoadPages } from 'src/ts/chatLoadPages';
     import { isMobile } from 'src/ts/platform';
+    import { generateAutoReply } from 'src/ts/process/autoReply';
 
     const loadPlaygroundMenu = () => import('../Playground/PlaygroundMenu.svelte').then(m => m.default);
     
@@ -56,6 +57,7 @@
     let showNewMessageButton = $state(false)
     let chatsInstance: any = $state()
     let isScrollingToMessage = $state(false)
+    let generatingAutoReply = $state(false)
     let { openModuleList = $bindable(false), openChatList = $bindable(false), customStyle = '' }: Props = $props();
     let currentCharacter = $derived(DBState.db.characters[$selectedCharID])
     let currentChat = $derived(currentCharacter?.chats[currentCharacter.chatPage]?.message ?? [])
@@ -214,6 +216,26 @@
         updateInputSizeAll()
         await sendChatMain(continueResponse)
 
+    }
+
+    async function runAutoReply() {
+        if(generatingAutoReply || $doingChat){
+            return
+        }
+        openMenu = false
+        generatingAutoReply = true
+        try{
+            const reply = await generateAutoReply()
+            if(reply){
+                messageInput = reply
+                await tick()
+                updateInputSizeAll()
+            }
+        } catch (error) {
+            alertError(`${error}`)
+        } finally {
+            generatingAutoReply = false
+        }
     }
 
     async function reroll() {
@@ -681,7 +703,11 @@
                         }}
                             class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl text-textcolor2 hover:bg-selected/60 hover:text-textcolor transition-colors"
                     >
-                        <MenuIcon />
+                        {#if generatingAutoReply}
+                            <LoaderCircleIcon class="animate-spin" />
+                        {:else}
+                            <MenuIcon />
+                        {/if}
                     </button>
                 {:else}
                     <div onclick={(e) => {
@@ -1022,6 +1048,16 @@
                     }}>
                         <ReplyIcon />
                         <span class="ml-2">{language.autoSuggest}</span>
+                    </div>
+
+
+                    <div class={"flex items-center transition-colors " + (generatingAutoReply ? 'text-textcolor2 cursor-default' : 'cursor-pointer hover:text-green-500')} onclick={runAutoReply}>
+                        {#if generatingAutoReply}
+                            <LoaderCircleIcon class="animate-spin" />
+                        {:else}
+                            <MessageCircleReplyIcon />
+                        {/if}
+                        <span class="ml-2">{language.autoReply}</span>
                     </div>
 
 

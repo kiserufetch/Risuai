@@ -1,0 +1,176 @@
+{
+  "_note": "REAL capture from SpicyChat public catalog on 2026-07-06. Source: POST-style GET https://<typesense-host>/collections/public_characters_alias/documents/search ?q=*&query_by=name&per_page=2&filter_by=definition_visible:true&sort_by=num_messages:desc Header: x-typesense-api-key=<apiKeyPublicCharacter scoped key from /v2/applications/spicychat>. This is the browse/list response shape. Each hit.document is a catalog card. Truncated to 2 hits for fixture size; full response returned per_page hits + facet_counts + found/out_of/page.",
+  "facet_counts": [],
+  "found": 836585,
+  "hits": [
+    {
+      "document": {
+        "application_ids": [
+          "spicychat",
+          "pixelchat"
+        ],
+        "avatar_is_nsfw": false,
+        "avatar_url": "avatars/40da896ea4c72dc26d89370d69b7c985.jpg",
+        "character_id": "892d87b4-8207-4c67-8de9-b4674ddc6355",
+        "createdAt": 1737699785978,
+        "creator_user_id": "kp:4cc28ca085994ddcb9f89279ca164c88",
+        "creator_username": "aalishaa__",
+        "definition_size_category": "low",
+        "definition_visible": true,
+        "greeting": "*TF141 has been a very peaceful military base. Today was the first day of the 2 weeks off. It's the one time in a trimester they get free. Some stay on the base, other go home to visit family or friends. Most of them stay at the base because family or friends had to work or just weren't available*\n\n*{{user}} didn't had a family so stayed at the base. So did Price, Gaz, Ghost, Barrage, Soap and some other fellow soldiers. They were with quite a lot but it's normal for them. Everything was okay and Price called TF141 all together. He made an announcement that there's going to be a new rookie. Her name is Julia and she's transfering from the UK. People got excited and were curious about the girl*\n\n*That next day, the rookie came at the base. She has striking feautres, nice curves and is very feminine. Though, the second she saw {{user}}, she flashed her a disapproving look. Julia acted all \"cute\" and \"innocent\" around all the guys but acted like a real bitch to {{user}} . She's a real pick me. Though, {{user}} didn't really pay attention to her*\n\n*The guys were lightly irrtated by her behaviour. Julia would talk in this fake high pitched tone, cling and flirt with every guy of the base and act all mean and bitchy to the female soldiers. Though, she never got caught by the boys that she isn't nice to the females so they think she's okay*\n\n*Today, everyone's chilling and hanging out. Ghost and Barrage were observing and quiet like usual, Soap was talking and verbally fighting with Gaz. Everyone was minding their business until Julia walks in the common room*",
+        "group_size_category": "regular",
+        "id": "892d87b4-8207-4c67-8de9-b4674ddc6355",
+        "is_nsfw": false,
+        "language": "en",
+        "lora_status": "ready",
+        "moderation_flags": [],
+        "moderation_keywords": [],
+        "moderation_status": "reviewed",
+        "name": "Task Force 141",
+        "name_i18n": {
+          "ar": "Task Force 141",
+          "hi": "Task Force 141",
+          "ja": "Task Force 141",
+          "tr": "Task Force 141"
+        },
+        "num_messages": 15503420,
+        "num_messages_24h": 512,
+        "rating_score": 0.803016,
+        "tags": [
+          "Male",
+          "NSFW",
+          "FemalePOV",
+          "Multiple Characters"
+        ],
+        "title": "New recruit, New pick me (Edit: 26K?!!! so much!!)",
+        "title_i18n": {
+          "ar": "مبتدئ جديد، فتاة تطلب الانتباه الجديدة (تحرير: 26K؟!!! كثير جدا!!)",
+          "de": "Neuer Rekrut, Neuer Pick Me (Edit: 26K?!!! so viel!!)",
+          "es": "Nuevo recluta, Nueva pick me (Edit: 26K?!!! ¡tanto!!)",
+          "fr": "Nouveau recrue, Nouveau pick me (Edit: 26K?!!! tellement !)",
+          "hi": "नया भर्ती, नया पिक मी (संपादन: 26K?!!! इतना!!)",
+          "it": "Nuova recluta, Nuova pick me (Edit: 26K?!!! così tanto!!)",
+          "ja": "新兵、新しいピックミーガール (Edit: 26K?!!! すごい!!)",
+          "ko": "새로운 신병, 새로운 픽미 (수정: 26K?!!! 너무 많아!!)",
+          "pl": "Nowy rekrut, Nowa 'pick me' (Edycja: 26K?!!! tak dużo!!)",
+          "pt": "Novo recruta, Nova pick me (Edit: 26K?!!! tanto assim!!)",
+          "ru": "Новый рекрут, Новый 'pick me' (Правка: 26K?!!! так много!!)",
+          "tr": "Yeni asker, Yeni dikkat çekici (Düzenleme: 26K?!!! ne kadar çok!!)",
+          "zh": "新招募，新挑选我（编辑：26K？！！！这么多！！）"
+        },
+        "token_count": 508,
+        "translated_languages": [
+          "de",
+          "es",
+          "fr",
+          "it",
+          "ko",
+          "pl",
+          "pt",
+          "ru",
+          "zh",
+          "ar",
+          "hi",
+          "tr",
+          "ja"
+        ],
+        "type": "STANDARD",
+        "updatedAt": 1783315008664,
+        "visibility": "public"
+      },
+      "highlight": {},
+      "highlights": []
+    },
+    {
+      "document": {
+        "application_ids": [
+          "spicychat",
+          "pixelchat"
+        ],
+        "avatar_is_nsfw": false,
+        "avatar_url": "avatars/bc319adedfa6d9d318206d65f5fd0513.jpg",
+        "character_id": "e3642bd8-6c47-4d49-bc6a-f82128cbcafd",
+        "createdAt": 1735343640727,
+        "creator_user_id": "kp:ef3f41d415294182be99934f48c092ee",
+        "creator_username": "lylkian87",
+        "definition_size_category": "low",
+        "definition_visible": true,
+        "greeting": "*Isaac is your husband. But during your marriage you noticed something...he had become colder. You guys fought a lot, and he would always blame you for everything. Today, you both were in the car driving home during an argument. You pissed him off, now he stopped on the side of the road. It was raining* \"Get out. You can walk home\" *he growled angrily, it was midnight and unsafe for you to walk home alone. But he didn't care* \"walk home!\" *he shouted angrily*",
+        "group_size_category": "regular",
+        "id": "e3642bd8-6c47-4d49-bc6a-f82128cbcafd",
+        "is_nsfw": false,
+        "language": "en",
+        "lora_status": "ready",
+        "moderation_flags": [],
+        "moderation_keywords": [],
+        "moderation_status": "reviewed",
+        "name": "Isaac",
+        "name_i18n": {
+          "ar": "إسحاق",
+          "hi": "Isaac",
+          "ja": "アイザック",
+          "tr": "Isaac"
+        },
+        "num_messages": 14544254,
+        "num_messages_24h": 135,
+        "rating_score": 0.552522,
+        "tags": [
+          "Dominant",
+          "Gentle Dom",
+          "NSFW",
+          "Mature",
+          "Male",
+          "Married Partner",
+          "Romantic"
+        ],
+        "title": ": ̗̀➛ heated car arguments with husband female point of view version, (not my idea)",
+        "title_i18n": {
+          "ar": ": ̗̀➛ مناقشات سيارة حارة مع الزوج من وجهة نظر أنثوية، (ليست فكرتي)",
+          "de": ": ̗̀➛ Erhitzte Autodiskussionen mit dem Ehemann aus weiblicher Perspektive, (nicht meine Idee)",
+          "es": ": ̗̀➛ argumentos calientes en el coche con el marido, versión desde el punto de vista femenino, (no es mi idea)",
+          "fr": ": ̗̀➛ arguments chauffés dans la voiture avec mari, version point de vue féminin, (pas mon idée)",
+          "hi": ": ̗̀➛ पति के साथ गर्म कार तर्क, महिला दृष्टिकोण संस्करण, (मेरा विचार नहीं)",
+          "it": ": ̗̀➛ argomenti accesi in auto con il marito, versione dal punto di vista femminile, (non è una mia idea)",
+          "ja": ": ̗̀➛ 夫婦の車内激論、女性視点バージョン、(私のアイデアではありません)",
+          "ko": ": ̗̀➛ 남편과의 뜨거운 자동차 논쟁, 여성 시점 버전, (내 아이디어가 아님)",
+          "pl": ": ̗̀➛ gorące kłótnie w samochodzie z mężem, wersja z punktu widzenia kobiety, (nie mój pomysł)",
+          "pt": ": ̗̀➛ argumentos acalorados no carro com o marido, versão do ponto de vista feminino, (não é minha ideia)",
+          "ru": ": ̗̀➛ Горячие споры в машине с мужем, версия от лица женщины, (не моя идея)",
+          "tr": ": ̗̀➛ koca ile hararetli araba tartışmaları kadın bakış açısı versiyonu, (benim fikrim değil)",
+          "zh": ": ̗̀➛ 与丈夫的激烈汽车争论，从女性的视角版本，(不是我的主意)"
+        },
+        "token_count": 312,
+        "translated_languages": [
+          "de",
+          "es",
+          "fr",
+          "it",
+          "ko",
+          "pl",
+          "pt",
+          "ru",
+          "zh",
+          "ar",
+          "hi",
+          "tr",
+          "ja"
+        ],
+        "type": "STANDARD",
+        "updatedAt": 1783315023935,
+        "visibility": "public"
+      },
+      "highlight": {},
+      "highlights": []
+    }
+  ],
+  "out_of": 1345112,
+  "page": 1,
+  "request_params": {
+    "collection_name": "characters_public",
+    "first_q": "*",
+    "per_page": 2,
+    "q": "*"
+  },
+  "search_cutoff": false,
+  "search_time_ms": 107
+}

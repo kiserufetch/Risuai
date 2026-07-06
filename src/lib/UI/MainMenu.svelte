@@ -1,7 +1,8 @@
 <script lang="ts">
     import { DBState } from 'src/ts/stores.svelte';
     import Hub from "./Realm/RealmMain.svelte";
-    import { OpenRealmStore, RealmInitialOpenChar } from "src/ts/stores.svelte";
+    import SpicyChatMain from "./SpicyChat/SpicyChatMain.svelte";
+    import { OpenRealmStore, OpenSpicyChatStore, RealmInitialOpenChar } from "src/ts/stores.svelte";
     import { ArrowLeft, ArrowRight, FolderCodeIcon, GlobeIcon, MailIcon, Send } from "@lucide/svelte";
     import { getVersionString, openURL } from "src/ts/globalApi.svelte";
     import { language } from "src/lang";
@@ -47,12 +48,12 @@
     ];
 </script>
 <div class="h-full w-full flex flex-col overflow-y-auto items-center">
-    {#if !$OpenRealmStore}
+    {#if !$OpenRealmStore && !$OpenSpicyChatStore}
       <Title />
       <h3 class="text-textcolor2 mt-1">Version {getVersionString()}</h3>
     {/if}
     <div class="w-full flex p-4 flex-col text-textcolor max-w-4xl">
-      {#if !$OpenRealmStore}
+      {#if !$OpenRealmStore && !$OpenSpicyChatStore}
       <div class="mt-4 mb-4 w-full border-t border-t-selected"></div>
       <h1 class="text-2xl font-bold">Recently Uploaded<button class="text-base font-medium float-right p-1 bg-darkbg rounded-md hover:ring-3" onclick={() => {
         $OpenRealmStore = true
@@ -114,6 +115,13 @@
           {/each}
       </div>
 
+      {:else if $OpenSpicyChatStore}
+        <div class="flex items-center mt-4">
+          <button class="mr-2 text-textcolor2 hover:text-green-500" onclick={() => ($OpenSpicyChatStore = false)}>
+            <ArrowLeft/>
+          </button>
+        </div>
+        <SpicyChatMain />
       {:else}
         <div class="flex items-center mt-4">
           <button class="mr-2 text-textcolor2 hover:text-green-500" onclick={() => ($OpenRealmStore = false)}>

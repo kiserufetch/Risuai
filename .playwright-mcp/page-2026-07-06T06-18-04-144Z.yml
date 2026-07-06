@@ -1,0 +1,350 @@
+- main [ref=e3]:
+  - generic [ref=e11]:
+    - button [ref=e12] [cursor=pointer]:
+      - img [ref=e13]
+    - generic [ref=e15]:
+      - listitem [ref=e16]
+      - listitem [ref=e17]:
+        - button "avatar" [ref=e19] [cursor=pointer]:
+          - button "avatar" [ref=e20]:
+            - img "avatar" [ref=e21]
+      - listitem [ref=e22]
+      - button [ref=e24] [cursor=pointer]:
+        - img [ref=e25]
+  - generic [ref=e27]:
+    - button
+    - generic [ref=e28]:
+      - heading "Welcome to RisuAI!" [level=1] [ref=e29]
+      - text: Select a bot to start chatting
+  - generic [ref=e30]:
+    - button [ref=e31] [cursor=pointer]:
+      - img [ref=e32]
+    - generic [ref=e38]:
+      - button [ref=e657] [cursor=pointer]:
+        - img [ref=e658]
+      - generic [ref=e660]:
+        - textbox "Поиск" [ref=e661]: vampire
+        - button [ref=e662] [cursor=pointer]:
+          - img [ref=e663]
+        - button [ref=e664] [cursor=pointer]:
+          - img [ref=e665]
+      - generic [ref=e666]:
+        - button "NSFW" [ref=e667] [cursor=pointer]
+        - button "Популярные" [ref=e669] [cursor=pointer]
+        - button "В тренде" [ref=e670] [cursor=pointer]
+        - button "Новые" [ref=e671] [cursor=pointer]
+        - button "Старые" [ref=e672] [cursor=pointer]
+        - button "Лучшие" [ref=e673] [cursor=pointer]
+      - generic [ref=e2377]:
+        - button "Gothic" [ref=e2378] [cursor=pointer]:
+          - text: Gothic
+          - img [ref=e2379]
+        - button "Сбросить теги" [ref=e2380] [cursor=pointer]
+      - generic [ref=e674]:
+        - button "Seraphina Seraphina just moved into a castle with a 400 year-old vampire roommate. She just wants to watch TV with you~ Female Gothic Supernatural Roommate ... 160" [ref=e2381] [cursor=pointer]:
+          - generic [ref=e2382]:
+            - img "Seraphina" [ref=e2383]
+            - generic [ref=e2384]:
+              - generic [ref=e2385]: Seraphina
+              - generic [ref=e2386]: just moved into a castle with a 400 year-old vampire roommate. She just wants to watch TV with you~
+              - generic [ref=e2387]:
+                - generic [ref=e2388]: Female
+                - generic [ref=e2389]: Gothic
+                - generic [ref=e2390]: Supernatural
+                - generic [ref=e2391]: Roommate
+                - generic [ref=e2392]: ...
+              - generic [ref=e2395]:
+                - img [ref=e2396]
+                - text: "160"
+        - button "Dimitrescu brothers Dimitrescu brothers NSFW Vampire brothers from the Dimitrescu castle who decided to keep you. Multiple Characters Male Horror Fantasy ... 184" [ref=e2397] [cursor=pointer]:
+          - generic [ref=e2398]:
+            - img "Dimitrescu brothers" [ref=e2399]
+            - generic [ref=e2400]:
+              - generic [ref=e2401]: Dimitrescu brothers NSFW
+              - generic [ref=e2402]: Vampire brothers from the Dimitrescu castle who decided to keep you.
+              - generic [ref=e2403]:
+                - generic [ref=e2404]: Multiple Characters
+                - generic [ref=e2405]: Male
+                - generic [ref=e2406]: Horror
+                - generic [ref=e2407]: Fantasy
+                - generic [ref=e2408]: ...
+              - generic [ref=e2411]:
+                - img [ref=e2412]
+                - text: "184"
+        - button "Cederic🩸 Cederic🩸 Terrifyingly handsome vampire in the woods (Im working on better picture!) Male Gothic Romantic Supernatural ... 149" [ref=e2413] [cursor=pointer]:
+          - generic [ref=e2414]:
+            - img "Cederic🩸" [ref=e2415]
+            - generic [ref=e2416]:
+              - generic [ref=e2417]: Cederic🩸
+              - generic [ref=e2418]: Terrifyingly handsome vampire in the woods (Im working on better picture!)
+              - generic [ref=e2419]:
+                - generic [ref=e2420]: Male
+                - generic [ref=e2421]: Gothic
+                - generic [ref=e2422]: Romantic
+                - generic [ref=e2423]: Supernatural
+                - generic [ref=e2424]: ...
+              - generic [ref=e2427]:
+                - img [ref=e2428]
+                - text: "149"
+        - button "Lestat de Lioncourt Lestat de Lioncourt NSFW World Famous Vampire Brat Prince Turned Rockstar NSFW FemalePOV Fantasy Gothic ... 64" [ref=e2429] [cursor=pointer]:
+          - generic [ref=e2430]:
+            - img "Lestat de Lioncourt" [ref=e2431]
+            - generic [ref=e2432]:
+              - generic [ref=e2433]: Lestat de Lioncourt NSFW
+              - generic [ref=e2434]: World Famous Vampire Brat Prince Turned Rockstar
+              - generic [ref=e2435]:
+                - generic [ref=e2436]: NSFW
+                - generic [ref=e2437]: FemalePOV
+                - generic [ref=e2438]: Fantasy
+                - generic [ref=e2439]: Gothic
+                - generic [ref=e2440]: ...
+              - generic [ref=e2443]:
+                - img [ref=e2444]
+                - text: "64"
+        - button "Rachel Alucard Rachel Alucard The head of the Alucard vampire family, and a former Bystander of the world. Female Fantasy Gothic Supernatural ... 79" [ref=e2445] [cursor=pointer]:
+          - generic [ref=e2446]:
+            - img "Rachel Alucard" [ref=e2447]
+            - generic [ref=e2448]:
+              - generic [ref=e2449]: Rachel Alucard
+              - generic [ref=e2450]: The head of the Alucard vampire family, and a former Bystander of the world.
+              - generic [ref=e2451]:
+                - generic [ref=e2452]: Female
+                - generic [ref=e2453]: Fantasy
+                - generic [ref=e2454]: Gothic
+                - generic [ref=e2455]: Supernatural
+                - generic [ref=e2456]: ...
+              - generic [ref=e2459]:
+                - img [ref=e2460]
+                - text: "79"
+        - button "CULT 666 CULT 666 NSFW Gothic club. You are a vampire! Scenario Gothic Supernatural LGBTQ+ ... 360" [ref=e2461] [cursor=pointer]:
+          - generic [ref=e2462]:
+            - img "CULT 666" [ref=e2463]
+            - generic [ref=e2464]:
+              - generic [ref=e2465]: CULT 666 NSFW
+              - generic [ref=e2466]: Gothic club. You are a vampire!
+              - generic [ref=e2467]:
+                - generic [ref=e2468]: Scenario
+                - generic [ref=e2469]: Gothic
+                - generic [ref=e2470]: Supernatural
+                - generic [ref=e2471]: LGBTQ+
+                - generic [ref=e2472]: ...
+              - generic [ref=e2475]:
+                - img [ref=e2476]
+                - text: "360"
+        - button "THE VAMPIRE LORD- BL THE VAMPIRE LORD- BL The moment he sees You, an instinct older than hunger awakens. Dominant Fantasy Mature Romantic ... 0" [ref=e2477] [cursor=pointer]:
+          - generic [ref=e2478]:
+            - img "THE VAMPIRE LORD- BL" [ref=e2479]
+            - generic [ref=e2480]:
+              - generic [ref=e2481]: THE VAMPIRE LORD- BL
+              - generic [ref=e2482]: The moment he sees You, an instinct older than hunger awakens.
+              - generic [ref=e2483]:
+                - generic [ref=e2484]: Dominant
+                - generic [ref=e2485]: Fantasy
+                - generic [ref=e2486]: Mature
+                - generic [ref=e2487]: Romantic
+                - generic [ref=e2488]: ...
+              - generic [ref=e2491]:
+                - img [ref=e2492]
+                - text: "0"
+        - button "Camille Arno Camille Arno Keeper from Seš'qa || you remind him of his brother || Vampire Tsundere || canon || MLM || Endfield MalePOV LGBTQ+ Anime Dominant ... 4 014" [ref=e2493] [cursor=pointer]:
+          - generic [ref=e2494]:
+            - img "Camille Arno" [ref=e2495]
+            - generic [ref=e2496]:
+              - generic [ref=e2497]: Camille Arno
+              - generic [ref=e2498]: Keeper from Seš'qa || you remind him of his brother || Vampire Tsundere || canon || MLM || Endfield
+              - generic [ref=e2499]:
+                - generic [ref=e2500]: MalePOV
+                - generic [ref=e2501]: LGBTQ+
+                - generic [ref=e2502]: Anime
+                - generic [ref=e2503]: Dominant
+                - generic [ref=e2504]: ...
+              - generic [ref=e2507]:
+                - img [ref=e2508]
+                - text: 4 014
+        - button "Ravenna Nocturne Ravenna Nocturne NSFW Ultra submissive vampire princess can only drink your blood Submissive Gothic Romantic NSFW ... 6 327" [ref=e2509] [cursor=pointer]:
+          - generic [ref=e2510]:
+            - img "Ravenna Nocturne" [ref=e2511]
+            - generic [ref=e2512]:
+              - generic [ref=e2513]: Ravenna Nocturne NSFW
+              - generic [ref=e2514]: Ultra submissive vampire princess can only drink your blood
+              - generic [ref=e2515]:
+                - generic [ref=e2516]: Submissive
+                - generic [ref=e2517]: Gothic
+                - generic [ref=e2518]: Romantic
+                - generic [ref=e2519]: NSFW
+                - generic [ref=e2520]: ...
+              - generic [ref=e2523]:
+                - img [ref=e2524]
+                - text: 6 327
+        - button "Varo Killinggard Varo Killinggard NSFW King of the east Vampire coven NSFW FemalePOV Dominant Magic ... 441" [ref=e2525] [cursor=pointer]:
+          - generic [ref=e2526]:
+            - img "Varo Killinggard" [ref=e2527]
+            - generic [ref=e2528]:
+              - generic [ref=e2529]: Varo Killinggard NSFW
+              - generic [ref=e2530]: King of the east Vampire coven
+              - generic [ref=e2531]:
+                - generic [ref=e2532]: NSFW
+                - generic [ref=e2533]: FemalePOV
+                - generic [ref=e2534]: Dominant
+                - generic [ref=e2535]: Magic
+                - generic [ref=e2536]: ...
+              - generic [ref=e2539]:
+                - img [ref=e2540]
+                - text: "441"
+        - button "Vampire Academy Vampire Academy You're a human passing as a vampire. These five classmates suspect your secret. Gothic Fantasy Supernatural Male ... 16 526" [ref=e2541] [cursor=pointer]:
+          - generic [ref=e2542]:
+            - img "Vampire Academy" [ref=e2543]
+            - generic [ref=e2544]:
+              - generic [ref=e2545]: Vampire Academy
+              - generic [ref=e2546]: You're a human passing as a vampire. These five classmates suspect your secret.
+              - generic [ref=e2547]:
+                - generic [ref=e2548]: Gothic
+                - generic [ref=e2549]: Fantasy
+                - generic [ref=e2550]: Supernatural
+                - generic [ref=e2551]: Male
+                - generic [ref=e2552]: ...
+              - generic [ref=e2555]:
+                - img [ref=e2556]
+                - text: 16 526
+        - button "Luka Luka Vampire that loves only you Supernatural Romantic Male LGBTQ+ ... 262" [ref=e2557] [cursor=pointer]:
+          - generic [ref=e2558]:
+            - img "Luka" [ref=e2559]
+            - generic [ref=e2560]:
+              - generic [ref=e2561]: Luka
+              - generic [ref=e2562]: Vampire that loves only you
+              - generic [ref=e2563]:
+                - generic [ref=e2564]: Supernatural
+                - generic [ref=e2565]: Romantic
+                - generic [ref=e2566]: Male
+                - generic [ref=e2567]: LGBTQ+
+                - generic [ref=e2568]: ...
+              - generic [ref=e2571]:
+                - img [ref=e2572]
+                - text: "262"
+        - button "Sebastian Melrose Sebastian Melrose An ancient vampire who is looking for his true mate FemalePOV Male Adventure Fantasy ... 169" [ref=e2573] [cursor=pointer]:
+          - generic [ref=e2574]:
+            - img "Sebastian Melrose" [ref=e2575]
+            - generic [ref=e2576]:
+              - generic [ref=e2577]: Sebastian Melrose
+              - generic [ref=e2578]: An ancient vampire who is looking for his true mate
+              - generic [ref=e2579]:
+                - generic [ref=e2580]: FemalePOV
+                - generic [ref=e2581]: Male
+                - generic [ref=e2582]: Adventure
+                - generic [ref=e2583]: Fantasy
+                - generic [ref=e2584]: ...
+              - generic [ref=e2587]:
+                - img [ref=e2588]
+                - text: "169"
+        - button "Eclipse Eclipse NSFW Vampire Eclipse NSFW Size Difference Monster Sadistic ... 1 952" [ref=e2589] [cursor=pointer]:
+          - generic [ref=e2590]:
+            - img "Eclipse" [ref=e2591]
+            - generic [ref=e2592]:
+              - generic [ref=e2593]: Eclipse NSFW
+              - generic [ref=e2594]: Vampire Eclipse
+              - generic [ref=e2595]:
+                - generic [ref=e2596]: NSFW
+                - generic [ref=e2597]: Size Difference
+                - generic [ref=e2598]: Monster
+                - generic [ref=e2599]: Sadistic
+                - generic [ref=e2600]: ...
+              - generic [ref=e2603]:
+                - img [ref=e2604]
+                - text: 1 952
+        - button "Lucian Lucian A vampire is fooling a young knight Male MalePOV FemalePOV Age Play ... 46" [ref=e2605] [cursor=pointer]:
+          - generic [ref=e2606]:
+            - img "Lucian" [ref=e2607]
+            - generic [ref=e2608]:
+              - generic [ref=e2609]: Lucian
+              - generic [ref=e2610]: A vampire is fooling a young knight
+              - generic [ref=e2611]:
+                - generic [ref=e2612]: Male
+                - generic [ref=e2613]: MalePOV
+                - generic [ref=e2614]: FemalePOV
+                - generic [ref=e2615]: Age Play
+                - generic [ref=e2616]: ...
+              - generic [ref=e2619]:
+                - img [ref=e2620]
+                - text: "46"
+        - button "Eleanor Eleanor NSFW You were sold to a vampire — what is gonna happen to you now!? NSFW Fantasy Gothic Dominant ... 3 233" [ref=e2621] [cursor=pointer]:
+          - generic [ref=e2622]:
+            - img "Eleanor" [ref=e2623]
+            - generic [ref=e2624]:
+              - generic [ref=e2625]: Eleanor NSFW
+              - generic [ref=e2626]: You were sold to a vampire — what is gonna happen to you now!?
+              - generic [ref=e2627]:
+                - generic [ref=e2628]: NSFW
+                - generic [ref=e2629]: Fantasy
+                - generic [ref=e2630]: Gothic
+                - generic [ref=e2631]: Dominant
+                - generic [ref=e2632]: ...
+              - generic [ref=e2635]:
+                - img [ref=e2636]
+                - text: 3 233
+        - button "Leopold Raven Leopold Raven Vampire King x Vampire Hunter user. Male Dominant MalePOV FemalePOV ... 142" [ref=e2637] [cursor=pointer]:
+          - generic [ref=e2638]:
+            - img "Leopold Raven" [ref=e2639]
+            - generic [ref=e2640]:
+              - generic [ref=e2641]: Leopold Raven
+              - generic [ref=e2642]: Vampire King x Vampire Hunter user.
+              - generic [ref=e2643]:
+                - generic [ref=e2644]: Male
+                - generic [ref=e2645]: Dominant
+                - generic [ref=e2646]: MalePOV
+                - generic [ref=e2647]: FemalePOV
+                - generic [ref=e2648]: ...
+              - generic [ref=e2651]:
+                - img [ref=e2652]
+                - text: "142"
+        - button "Helena Helena NSFW 〖🦇〗⋆ Your girlfriend is a vampire who will never hurt you...as you can see, I'm in my MCR phase NSFW Female FemalePOV MalePOV ... 754" [ref=e2653] [cursor=pointer]:
+          - generic [ref=e2654]:
+            - img "Helena" [ref=e2655]
+            - generic [ref=e2656]:
+              - generic [ref=e2657]: Helena NSFW
+              - generic [ref=e2658]: 〖🦇〗⋆ Your girlfriend is a vampire who will never hurt you...as you can see, I'm in my MCR phase
+              - generic [ref=e2659]:
+                - generic [ref=e2660]: NSFW
+                - generic [ref=e2661]: Female
+                - generic [ref=e2662]: FemalePOV
+                - generic [ref=e2663]: MalePOV
+                - generic [ref=e2664]: ...
+              - generic [ref=e2667]:
+                - img [ref=e2668]
+                - text: "754"
+        - button "Vampire Michikatsu Vampire Michikatsu NSFW Once a feared Samurai warlord, now a vampire risen from his tomb to search for you... NSFW Male FemalePOV Anal ... 390" [ref=e2669] [cursor=pointer]:
+          - generic [ref=e2670]:
+            - img "Vampire Michikatsu" [ref=e2671]
+            - generic [ref=e2672]:
+              - generic [ref=e2673]: Vampire Michikatsu NSFW
+              - generic [ref=e2674]: Once a feared Samurai warlord, now a vampire risen from his tomb to search for you...
+              - generic [ref=e2675]:
+                - generic [ref=e2676]: NSFW
+                - generic [ref=e2677]: Male
+                - generic [ref=e2678]: FemalePOV
+                - generic [ref=e2679]: Anal
+                - generic [ref=e2680]: ...
+              - generic [ref=e2683]:
+                - img [ref=e2684]
+                - text: "390"
+        - button "Lord Zhar Bacheron Lord Zhar Bacheron NSFW A lionfolk vampire NSFW Furry Male Female ... 772" [ref=e2685] [cursor=pointer]:
+          - generic [ref=e2686]:
+            - img "Lord Zhar Bacheron" [ref=e2687]
+            - generic [ref=e2688]:
+              - generic [ref=e2689]: Lord Zhar Bacheron NSFW
+              - generic [ref=e2690]: A lionfolk vampire
+              - generic [ref=e2691]:
+                - generic [ref=e2692]: NSFW
+                - generic [ref=e2693]: Furry
+                - generic [ref=e2694]: Male
+                - generic [ref=e2695]: Female
+                - generic [ref=e2696]: ...
+              - generic [ref=e2699]:
+                - img [ref=e2700]
+                - text: "772"
+      - generic [ref=e995]:
+        - button [ref=e996] [cursor=pointer]:
+          - img [ref=e997]
+        - button "1 / 202" [ref=e2701] [cursor=pointer]:
+          - generic [ref=e999]: 1 / 202
+        - button [ref=e1000] [cursor=pointer]:
+          - img [ref=e1001]

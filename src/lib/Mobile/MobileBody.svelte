@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { MobileGUIStack, MobileSideBar, selectedCharID } from "src/ts/stores.svelte";
+    import { MobileGUIStack, MobileSideBar, OpenSpicyChatStore, selectedCharID } from "src/ts/stores.svelte";
     import Settings from "../Setting/Settings.svelte";
     import RealmMain from "../UI/Realm/RealmMain.svelte";
+    import SpicyChatMain from "../UI/SpicyChat/SpicyChatMain.svelte";
     import MobileCharacters from "./MobileCharacters.svelte";
     import ChatScreen from "../ChatScreens/ChatScreen.svelte";
     import CharConfig from "../SideBars/CharConfig.svelte";
@@ -47,7 +48,11 @@
     {:else if $selectedCharID !== -1}
         <ChatScreen />
     {:else if $MobileGUIStack === 0}
-        <RealmMain />
+        {#if $OpenSpicyChatStore}
+            <SpicyChatMain />
+        {:else}
+            <RealmMain />
+        {/if}
     {:else if $MobileGUIStack === 1}
         <MobileCharacters />
     {:else if $MobileGUIStack === 2}

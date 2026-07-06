@@ -99,6 +99,20 @@ export default defineConfig(({command, mode}) => {
             });
           },
         },
+        // SpicyChat REST API (nd-api) is CORS-locked to https://spicychat.ai,
+        // so SpicyChat catalog/import traffic goes through the dev server the
+        // same way hub traffic does (see spicyChatBaseURL in src/ts/spicychat.ts).
+        '/spicychat-proxy': {
+          target: 'https://prod.nd-api.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/spicychat-proxy/, ''),
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              proxyReq.removeHeader('origin');
+              proxyReq.removeHeader('referer');
+            });
+          },
+        },
       },
       // hmr: false,
     },

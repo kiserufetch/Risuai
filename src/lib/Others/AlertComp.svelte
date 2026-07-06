@@ -602,6 +602,22 @@
                             <ChevronRightIcon />
                         </div>
                     </button>
+                    <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={(e) => {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        alertStore.set({
+                            type: 'none',
+                            msg: 'importFromSpicyChat'
+                        })
+                    }}>
+                        <div class="flex flex-col justify-start items-start">
+                            <span>{language.importFromSpicyChat}</span>
+                            <span class="text-textcolor2 text-sm">{language.importFromSpicyChatDesc}</span>
+                        </div>
+                        <div class="ml-9 float-right flex-1 flex justify-end">
+                            <ChevronRightIcon />
+                        </div>
+                    </button>
                     <button class="border-darkborderc border py-2 px-8 flex rounded-lg hover:border-primary-500 hover:bg-selected/40 transition-colors items-center mt-2" onclick={((e) => {
                         e.stopPropagation()
                         e.preventDefault()

@@ -9,6 +9,7 @@
     sideBarClosing,
     sideBarStore,
     OpenRealmStore,
+    OpenSpicyChatStore,
     PlaygroundStore,
 
     QuickSettings,
@@ -379,6 +380,7 @@
     selectedCharID.set(-1)
     PlaygroundStore.set(0)
     OpenRealmStore.set(false)
+    OpenSpicyChatStore.set(false)
   }}
 >
   <HomeIcon />
@@ -473,6 +475,7 @@
           selectedCharID.set(-1)
           PlaygroundStore.set(0)
           OpenRealmStore.set(false)
+          OpenSpicyChatStore.set(false)
         }}><HomeIcon /></BarIcon>
       <div class="mt-2"></div>
       <BarIcon
@@ -797,6 +800,7 @@
           selectedCharID.set(-1)
           PlaygroundStore.set(0)
           OpenRealmStore.set(false)
+          OpenSpicyChatStore.set(false)
         }}><HomeIcon /></BarIcon>
       <div class="mt-2"></div>
       <BarIcon

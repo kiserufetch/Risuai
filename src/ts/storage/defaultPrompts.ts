@@ -12,10 +12,10 @@ export const defaultAutoSuggestPrompt = `Review past conversations and infer opt
 4. A creative and interesting response that would introduce unexpectedness or a twist, differing from the development so far.
 5. A blunt or impolite response that entirely excludes any moral, hopeful, or bonding elements.
 
-Separate each option with a newline and print it out in English only and start with -.
+Separate each option with a newline and print it out in the same language the conversation is written in and start with -.
 The output responses should be the user's response only.
 Be sure to each options are respond of user.
-Be sure to print in English only.
+Be sure to print in the same language the conversation between {{user}} and {{char}} is written in.
 Be sure to print start with -.
 Do not print respond of assistant.
 
@@ -26,3 +26,19 @@ Out Examples:
 - Respond4
 
 Let's read these guidelines step by step three times to be sure we have accurately adhered to the rules.`
+
+const autoSuggestLanguageInstruction = 'Write the responses in the same language the conversation between {{user}} and {{char}} is written in.'
+
+//Fixes auto suggest prompts stored in existing saves, which used to force English-only output regardless of the conversation language
+export function correctAutoSuggestPromptLanguage(prompt:string):string {
+    if(!prompt){
+        return prompt
+    }
+    const corrected = prompt
+        .replace(/print it out in English only/gi, 'print it out in the same language the conversation is written in')
+        .replace(/Be sure to print in English only\.?/gi, autoSuggestLanguageInstruction)
+    if(/same language/i.test(corrected)){
+        return corrected
+    }
+    return corrected + '\n\n' + autoSuggestLanguageInstruction
+}

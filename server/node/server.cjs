@@ -19,7 +19,8 @@ app.use(express.text({ limit: '100mb' }));
 const {pipeline} = require('stream/promises')
 const https = require('https');
 const sslPath = path.join(process.cwd(), 'server/node/ssl/certificate');
-const hubURL = 'https://sv.risuai.xyz'; 
+const hubURL = 'https://sv.risuai.xyz';
+const spicyChatURL = 'https://prod.nd-api.com'; 
 const openid = require('openid-client');
 
 let password = ''
@@ -1047,13 +1048,96 @@ async function hubProxyFunc(req, res) {
     }
 }
 
+// SpicyChat REST API (nd-api) proxy — cloned from hubProxyFunc. The nd-api
+// endpoints are CORS-locked to https://spicychat.ai, so the web client calls
+// them same-origin through this route (see src/ts/spicychat.ts). Client auth
+// headers (X-App-Id / X-Guest-UserId / Authorization) are forwarded as-is.
+async function spicyChatProxyFunc(req, res) {
+    const excludedHeaders = [
+        'content-encoding',
+        'content-length',
+        'transfer-encoding'
+    ];
+
+    try {
+        const pathAndQuery = req.originalUrl.replace(/^\/spicychat-proxy/, '');
+        const externalURL = spicyChatURL + pathAndQuery;
+
+        const headersToSend = { ...req.headers };
+        delete headersToSend.host;
+        delete headersToSend.connection;
+        delete headersToSend['content-length'];
+        // nd-api rejects foreign Origin/Referer values; server-to-server
+        // requests don't need them (mirrors the vite dev proxy behavior).
+        delete headersToSend.origin;
+        delete headersToSend.referer;
+
+        const response = await fetch(externalURL, {
+            method: req.method,
+            headers: headersToSend,
+            body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
+            redirect: 'manual',
+            duplex: 'half'
+        });
+
+        for (const [key, value] of response.headers.entries()) {
+            // Skip encoding-related headers to prevent double decoding
+            if (excludedHeaders.includes(key.toLowerCase())) {
+                continue;
+            }
+            res.setHeader(key, value);
+        }
+        res.status(response.status);
+
+        if (response.status >= 300 && response.status < 400 && response.headers.get('location')) {
+            const redirectUrl = response.headers.get('location');
+            const redirectResponse = await fetch(redirectUrl, {
+                method: req.method,
+                headers: headersToSend,
+                body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : undefined,
+                redirect: 'manual',
+                duplex: 'half'
+            });
+            for (const [key, value] of redirectResponse.headers.entries()) {
+                if (excludedHeaders.includes(key.toLowerCase())) {
+                    continue;
+                }
+                res.setHeader(key, value);
+            }
+            res.status(redirectResponse.status);
+            if (redirectResponse.body) {
+                await pipeline(redirectResponse.body, res);
+            } else {
+                res.end();
+            }
+            return;
+        }
+
+        if (response.body) {
+            await pipeline(response.body, res);
+        } else {
+            res.end();
+        }
+
+    } catch (error) {
+        console.error("[SpicyChat Proxy] Error:", error);
+        if (!res.headersSent) {
+            res.status(502).send({ error: 'Proxy request failed: ' + error.message });
+        } else {
+            res.end();
+        }
+    }
+}
+
 app.get('/proxy', authenticatedRouteLimiter, reverseProxyFunc_get);
 app.get('/proxy2', authenticatedRouteLimiter, reverseProxyFunc_get);
 app.get('/hub-proxy/*', authenticatedRouteLimiter, hubProxyFunc);
+app.get('/spicychat-proxy/*', authenticatedRouteLimiter, spicyChatProxyFunc);
 
 app.post('/proxy', authenticatedRouteLimiter, reverseProxyFunc);
 app.post('/proxy2', authenticatedRouteLimiter, reverseProxyFunc);
 app.post('/hub-proxy/*', authenticatedRouteLimiter, hubProxyFunc);
+app.post('/spicychat-proxy/*', authenticatedRouteLimiter, spicyChatProxyFunc);
 app.post('/proxy-stream-jobs', authenticatedRouteLimiter, async (req, res) => {
     if (!await checkProxyAuth(req, res)) {
         return;
