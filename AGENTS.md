@@ -258,3 +258,18 @@ Language files are located in `/src/lang/`.
 2. Run `pnpm check` before submitting a pull request
 3. Ensure your code is well-tested
 4. Format code with Prettier before committing
+
+## Cursor Cloud specific instructions
+
+The startup update script already runs `pnpm install`, so dependencies are ready. Toolchain is Node `^20.19 || >=22.12` + `pnpm@10.34.1` (both preinstalled).
+
+Standard commands are defined in `package.json` scripts (`dev`, `check`, `test`, `build`); use those rather than duplicating them here.
+
+Non-obvious caveats:
+
+- **Running the web app for manual testing requires `VITE_RISU_LEGAL_CONFIGURED=TRUE`.** Start the dev server with `VITE_RISU_LEGAL_CONFIGURED=TRUE pnpm dev`. Without this build-time env var, the Terms of Service screen renders with **no Accept button** (console logs "Legal documents not configured"), so you cannot get past it. This flag is only appropriate for private dev/testing instances.
+- The dev server binds `0.0.0.0:5174` with `strictPort: true` — port 5174 is fixed and will fail (not auto-increment) if occupied. Free the port before restarting.
+- `pnpm dev` logs `ngrok: failed to start` — this is harmless (ngrok is an optional tunnel plugin and is not installed).
+- The product is entirely **client-side**; there is no required backend, database, or API service. Chat data is stored in the browser (IndexedDB/OPFS/localForage). Sending an actual AI message needs a user-provided provider API key, but character creation and the chat UI work without one.
+- Corrupted/partial browser save state can cause a bootstrap `Error processing block pluginStorage` at load. Clear site data (DevTools → Application → Clear site data) or use an incognito window to reset.
+- The Tauri desktop app (`pnpm tauri dev`) and self-hosted Node/Hono servers are optional and not part of the web dev loop; Tauri additionally needs the Rust/Cargo toolchain.
