@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { DynamicGUI, settingsOpen, sideBarStore, ShowRealmFrameStore, openPresetList, openPersonaList, MobileGUI, CustomGUISettingMenuStore, loadedStore, alertStore, LoadingStatusState, bookmarkListOpen, popupStore, easyPanelStore, popUpEditorStore, loadoutModalStore, irisStore, customSideBarConfigDialogStore } from './ts/stores.svelte';
+    import { DynamicGUI, settingsOpen, sideBarStore, ShowRealmFrameStore, openPresetList, openPersonaList, MobileGUI, MobileGUIStack, MobileSideBar, selectedCharID, CustomGUISettingMenuStore, loadedStore, alertStore, LoadingStatusState, bookmarkListOpen, popupStore, easyPanelStore, popUpEditorStore, loadoutModalStore, irisStore, customSideBarConfigDialogStore } from './ts/stores.svelte';
     import Sidebar from './lib/SideBars/Sidebar.svelte';
     import { DBState } from './ts/stores.svelte';
     import ChatScreen from './lib/ChatScreens/ChatScreen.svelte';
@@ -51,6 +51,19 @@
         // Mobile foundation: start tracking the on-screen keyboard so the chat
         // input bar can sit above it via the --kb-inset CSS variable.
         trackKeyboard()
+    })
+
+    // The standalone Settings overlay has no header/footer, so on mobile it would
+    // be a dead-end. Route any settingsOpen request (character/preset/module
+    // imports, module editing, hotkeys, etc.) through the fully navigable mobile
+    // shell Settings tab instead, keeping the requested SettingsMenuIndex.
+    $effect(() => {
+        if ($MobileGUI && $settingsOpen) {
+            settingsOpen.set(false)
+            selectedCharID.set(-1)
+            MobileSideBar.set(0)
+            MobileGUIStack.set(2)
+        }
     })
 </script>
 
@@ -195,7 +208,7 @@
         <CustomGUISettingMenu />
     {:else if !didFirstSetup}
         <WelcomeRisu />
-    {:else if $settingsOpen}
+    {:else if $settingsOpen && !$MobileGUI}
         <Settings />
     {:else if $MobileGUI}
         <div class="w-full h-full flex flex-col">

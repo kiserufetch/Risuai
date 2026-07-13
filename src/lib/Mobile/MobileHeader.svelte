@@ -5,31 +5,33 @@
     import { DBState } from 'src/ts/stores.svelte';
     import { MobileGUIStack, MobileSearch, selectedCharID, SettingsMenuIndex, MobileSideBar } from "src/ts/stores.svelte";
 
+    // Comfortable ~44px touch target for header nav actions (Apple HIG / WCAG AAA).
+    const navButton = "flex items-center justify-center h-11 w-11 -mx-1 shrink-0 rounded-md text-textcolor hover:bg-selected active:bg-selected transition-colors"
 </script>
 <div class="w-full px-4 h-16 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2" style="height: calc(4rem + var(--safe-top)); padding-top: var(--safe-top); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
     {#if $selectedCharID !== -1 && $MobileSideBar > 0}
-        <button onclick={() => {
+        <button class={navButton} aria-label={language.goback} onclick={() => {
             MobileSideBar.set(0)
         }}>
             <ArrowLeft />
         </button>
         <span class="font-bold text-lg w-2/3 truncate">{language.menu}</span>
     {:else if $selectedCharID !== -1}
-        <button onclick={() => {
+        <button class={navButton} aria-label={language.goback} onclick={() => {
             selectedCharID.set(-1)
         }}>
             <ArrowLeft />
         </button>
         <span class="font-bold text-lg w-2/3 truncate">{DBState.db.characters[$selectedCharID].name}</span>
         <div class="flex-1 flex justify-end">
-            <button onclick={() => {
+            <button class={navButton} aria-label={language.menu} onclick={() => {
                 MobileSideBar.set(1)
             }}>
                 <MenuIcon />
             </button>
         </div>
     {:else if $MobileGUIStack === 2 && $SettingsMenuIndex > -1}
-        <button onclick={() => {
+        <button class={navButton} aria-label={language.goback} onclick={() => {
             SettingsMenuIndex.set(-1)
         }}>
             <ArrowLeft />

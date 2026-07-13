@@ -4,7 +4,7 @@
     import { getCurrentCharacter, saveImage as saveAsset, type character, type groupChat } from "../../ts/storage/database.svelte";
     import { DBState } from 'src/ts/stores.svelte';
     import { untrack } from 'svelte';
-    import { CharConfigSubMenu, MobileGUI, ShowRealmFrameStore, selectedCharID, hypaV3ModalOpen } from "../../ts/stores.svelte";
+    import { CharConfigSubMenu, MobileGUI, ShowRealmFrameStore, selectedCharID, hypaV3ModalOpen, SizeStore } from "../../ts/stores.svelte";
     import { PlusIcon, SmileIcon, TrashIcon, UserIcon, ActivityIcon, BookIcon, User, Braces, Volume2Icon, DownloadIcon, HardDriveUploadIcon, Share2Icon, ImageIcon, ImageOffIcon, ArrowUp, ArrowDown } from '@lucide/svelte'
     import Check from "../UI/GUI/CheckInput.svelte";
     import { addCharEmotion, addingEmotion, getCharImage, rmCharEmotion, selectCharImg, makeGroupImage, removeChar, changeCharImage } from "../../ts/characters";
@@ -38,7 +38,7 @@
     let iconRemoveMode = $state(false)
     let viewSubMenu = $state(0)
     let emos:[string, string][] = $state([])
-    let iconButtonSize = window.innerWidth > 360 ? 24 as const : 20 as const
+    let iconButtonSize = $derived($SizeStore.w > 360 ? 24 as const : 20 as const)
     let tokens = $state({
         desc: 0,
         firstMsg: 0,

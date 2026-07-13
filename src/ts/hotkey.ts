@@ -377,6 +377,11 @@ export function initMobileGesture(){
     document.addEventListener('touchend', (ev) => {
         for(const touch of ev.changedTouches){
             const d = pressingPointers.get(touch.identifier)
+            // The pointer is only tracked when the gesture started outside an
+            // interactive element (see touchstart); ignore taps we never recorded.
+            if(!d){
+                continue
+            }
             const moveX = touch.clientX - d.x
             const moveY = touch.clientY - d.y
             pressingPointers.delete(touch.identifier)

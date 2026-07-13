@@ -2,7 +2,7 @@
 
     import Suggestion from './Suggestion.svelte';
     import { CameraIcon, DatabaseIcon, DicesIcon, GlobeIcon, ImagePlusIcon, LanguagesIcon, Laugh, LoaderCircleIcon, MenuIcon, MessageCircleReplyIcon, MicOffIcon, PackageIcon, Plus, RefreshCcwIcon, ReplyIcon, Send, StepForwardIcon, XIcon, BrainIcon, ArrowDown, SparkleIcon } from "@lucide/svelte";
-    import { selectedCharID, PlaygroundStore, createSimpleCharacter, hypaV3ModalOpen, ScrollToMessageStore, additionalChatMenu, additionalFloatingActionButtons, easyPanelStore, chatPanelStore } from "../../ts/stores.svelte";
+    import { selectedCharID, PlaygroundStore, createSimpleCharacter, hypaV3ModalOpen, ScrollToMessageStore, additionalChatMenu, additionalFloatingActionButtons, easyPanelStore, chatPanelStore, isPhone } from "../../ts/stores.svelte";
     import { tick } from 'svelte';
     import Chat from "./Chat.svelte";
     import { type Message } from "../../ts/storage/database.svelte";
@@ -61,6 +61,9 @@
     let { openModuleList = $bindable(false), openChatList = $bindable(false), customStyle = '' }: Props = $props();
     let currentCharacter = $derived(DBState.db.characters[$selectedCharID])
     let currentChat = $derived(currentCharacter?.chats[currentCharacter.chatPage]?.message ?? [])
+    // Pin the composer to the bottom on phones (standard mobile chat UX) even when
+    // the fixedChatTextarea setting is off, so the keyboard/safe-area padding applies.
+    let fixedInput = $derived(DBState.db.fixedChatTextarea || $isPhone)
 
     function scrollToBottom() {
         chatsInstance?.scrollToLatestMessage();
@@ -538,41 +541,41 @@
     
     {#if showNewMessageButton}
         {#if (DBState.db.newMessageButtonStyle === 'bottom-center' || !DBState.db.newMessageButtonStyle)}
-            <button class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-blue-600 transition-colors" onclick={scrollToBottom}>
+            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(4rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'bottom-right'}
-            <button class="absolute bottom-20 right-4 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-blue-600 transition-colors" onclick={scrollToBottom}>
+            <button class="absolute right-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'bottom-left'}
-            <button class="absolute bottom-20 left-4 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-blue-600 transition-colors" onclick={scrollToBottom}>
+            <button class="absolute left-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'floating-circle'}
-            <button class="absolute bottom-36 right-4 bg-blue-500 text-white w-12 h-12 rounded-full shadow-lg z-50 flex items-center justify-center hover:bg-blue-600 transition-colors" onclick={scrollToBottom} title="4. 원형 (우하단)">
+            <button class="absolute right-4 bg-primary-600 text-white w-12 h-12 rounded-full shadow-lg z-50 flex items-center justify-center hover:bg-primary-500 transition-colors" style="bottom: calc(9rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom} title="4. 원형 (우하단)">
                 <ArrowDown size={20} />
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'right-center'}
-            <button class="absolute top-1/2 right-2 -translate-y-1/2 bg-blue-500 text-white px-2 py-3 rounded-l-lg shadow-lg z-50 flex flex-col items-center gap-1 hover:bg-blue-600 transition-colors" onclick={scrollToBottom}>
+            <button class="absolute top-1/2 right-2 -translate-y-1/2 bg-primary-600 text-white px-2 py-3 rounded-l-lg shadow-lg z-50 flex flex-col items-center gap-1 hover:bg-primary-500 transition-colors" onclick={scrollToBottom}>
                 <ArrowDown size={14} />
                 <span class="text-xs writing-mode-vertical">{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'top-bar'}
-            <button class="absolute top-2 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-6 py-1.5 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-blue-600 transition-colors text-sm" onclick={scrollToBottom}>
+            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-6 py-1.5 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors text-sm" style="top: calc(0.5rem + var(--safe-top));" onclick={scrollToBottom}>
                 <ArrowDown size={14} />
                 <span>{language.newMessage}</span>
             </button>
@@ -592,14 +595,14 @@
             {/await}
         {/if}
     {:else}
-        <div class="h-full w-full flex flex-col-reverse overflow-y-auto relative default-chat-screen" onscroll={(e) => {
+        <div class="h-full w-full flex flex-col-reverse overflow-y-auto overscroll-y-contain relative default-chat-screen" style="padding-top: var(--safe-top);" onscroll={(e) => {
             //@ts-expect-error scrollHeight/clientHeight/scrollTop don't exist on EventTarget, but target is HTMLElement here
             const scrolled = (e.target.scrollHeight - e.target.clientHeight + e.target.scrollTop)
             if(scrolled < 100 && DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message.length > loadPages){
                 loadPages += getAdditionalChatLoadPages(DBState.db)
             }
             const chatTarget = e.target as HTMLElement;
-            const chatsContainer = (DBState.db.fixedChatTextarea && chatTarget.children[1]) ? chatTarget.children[1] : chatTarget.children[0];
+            const chatsContainer = (fixedInput && chatTarget.children[1]) ? chatTarget.children[1] : chatTarget.children[0];
             const lastEl = chatsContainer?.firstElementChild;
             const isAtBottom = lastEl ? lastEl.getBoundingClientRect().top <= chatTarget.getBoundingClientRect().bottom + 100 : true;
             if(isAtBottom){
@@ -607,8 +610,8 @@
             }
         }}>
             <div
-                    class="{DBState.db.fixedChatTextarea ? 'sticky pt-2 pb-2 right-0 bottom-0 bg-bgcolor' : 'mt-2 mb-2'} flex items-end w-full"
-                    style="{DBState.db.fixedChatTextarea ? 'z-index:29;' : ''}"
+                    class="{fixedInput ? 'sticky pt-2 right-0 bottom-0 bg-bgcolor' : 'mt-2 mb-2'} flex items-end w-full"
+                    style="{fixedInput ? 'z-index:29;padding-bottom:calc(0.5rem + var(--kb-inset) + var(--safe-bottom));' : ''}"
             >
                 {#if DBState.db.useChatSticker && currentCharacter.type !== 'group'}
                     <div onclick={()=>{toggleStickers = !toggleStickers}}
@@ -918,9 +921,24 @@
             {/if}
 
             {#if openMenu}
-                <div class="{DBState.db.fixedChatTextarea ? 'fixed' : 'absolute'} right-2 bottom-16 p-5 bg-darkbg flex flex-col gap-3 text-textcolor rounded-md" onclick={(e) => {
+                {#if $isPhone}
+                    <!-- svelte-ignore a11y_click_events_have_key_events -->
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+                    <div class="fixed inset-0 z-40 bg-black/50 chat-menu-backdrop" onclick={(e) => {
+                        e.stopPropagation()
+                        openMenu = false
+                    }}></div>
+                {/if}
+                <div class="{$isPhone
+                        ? 'fixed left-0 right-0 bottom-0 z-50 rounded-t-2xl max-h-[70dvh] overflow-y-auto overscroll-contain chat-menu-sheet'
+                        : (DBState.db.fixedChatTextarea ? 'fixed' : 'absolute') + ' right-2 bottom-16 rounded-md'} p-5 bg-darkbg flex flex-col gap-3 text-textcolor"
+                    style={$isPhone ? 'padding-bottom: calc(1.25rem + var(--safe-bottom));' : ''}
+                    onclick={(e) => {
                     e.stopPropagation()
                 }}>
+                    {#if $isPhone}
+                        <div class="chat-sheet-handle mx-auto mb-1 h-1 w-10 rounded-full bg-textcolor2/40"></div>
+                    {/if}
                     {#if DBState.db.characters[$selectedCharID].type === 'group'}
                         <div class="flex items-center cursor-pointer hover:text-green-500 transition-colors" onclick={runAutoMode}>
                             <DicesIcon />
@@ -1085,9 +1103,9 @@
 </div>
 
 {#if additionalFloatingActionButtons.length > 0}
-    <div class="fixed top-4 right-4 flex flex-col gap-3 z-50">
+    <div class="fixed right-4 flex flex-col gap-3 z-50" style="top: calc(1rem + var(--safe-top)); right: calc(1rem + var(--safe-right));">
         {#each additionalFloatingActionButtons as button}
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:bg-blue-600 transition-colors" onclick={() => {
+            <button class="bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 hover:bg-primary-500 transition-colors" onclick={() => {
                 button.callback()
             }}>
                 <PluginDefinedIcon ico={button} />
@@ -1126,5 +1144,29 @@
         
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    /* Mobile chat-settings bottom sheet: comfortable 44px touch rows + slide-up */
+    .chat-menu-sheet {
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+        animation: chat-sheet-up 0.22s ease-out;
+    }
+    .chat-menu-sheet > div:not(.chat-sheet-handle) {
+        min-height: 2.75rem;
+    }
+    .chat-menu-backdrop {
+        animation: chat-sheet-fade 0.22s ease-out;
+    }
+    @keyframes chat-sheet-up {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+    @keyframes chat-sheet-fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .chat-menu-sheet,
+        .chat-menu-backdrop { animation: none; }
     }
 </style>

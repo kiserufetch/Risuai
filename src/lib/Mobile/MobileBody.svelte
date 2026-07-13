@@ -16,18 +16,18 @@
 </script>
 
 {#if $MobileSideBar > 0 && !$isLite}
-<div class="w-full px-2 py-1 text-textcolor2 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2">
-    <button class="flex-1 border-r border-r-darkborderc" class:text-textcolor={$MobileSideBar === 1} onclick={() => {
+<div class="w-full px-2 text-textcolor2 border-b border-b-darkborderc bg-darkbg flex justify-start items-stretch gap-1">
+    <button class="flex-1 flex justify-center items-center py-2.5 border-r border-r-darkborderc active:bg-selected transition-colors" class:text-textcolor={$MobileSideBar === 1} onclick={() => {
         $MobileSideBar = 1
     }}>
         {language.Chat}
     </button>
-    <button class="flex-1 border-r border-r-darkborderc" class:text-textcolor={$MobileSideBar === 2} onclick={() => {
+    <button class="flex-1 flex justify-center items-center py-2.5 border-r border-r-darkborderc active:bg-selected transition-colors" class:text-textcolor={$MobileSideBar === 2} onclick={() => {
         $MobileSideBar = 2
     }}>
         {language.character}
     </button>
-    <button class:text-textcolor={$MobileSideBar === 3} onclick={() => {
+    <button class="flex justify-center items-center px-5 py-2.5 active:bg-selected transition-colors" class:text-textcolor={$MobileSideBar === 3} onclick={() => {
         $MobileSideBar = 3
     }}>
         <WrenchIcon size={18} />

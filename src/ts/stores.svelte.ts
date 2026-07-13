@@ -8,6 +8,9 @@ import type { hubType } from "./characterCards";
 import type { SpicyChatListDocument } from "./spicychat";
 import type { PluginSafetyErrors } from "./plugins/pluginSafety";
 
+// Lite builds always run the dedicated mobile shell regardless of viewport.
+const isLiteMode = import.meta.env.VITE_RISU_LITE === 'TRUE'
+
 function updateSize(){
     SizeStore.set({
         w: window.innerWidth,
@@ -16,6 +19,9 @@ function updateSize(){
     DynamicGUI.set(window.innerWidth <= 1024)
     isPhone.set(window.innerWidth < 768)
     isTablet.set(window.innerWidth >= 768 && window.innerWidth <= 1024)
+    // The mobile shell (MobileHeader/Body/Footer) is now the default on phone-width
+    // viewports and reacts to resize/rotation, matching the isPhone breakpoint.
+    MobileGUI.set(isLiteMode || window.innerWidth < 768)
 }
 
 export const SizeStore = writable({
@@ -41,7 +47,7 @@ export const moduleBackgroundEmbedding = writable('')
 export const openPresetList = writable(false)
 export const openPersonaList = writable(false)
 export const bookmarkListOpen = writable(false)
-export const MobileGUI = writable(false)
+export const MobileGUI = writable(isLiteMode || window.innerWidth < 768)
 export const MobileGUIStack = writable(0)
 export const MobileSideBar = writable(0)
 export const SettingsMenuIndex = writable(-1)

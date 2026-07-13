@@ -47,7 +47,7 @@
       }
     ];
 </script>
-<div class="h-full w-full flex flex-col overflow-y-auto items-center">
+<div class="h-full w-full flex flex-col overflow-y-auto overscroll-y-contain items-center" style="padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);">
     {#if !$OpenRealmStore && !$OpenSpicyChatStore}
       <Title />
       <h3 class="text-textcolor2 mt-1">Version {getVersionString()}</h3>

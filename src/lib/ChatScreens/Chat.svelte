@@ -1047,11 +1047,11 @@
                     {@render senderIcon({rounded: true})}
                 {/if}
                 <div
-                    class="bg-gray-100 rounded-lg p-3 max-w-[70%] mx-2"
+                    class="rounded-2xl p-3 max-w-[75%] mx-2 text-textcolor {role === 'user' ? 'bg-primary-600/20 border border-primary-500/40' : 'bg-selected'}"
                     class:rounded-tl-none={role !== 'user'}
                     class:rounded-tr-none={role === 'user'}
                 >
-                    <p class="text-gray-800">{@render textBox()}</p>
+                    {@render textBox()}
                     {#if DBState.db.characters?.[selIdState.selId]?.chats?.[DBState.db.characters?.[selIdState.selId]?.chatPage]?.message?.[idx]?.time}
                         <span class="text-xs text-textcolor2 mt-1 block">
                             {new Intl.DateTimeFormat(undefined, {

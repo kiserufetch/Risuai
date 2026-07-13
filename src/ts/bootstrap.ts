@@ -13,7 +13,7 @@ import { get } from "svelte/store";
 import { setDatabase, defaultSdDataFunc, getDatabase } from "./storage/database.svelte";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { checkRisuUpdate } from "./update";
-import { MobileGUI, botMakerMode, selectedCharID, loadedStore, DBState, LoadingStatusState } from "./stores.svelte";
+import { botMakerMode, selectedCharID, loadedStore, DBState, LoadingStatusState } from "./stores.svelte";
 import { loadPlugins } from "./plugins/plugins.svelte";
 import { alertError, alertMd, alertTOS, waitAlert, alertConfirm, alertInput } from "./alert";
 import { checkDriverInit } from "./drive/drive";
@@ -242,10 +242,10 @@ export async function loadData() {
             if (db.botSettingAtStart) {
                 botMakerMode.set(true)
             }
-            if ((db.betaMobileGUI && window.innerWidth <= 800) || import.meta.env.VITE_RISU_LITE === 'TRUE') {
-                initMobileGesture()
-                MobileGUI.set(true)
-            }
+            // The mobile shell is now the default on phone-width viewports and is
+            // toggled reactively in stores.svelte.ts (updateSize). We only need to
+            // wire up swipe-navigation gestures once here.
+            initMobileGesture()
             await makeColdData()
             loadedStore.set(true)
             selectedCharID.set(-1)
