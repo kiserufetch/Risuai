@@ -14,6 +14,8 @@
     }
 
     const agoFormatter = new Intl.RelativeTimeFormat(navigator.languages, { style: 'short' });
+    // numeric:'auto' renders "now" instead of "in 0 seconds" for fresh chats
+    const nowFormatter = new Intl.RelativeTimeFormat(navigator.languages, { style: 'short', numeric: 'auto' });
 
     let {endGrid = () => {}, search, hideTrash = false}: Props = $props();
     let normalizedSearch = $derived(normalizeSearch(search ?? $MobileSearch));
@@ -27,6 +29,9 @@
             return "";
         }
         const diff = Date.now() - time;
+        if(diff < 60000){
+            return nowFormatter.format(0, 'second');
+        }
         if(diff < 3600000){
             const min = Math.floor(diff / 60000);
             return agoFormatter.format(-min, 'minute');

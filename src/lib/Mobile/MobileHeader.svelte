@@ -66,7 +66,7 @@
                 {/if}
             {/await}
             <span class="flex flex-col min-w-0">
-                <span class="font-bold text-base leading-tight truncate">{currentChar?.name}</span>
+                <span class="font-bold text-base leading-tight truncate">{currentChar?.name || 'Unnamed'}</span>
                 {#if currentChatName}
                     <span class="text-xs text-textcolor2 leading-tight truncate">{currentChatName}</span>
                 {/if}
