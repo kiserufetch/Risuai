@@ -81,8 +81,8 @@
     let translated = $state(false)
     let partialEditEnabled = $state(true)
 
-    async function rm(e:MouseEvent, rec?:boolean){
-        if(e.shiftKey){
+    async function rm(e:MouseEvent|TouchEvent, rec?:boolean){
+        if((e as MouseEvent).shiftKey){
             let msg = DBState.db.characters[selIdState.selId].chats[DBState.db.characters[selIdState.selId].chatPage].message
             msg = msg.slice(0, idx)
             DBState.db.characters[selIdState.selId].chats[DBState.db.characters[selIdState.selId].chatPage].message = msg

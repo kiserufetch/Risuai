@@ -9,6 +9,7 @@
     import { CopyIcon, LanguagesIcon, RefreshCcwIcon } from "@lucide/svelte";
     import { alertConfirm } from "src/ts/alert";
     import { language } from "src/lang";
+    import { isPhone } from "src/ts/stores.svelte";
     import { getUserName, replacePlaceholders } from "../../ts/util";
     import { onDestroy } from 'svelte';
     import { ParseMarkdown } from "src/ts/parser/parser.svelte";
@@ -157,44 +158,41 @@
     $effect.pre(() => {translateSuggest(toggleTranslate, suggestMessages)});
 </script>
 
-<div class="ml-4 flex flex-wrap">
+<!-- Suggestion chips: single-line horizontal scroll on phones (ChatGPT-style),
+     wrapping rows on larger screens. -->
+<div class="flex px-3 md:px-4 py-1 gap-2 {$isPhone ? 'flex-nowrap overflow-x-auto no-scrollbar' : 'flex-wrap'}">
     {#if progress}
-        <div class="flex bg-textcolor2 p-2 rounded-lg items-center">
-            <div class="loadmove mx-2"></div>
-            <div>{language.creatingSuggestions}</div>
-        </div>        
+        <div class="flex items-center shrink-0 gap-2 rounded-full border border-darkborderc bg-darkbg px-4 py-2 text-sm text-textcolor2">
+            <div class="loadmove"></div>
+            <span class="whitespace-nowrap">{language.creatingSuggestions}</span>
+        </div>
     {:else if !$doingChat}
         {#if DBState.db.translator !== ''}
-            <div class="flex mr-2 mb-2">
-                <button class={"bg-textcolor2 hover:bg-darkbutton font-bold py-2 px-4 rounded-sm " + (toggleTranslate ? 'text-green-500' : 'text-textcolor')}
-                    onclick={() => {
-                        toggleTranslate = !toggleTranslate
-                    }}
-                >
-                    <LanguagesIcon/>
-                </button>
-            </div>    
-        {/if}
-        
-
-        <div class="flex mr-2 mb-2">
-            <button class="bg-textcolor2 hover:bg-darkbutton font-bold py-2 px-4 rounded-sm text-textcolor"
+            <button class={"flex items-center justify-center shrink-0 rounded-full border border-darkborderc bg-darkbg w-10 h-10 hover:bg-selected active:bg-selected transition-colors " + (toggleTranslate ? 'text-green-500' : 'text-textcolor2')}
                 onclick={() => {
-                    alertConfirm(language.askReRollAutoSuggestions).then((result) => {
-                        if(result) {
-                            suggestMessages = []
-                            cancelSuggestionRequest()
-                            requestSuggestions()
-                        }
-                    })
+                    toggleTranslate = !toggleTranslate
                 }}
             >
-                <RefreshCcwIcon/>
+                <LanguagesIcon size={18}/>
             </button>
-        </div>
+        {/if}
+
+        <button class="flex items-center justify-center shrink-0 rounded-full border border-darkborderc bg-darkbg w-10 h-10 text-textcolor2 hover:bg-selected active:bg-selected transition-colors"
+            onclick={() => {
+                alertConfirm(language.askReRollAutoSuggestions).then((result) => {
+                    if(result) {
+                        suggestMessages = []
+                        cancelSuggestionRequest()
+                        requestSuggestions()
+                    }
+                })
+            }}
+        >
+            <RefreshCcwIcon size={18}/>
+        </button>
         {#each suggestMessages??[] as suggest, i}
-            <div class="flex mr-2 mb-2">
-                <button class="bg-textcolor2 hover:bg-darkbutton text-textcolor font-bold py-2 px-4 rounded-sm" onclick={() => {
+            <div class="flex shrink-0 max-w-[85vw] md:max-w-md rounded-full border border-darkborderc bg-darkbg overflow-hidden">
+                <button class="text-textcolor text-sm py-2 pl-4 pr-2 truncate hover:bg-selected active:bg-selected transition-colors risu-suggest-chip" onclick={() => {
                     suggestMessages = []
                     messageInput(suggest)
                     send()
@@ -203,10 +201,10 @@
                     {@html md}
                 {/await}
                 </button>
-                <button class="bg-textcolor2 hover:bg-darkbutton text-textcolor font-bold py-2 px-4 rounded-sm ml-1" onclick={() => {
+                <button class="text-textcolor2 py-2 pl-2 pr-3 hover:bg-selected active:bg-selected hover:text-textcolor transition-colors" aria-label={language.hotkeyDesc.copy} onclick={() => {
                     messageInput(suggest)
                 }}>
-                    <CopyIcon/>
+                    <CopyIcon size={16}/>
                 </button>
             </div>
         {/each}
@@ -219,11 +217,20 @@
     .loadmove {
         animation: spin 1s linear infinite;
         border-radius: 50%;
-        border: 0.4rem solid rgba(0,0,0,0);
+        border: 0.2rem solid rgba(0,0,0,0);
         width: 1rem;
         height: 1rem;
-        border-top: 0.4rem solid var(--risu-theme-textcolor);
-        border-left: 0.4rem solid var(--risu-theme-textcolor);
+        border-top: 0.2rem solid var(--risu-theme-textcolor);
+        border-left: 0.2rem solid var(--risu-theme-textcolor);
+    }
+
+    /* Suggestions are single-line chips; flatten any block elements coming out
+       of the markdown parser so truncation keeps working. */
+    .risu-suggest-chip :global(:is(p, ul, ol, li, blockquote, pre, h1, h2, h3, h4, h5, h6)) {
+        margin: 0;
+        padding: 0;
+        display: inline;
+        white-space: nowrap;
     }
 
     @keyframes spin {
