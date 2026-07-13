@@ -68,12 +68,21 @@
     // Mobile scroll-down FAB + typing indicator state
     let composerHeight = $state(72)
     let showScrollDown = $state(false)
+    // Character the in-flight generation belongs to; keeps the typing indicator
+    // from showing on other chats while a generation runs in the background.
+    let sendingCharId = $state(-1)
     // True while a reply is being generated but no text has arrived yet
     // (streaming pushes an empty char message first, non-streaming nothing).
     let awaitingResponse = $derived.by(() => {
         const last = currentChat[currentChat.length - 1]
         if(!last) return true
         return last.role === 'user' || (last.role === 'char' && !last.data)
+    })
+
+    $effect(() => {
+        // Reset transient scroll UI when navigating between characters.
+        $selectedCharID
+        showScrollDown = false
     })
 
     function scrollToBottom(behavior: ScrollBehavior = 'instant') {
@@ -345,6 +354,7 @@
         let previousLength = DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message.length
         messageInput = ''
         abortController = new AbortController()
+        sendingCharId = $selectedCharID
         try {
             await sendChat(-1, {
                 signal:abortController.signal,
@@ -358,6 +368,7 @@
             console.error(error)
             alertError(error)
         }
+        sendingCharId = -1
         lastCharId = $selectedCharID
         $doingChat = false
         if(DBState.db.playMessage){
@@ -554,8 +565,10 @@
     {#if $isPhone && $selectedCharID >= 0 && (showScrollDown || showNewMessageButton)}
         <!-- Mobile: compact circular scroll-to-bottom button above the composer,
              with an accent dot when there is an unread message below. -->
+        <!-- composerHeight (clientHeight) already includes the keyboard/safe-area
+             padding of the composer wrapper, so only a small gap is added here. -->
         <button class="absolute right-3 z-40 h-10 w-10 rounded-full bg-darkbg border border-darkborderc shadow-lg flex items-center justify-center text-textcolor active:scale-95 transition-transform"
-                style="bottom: calc({composerHeight}px + 0.75rem + var(--safe-bottom) + var(--kb-inset));"
+                style="bottom: calc({composerHeight}px + 0.75rem);"
                 aria-label={language.newMessage}
                 onclick={() => scrollToBottom('smooth')}>
             <ArrowDown size={18} />
@@ -629,7 +642,7 @@
             // In a column-reverse container scrollTop is 0 at the bottom and goes
             // negative while scrolling up, so |scrollTop| is the distance from it.
             showScrollDown = Math.abs(chatTarget.scrollTop) > 240;
-            const chatsContainer = chatTarget.querySelector(':scope > .risu-chats');
+            const chatsContainer = chatTarget.querySelector(':scope > .risu-chat-body');
             const lastEl = chatsContainer?.firstElementChild;
             const isAtBottom = lastEl ? lastEl.getBoundingClientRect().top <= chatTarget.getBoundingClientRect().bottom + 100 : true;
             if(isAtBottom){
@@ -859,7 +872,7 @@
                 </div>
             {/if}
 
-            {#if $doingChat && awaitingResponse}
+            {#if $doingChat && awaitingResponse && sendingCharId === $selectedCharID}
                 <!-- Typing indicator: sits directly below the newest message
                      (this scroll container is column-reverse). -->
                 <div class="flex items-center gap-1 px-6 py-3 risu-typing-indicator" role="status" aria-label={language.loading}>

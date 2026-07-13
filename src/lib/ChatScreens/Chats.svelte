@@ -3,7 +3,7 @@
     import { mount, onDestroy, unmount } from 'svelte';
     import Chat from './Chat.svelte';
     import { getCharImage } from 'src/ts/characters';
-    import { createSimpleCharacter, DBState, selectedCharID, ReloadChatPointer } from 'src/ts/stores.svelte';
+    import { createSimpleCharacter, DBState, selectedCharID, ReloadChatPointer, isPhone } from 'src/ts/stores.svelte';
     import { chatFoldedStateMessageIndex } from 'src/ts/globalApi.svelte';
     import { get } from 'svelte/store';
     
@@ -118,6 +118,9 @@
             currentHashes.add(currentHash);
             const existing = mountRecords.get(currentHash);
             if(existing){
+                // Known trade-off: `img`/`character` stay as captured at mount time
+                // (mid-chat persona/avatar swaps refresh on the next remount), which
+                // matches the previous remount-based behavior.
                 const p = existing.props;
                 if(existing.lastData !== message.data){
                     existing.lastData = message.data;
@@ -229,8 +232,9 @@
         }
         else if(isSameChat && messages.length > previousLength){
             const lastMsg = messages[messages.length - 1];
-            if(lastMsg && lastMsg.role === 'user'){
-                // The user just sent a message: always bring it into view.
+            if(lastMsg && lastMsg.role === 'user' && (wasAtBottom || get(isPhone))){
+                // The user just sent a message: bring it into view. On desktop a
+                // deliberate scroll-up position is preserved (matching main).
                 requestAnimationFrame(() => scrollToLatestMessage(wasAtBottom ? 'instant' : 'smooth'));
             }
             else if(lastMsg && lastMsg.role === 'char' && DBState.db.autoScrollToNewMessage){
@@ -250,4 +254,4 @@
 
 </script>
 
-<div class="flex flex-col-reverse risu-chats" bind:this={chatBody}></div>
+<div class="flex flex-col-reverse risu-chat-body" bind:this={chatBody}></div>

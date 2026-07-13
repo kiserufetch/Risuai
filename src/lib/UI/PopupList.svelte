@@ -42,8 +42,18 @@
     {#if $isPhone}
         <!-- Mobile: bottom action sheet (large touch rows, safe-area aware) -->
         <div class="fixed inset-0 z-50 bg-black/50 risu-popup-backdrop"></div>
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div class="fixed left-0 right-0 bottom-0 z-50 rounded-t-2xl bg-darkbg border-t border-darkborderc max-h-[70dvh] overflow-y-auto overscroll-contain p-3 flex flex-col gap-1 items-stretch risu-popup-sheet"
-             style="padding-bottom: calc(0.75rem + var(--safe-bottom));">
+             style="padding-bottom: calc(0.75rem + var(--safe-bottom));"
+             onclick={(e) => {
+                // Taps on padding / drag handle / gaps must not dismiss the sheet;
+                // taps on action rows keep bubbling so the document listener closes it.
+                const target = e.target as HTMLElement
+                if(!target.closest('button')){
+                    e.stopPropagation()
+                }
+             }}>
             <div class="mx-auto mb-2 h-1 w-10 rounded-full bg-textcolor2/40 shrink-0"></div>
             {@render popupStore.children()}
         </div>

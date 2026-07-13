@@ -58,7 +58,9 @@
         <button class="flex items-center gap-2.5 flex-1 min-w-0 rounded-lg px-1 py-1 -my-1 active:bg-selected transition-colors text-left" onclick={() => {
             MobileSideBar.set(2)
         }}>
-            {#await getCharImage(currentChar?.image, 'css') then css}
+            {#await getCharImage(currentChar?.image, 'css')}
+                <div class="h-9 w-9 min-w-9 rounded-full bg-selected"></div>
+            {:then css}
                 {#if css}
                     <div class="h-9 w-9 min-w-9 rounded-full shadow-sm" style={css}></div>
                 {:else}

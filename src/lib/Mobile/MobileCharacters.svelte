@@ -57,7 +57,8 @@
     }
 
     // Plain-text snippet of the latest message for the conversation list,
-    // stripped of markdown/CBS/HTML noise (messenger-style preview).
+    // stripped of markdown/CBS/HTML noise (messenger-style preview). Only the
+    // head of the message is processed: the preview is capped at 90 chars.
     function makePreview(c: character|groupChat): string {
         const chat = c.chats?.[c.chatPage] ?? c.chats?.[0]
         let text = chat?.message?.at(-1)?.data ?? ''
@@ -65,6 +66,7 @@
             text = c.firstMessage ?? ''
         }
         text = text
+            .slice(0, 600)
             .replace(/{{[\s\S]*?}}/g, '')
             .replace(/<[^>]*>/g, ' ')
             .replace(/[*_#>`~|]/g, '')
@@ -94,16 +96,22 @@
             return b.interaction - a.interaction;
         });
     }
+
+    // Derived once per relevant DB change instead of per template evaluation;
+    // keeps regex/sort work and avatar promise identity stable.
+    let sortedChars = $derived(sortChar(DBState.db.characters))
 </script>
 <div class="flex flex-col items-center w-full overflow-y-auto overscroll-contain h-full">
-    {#each sortChar(DBState.db.characters) as char, i}
+    {#each sortedChars as char, i (char.i)}
         {#if normalizeSearch(char.name).includes(normalizedSearch)}
             <button class="flex items-center gap-3 w-full px-4 py-3 border-t-darkborderc active:bg-selected transition-colors text-left" class:border-t={i !== 0} onclick={() => {
                 haptic(4)
                 changeChar(char.i)
                 endGrid()
             }}>
-                {#await getCharImage(char.image, 'css') then css}
+                {#await getCharImage(char.image, 'css')}
+                    <div class="h-12 w-12 min-w-12 rounded-full bg-selected"></div>
+                {:then css}
                     {#if css}
                         <div class="h-12 w-12 min-w-12 rounded-full shadow-sm" style={css}></div>
                     {:else}

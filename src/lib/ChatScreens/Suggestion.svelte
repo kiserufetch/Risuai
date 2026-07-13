@@ -224,10 +224,11 @@
         border-left: 0.2rem solid var(--risu-theme-textcolor);
     }
 
-    /* Suggestions are single-line chips; strip paragraph margins from the
-       parsed markdown so the text centers vertically. */
-    .risu-suggest-chip :global(p) {
+    /* Suggestions are single-line chips; flatten any block elements coming out
+       of the markdown parser so truncation keeps working. */
+    .risu-suggest-chip :global(:is(p, ul, ol, li, blockquote, pre, h1, h2, h3, h4, h5, h6)) {
         margin: 0;
+        padding: 0;
         display: inline;
         white-space: nowrap;
     }

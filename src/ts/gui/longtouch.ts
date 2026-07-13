@@ -14,6 +14,7 @@ export function longpress(node: HTMLElement, callback: (e: MouseEvent | TouchEve
 	let touchStartX = 0;
 	let touchStartY = 0;
 	let touchFired = false;
+	let touchPending = false;
 
 	const isTextEntry = node.tagName === 'TEXTAREA' || node.tagName === 'INPUT';
 
@@ -39,6 +40,7 @@ export function longpress(node: HTMLElement, callback: (e: MouseEvent | TouchEve
 		touchStartX = touch.clientX;
 		touchStartY = touch.clientY;
 		touchFired = false;
+		touchPending = true;
 		window.clearTimeout(timeoutPtr);
 		timeoutPtr = window.setTimeout(() => {
 			touchFired = true;
@@ -52,10 +54,12 @@ export function longpress(node: HTMLElement, callback: (e: MouseEvent | TouchEve
 		if (Math.abs(touch.clientX - touchStartX) > MOVE_TOLERANCE_PX ||
 			Math.abs(touch.clientY - touchStartY) > MOVE_TOLERANCE_PX) {
 			window.clearTimeout(timeoutPtr);
+			touchPending = false;
 		}
 	}
 	function handleTouchEnd(e: TouchEvent) {
 		window.clearTimeout(timeoutPtr);
+		touchPending = false;
 		if (touchFired) {
 			// Swallow the synthetic click that follows touchend, otherwise the
 			// element's regular click handler would fire on top of the long-press.
@@ -63,9 +67,17 @@ export function longpress(node: HTMLElement, callback: (e: MouseEvent | TouchEve
 			touchFired = false;
 		}
 	}
+	function handleTouchCancel() {
+		window.clearTimeout(timeoutPtr);
+		touchPending = false;
+		touchFired = false;
+	}
 	function handleContextMenu(e: Event) {
-		// Android fires contextmenu on long-press; the action already handles it.
-		e.preventDefault();
+		// Android fires contextmenu on long-press; suppress it only while a touch
+		// long-press is in flight so desktop right-click keeps working.
+		if (touchPending || touchFired) {
+			e.preventDefault();
+		}
 	}
 
 	node.addEventListener('mousedown', handleMouseDown);
@@ -74,18 +86,22 @@ export function longpress(node: HTMLElement, callback: (e: MouseEvent | TouchEve
 		node.addEventListener('touchstart', handleTouchStart, { passive: true });
 		node.addEventListener('touchmove', handleTouchMove, { passive: true });
 		node.addEventListener('touchend', handleTouchEnd, { passive: false });
-		node.addEventListener('touchcancel', handleMouseUp);
+		node.addEventListener('touchcancel', handleTouchCancel);
 		node.addEventListener('contextmenu', handleContextMenu);
 	}
 	return {
 		destroy: () => {
+			// The node can unmount while a press is armed (e.g. the message list
+			// remounts a row); a timer left running would fire against stale state.
+			window.clearTimeout(timeoutPtr);
+			window.removeEventListener('mousemove', handleMoveBeforeLong);
 			node.removeEventListener('mousedown', handleMouseDown);
 			node.removeEventListener('mouseup', handleMouseUp);
 			if (!isTextEntry) {
 				node.removeEventListener('touchstart', handleTouchStart);
 				node.removeEventListener('touchmove', handleTouchMove);
 				node.removeEventListener('touchend', handleTouchEnd);
-				node.removeEventListener('touchcancel', handleMouseUp);
+				node.removeEventListener('touchcancel', handleTouchCancel);
 				node.removeEventListener('contextmenu', handleContextMenu);
 			}
 		}

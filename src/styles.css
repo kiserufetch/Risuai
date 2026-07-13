@@ -584,12 +584,14 @@ annotation {
     width: 1.125rem;
     height: 1.125rem;
   }
-  .chat-controls button {
+  /* Only the horizontal icon row; the flex-col variant (genInfo badges) keeps
+     its own spacing. */
+  .chat-controls:not(.flex-col) button {
     padding: 0.5rem;
     margin: -0.125rem;
     border-radius: 0.5rem;
   }
-  .chat-controls button:active {
+  .chat-controls:not(.flex-col) button:active {
     background-color: var(--risu-theme-selected);
   }
 }
