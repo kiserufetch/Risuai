@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import Suggestion from './Suggestion.svelte';
-    import { CameraIcon, DatabaseIcon, DicesIcon, GlobeIcon, ImagePlusIcon, LanguagesIcon, Laugh, LoaderCircleIcon, MenuIcon, MessageCircleReplyIcon, MicOffIcon, PackageIcon, Plus, RefreshCcwIcon, ReplyIcon, Send, StepForwardIcon, XIcon, BrainIcon, ArrowDown, SparkleIcon } from "@lucide/svelte";
+    import { CameraIcon, DatabaseIcon, DicesIcon, GlobeIcon, ImagePlusIcon, LanguagesIcon, Laugh, LoaderCircleIcon, MenuIcon, MessageCircleReplyIcon, MicOffIcon, PackageIcon, Plus, RefreshCcwIcon, ReplyIcon, StepForwardIcon, XIcon, BrainIcon, ArrowDown, ArrowUp, Square, SparkleIcon } from "@lucide/svelte";
     import { selectedCharID, PlaygroundStore, createSimpleCharacter, hypaV3ModalOpen, ScrollToMessageStore, additionalChatMenu, additionalFloatingActionButtons, easyPanelStore, chatPanelStore, isPhone } from "../../ts/stores.svelte";
     import { tick } from 'svelte';
     import Chat from "./Chat.svelte";
@@ -34,6 +34,7 @@
     import { getAdditionalChatLoadPages, getInitialChatLoadPages } from 'src/ts/chatLoadPages';
     import { isMobile } from 'src/ts/platform';
     import { generateAutoReply } from 'src/ts/process/autoReply';
+    import { haptic } from 'src/ts/gui/haptics';
 
     const loadPlaygroundMenu = () => import('../Playground/PlaygroundMenu.svelte').then(m => m.default);
     
@@ -64,9 +65,20 @@
     // Pin the composer to the bottom on phones (standard mobile chat UX) even when
     // the fixedChatTextarea setting is off, so the keyboard/safe-area padding applies.
     let fixedInput = $derived(DBState.db.fixedChatTextarea || $isPhone)
+    // Mobile scroll-down FAB + typing indicator state
+    let composerHeight = $state(72)
+    let showScrollDown = $state(false)
+    // True while a reply is being generated but no text has arrived yet
+    // (streaming pushes an empty char message first, non-streaming nothing).
+    let awaitingResponse = $derived.by(() => {
+        const last = currentChat[currentChat.length - 1]
+        if(!last) return true
+        return last.role === 'user' || (last.role === 'char' && !last.data)
+    })
 
-    function scrollToBottom() {
-        chatsInstance?.scrollToLatestMessage();
+    function scrollToBottom(behavior: ScrollBehavior = 'instant') {
+        showScrollDown = false
+        chatsInstance?.scrollToLatestMessage(behavior);
     }
     $effect(() => {
         if(ScrollToMessageStore.value !== -1){
@@ -539,43 +551,56 @@
     openMenu = false
 }}>
     
-    {#if showNewMessageButton}
+    {#if $isPhone && $selectedCharID >= 0 && (showScrollDown || showNewMessageButton)}
+        <!-- Mobile: compact circular scroll-to-bottom button above the composer,
+             with an accent dot when there is an unread message below. -->
+        <button class="absolute right-3 z-40 h-10 w-10 rounded-full bg-darkbg border border-darkborderc shadow-lg flex items-center justify-center text-textcolor active:scale-95 transition-transform"
+                style="bottom: calc({composerHeight}px + 0.75rem + var(--safe-bottom) + var(--kb-inset));"
+                aria-label={language.newMessage}
+                onclick={() => scrollToBottom('smooth')}>
+            <ArrowDown size={18} />
+            {#if showNewMessageButton}
+                <span class="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary-500"></span>
+            {/if}
+        </button>
+    {/if}
+    {#if showNewMessageButton && !$isPhone}
         {#if (DBState.db.newMessageButtonStyle === 'bottom-center' || !DBState.db.newMessageButtonStyle)}
-            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(4rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
+            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(4rem + var(--safe-bottom) + var(--kb-inset));" onclick={() => scrollToBottom()}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'bottom-right'}
-            <button class="absolute right-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
+            <button class="absolute right-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={() => scrollToBottom()}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'bottom-left'}
-            <button class="absolute left-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom}>
+            <button class="absolute left-4 bg-primary-600 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors" style="bottom: calc(5rem + var(--safe-bottom) + var(--kb-inset));" onclick={() => scrollToBottom()}>
                 <ArrowDown size={16} />
                 <span>{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'floating-circle'}
-            <button class="absolute right-4 bg-primary-600 text-white w-12 h-12 rounded-full shadow-lg z-50 flex items-center justify-center hover:bg-primary-500 transition-colors" style="bottom: calc(9rem + var(--safe-bottom) + var(--kb-inset));" onclick={scrollToBottom} title="4. 원형 (우하단)">
+            <button class="absolute right-4 bg-primary-600 text-white w-12 h-12 rounded-full shadow-lg z-50 flex items-center justify-center hover:bg-primary-500 transition-colors" style="bottom: calc(9rem + var(--safe-bottom) + var(--kb-inset));" onclick={() => scrollToBottom()} title="4. 원형 (우하단)">
                 <ArrowDown size={20} />
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'right-center'}
-            <button class="absolute top-1/2 right-2 -translate-y-1/2 bg-primary-600 text-white px-2 py-3 rounded-l-lg shadow-lg z-50 flex flex-col items-center gap-1 hover:bg-primary-500 transition-colors" onclick={scrollToBottom}>
+            <button class="absolute top-1/2 right-2 -translate-y-1/2 bg-primary-600 text-white px-2 py-3 rounded-l-lg shadow-lg z-50 flex flex-col items-center gap-1 hover:bg-primary-500 transition-colors" onclick={() => scrollToBottom()}>
                 <ArrowDown size={14} />
                 <span class="text-xs writing-mode-vertical">{language.newMessage}</span>
             </button>
         {/if}
 
         {#if DBState.db.newMessageButtonStyle === 'top-bar'}
-            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-6 py-1.5 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors text-sm" style="top: calc(0.5rem + var(--safe-top));" onclick={scrollToBottom}>
+            <button class="absolute left-1/2 -translate-x-1/2 bg-primary-600 text-white px-6 py-1.5 rounded-full shadow-lg z-50 flex items-center gap-2 hover:bg-primary-500 transition-colors text-sm" style="top: calc(0.5rem + var(--safe-top));" onclick={() => scrollToBottom()}>
                 <ArrowDown size={14} />
                 <span>{language.newMessage}</span>
             </button>
@@ -596,13 +621,15 @@
         {/if}
     {:else}
         <div class="h-full w-full flex flex-col-reverse overflow-y-auto overscroll-y-contain relative default-chat-screen" style="padding-top: var(--safe-top);" onscroll={(e) => {
-            //@ts-expect-error scrollHeight/clientHeight/scrollTop don't exist on EventTarget, but target is HTMLElement here
-            const scrolled = (e.target.scrollHeight - e.target.clientHeight + e.target.scrollTop)
+            const chatTarget = e.target as HTMLElement;
+            const scrolled = (chatTarget.scrollHeight - chatTarget.clientHeight + chatTarget.scrollTop)
             if(scrolled < 100 && DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage].message.length > loadPages){
                 loadPages += getAdditionalChatLoadPages(DBState.db)
             }
-            const chatTarget = e.target as HTMLElement;
-            const chatsContainer = (fixedInput && chatTarget.children[1]) ? chatTarget.children[1] : chatTarget.children[0];
+            // In a column-reverse container scrollTop is 0 at the bottom and goes
+            // negative while scrolling up, so |scrollTop| is the distance from it.
+            showScrollDown = Math.abs(chatTarget.scrollTop) > 240;
+            const chatsContainer = chatTarget.querySelector(':scope > .risu-chats');
             const lastEl = chatsContainer?.firstElementChild;
             const isAtBottom = lastEl ? lastEl.getBoundingClientRect().top <= chatTarget.getBoundingClientRect().bottom + 100 : true;
             if(isAtBottom){
@@ -612,16 +639,17 @@
             <div
                     class="{fixedInput ? 'sticky pt-2 right-0 bottom-0 bg-bgcolor' : 'mt-2 mb-2'} flex items-end w-full"
                     style="{fixedInput ? 'z-index:29;padding-bottom:calc(0.5rem + var(--kb-inset) + var(--safe-bottom));' : ''}"
+                    bind:clientHeight={composerHeight}
             >
                 {#if DBState.db.useChatSticker && currentCharacter.type !== 'group'}
                     <div onclick={()=>{toggleStickers = !toggleStickers}}
-                         class={"ml-2 md:ml-4 flex justify-center items-center w-10 h-10 md:w-12 md:h-12 rounded-xl cursor-pointer hover:bg-selected/60 transition-colors "+(toggleStickers ? 'text-primary-400':'text-textcolor')}>
+                         class={"ml-2 md:ml-4 flex justify-center items-center w-10 h-10 md:w-12 md:h-12 rounded-full cursor-pointer hover:bg-selected/60 active:bg-selected/60 transition-colors "+(toggleStickers ? 'text-primary-400':'text-textcolor')}>
                         <Laugh/>
                     </div>
                 {/if}
 
-                <div class="grow min-w-0 mx-2 md:mx-4 flex items-end rounded-2xl border border-darkborderc bg-darkbg focus-within:border-primary-500 transition-colors">
-                <textarea class="text-input-area outline-hidden text-textcolor py-2 px-3 min-w-0 border-0 bg-transparent input-text text-base md:text-lg grow self-center resize-none overflow-y-hidden overflow-x-hidden max-w-full placeholder:text-sm"
+                <div class="grow min-w-0 mx-2 md:mx-4 flex items-end rounded-[1.375rem] border border-darkborderc bg-darkbg focus-within:border-primary-500 transition-colors">
+                <textarea class="text-input-area outline-hidden text-textcolor py-2 px-3 min-w-0 border-0 bg-transparent input-text text-base md:text-lg grow self-center resize-none overflow-y-auto overflow-x-hidden max-w-full max-h-40 placeholder:text-sm"
                           bind:value={messageInput}
                           bind:this={inputEle}
                           onkeydown={(e) => {
@@ -685,17 +713,25 @@
 
                 {#if $doingChat || doingChatInputTranslate}
                     <button
-                            aria-labelledby="cancel"
-                            class="m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl bg-primary-600 hover:bg-primary-500 text-white transition-colors" onclick={abortChat}
+                            aria-label={language.cancel}
+                            class="relative m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-full bg-primary-600 hover:bg-primary-500 text-white transition-all active:scale-95 button-icon-stop" onclick={() => {
+                                haptic(6)
+                                abortChat()
+                            }}
                     >
-                        <div class="loadmove chat-process-stage-{$chatProcessStage}" class:autoload={autoMode}></div>
+                        <div class="loadmove chat-process-stage-{$chatProcessStage} absolute" class:autoload={autoMode}></div>
+                        <Square size={9} class="relative fill-current" />
                     </button>
                 {:else}
                     <button
-                            onclick={send}
-                            class="m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl bg-primary-600 hover:bg-primary-500 text-white transition-colors button-icon-send"
+                            aria-label={language.hotkeyDesc.send}
+                            onclick={() => {
+                                haptic(6)
+                                send()
+                            }}
+                            class="m-0.5 flex justify-center items-center w-11 h-11 min-w-11 rounded-full bg-primary-600 hover:bg-primary-500 text-white transition-all active:scale-95 button-icon-send"
                     >
-                        <Send size={20} />
+                        <ArrowUp size={22} strokeWidth={2.5} />
                     </button>
                 {/if}
                 {#if DBState.db.characters[$selectedCharID]?.chaId !== '§playground'}
@@ -704,7 +740,7 @@
                             openMenu = !openMenu
                             e.stopPropagation()
                         }}
-                            class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl text-textcolor2 hover:bg-selected/60 hover:text-textcolor transition-colors"
+                            class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-full text-textcolor2 hover:bg-selected/60 active:bg-selected/60 hover:text-textcolor transition-colors"
                     >
                         {#if generatingAutoReply}
                             <LoaderCircleIcon class="animate-spin" />
@@ -720,7 +756,7 @@
                         })
                         DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage] = DBState.db.characters[$selectedCharID].chats[DBState.db.characters[$selectedCharID].chatPage]
                     }}
-                         class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-xl cursor-pointer text-textcolor2 hover:bg-selected/60 hover:text-textcolor transition-colors"
+                         class="m-0.5 ml-0 flex justify-center items-center w-11 h-11 min-w-11 rounded-full cursor-pointer text-textcolor2 hover:bg-selected/60 active:bg-selected/60 hover:text-textcolor transition-colors"
                     >
                         <Plus />
                     </div>
@@ -820,6 +856,16 @@
                             {@html panel.html}
                         </section>
                     {/each}
+                </div>
+            {/if}
+
+            {#if $doingChat && awaitingResponse}
+                <!-- Typing indicator: sits directly below the newest message
+                     (this scroll container is column-reverse). -->
+                <div class="flex items-center gap-1 px-6 py-3 risu-typing-indicator" role="status" aria-label={language.loading}>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot" style="animation-delay: 0.16s"></span>
+                    <span class="typing-dot" style="animation-delay: 0.32s"></span>
                 </div>
             {/if}
 
@@ -1168,5 +1214,21 @@
     @media (prefers-reduced-motion: reduce) {
         .chat-menu-sheet,
         .chat-menu-backdrop { animation: none; }
+    }
+
+    /* "Assistant is typing" indicator (three pulsing dots, ChatGPT-style) */
+    .typing-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 9999px;
+        background-color: var(--risu-theme-textcolor2);
+        animation: risu-typing-bounce 1s ease-in-out infinite;
+    }
+    @keyframes risu-typing-bounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+        30% { transform: translateY(-0.25rem); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .typing-dot { animation: none; opacity: 0.7; }
     }
 </style>

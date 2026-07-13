@@ -48,7 +48,9 @@ export const openPresetList = writable(false)
 export const openPersonaList = writable(false)
 export const bookmarkListOpen = writable(false)
 export const MobileGUI = writable(isLiteMode || window.innerWidth < 768)
-export const MobileGUIStack = writable(0)
+// Land on the character/chat list by default (conversation-first home like
+// messenger apps); Realm stays one tab away.
+export const MobileGUIStack = writable(1)
 export const MobileSideBar = writable(0)
 export const SettingsMenuIndex = writable(-1)
 export const ReloadGUIPointer = writable(0)
