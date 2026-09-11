@@ -38,6 +38,7 @@
     import CustomSidebarConfig from './lib/Others/CustomSidebarConfig.svelte';
     import { onMount } from 'svelte';
     import { trackKeyboard } from './ts/mobileKeyboard';
+    import { RISU_APP_INTERNAL_DRAG_TYPE, RISU_SIDEBAR_DRAG_TYPE } from './ts/dragTypes';
 
 
   
@@ -65,38 +66,59 @@
             MobileGUIStack.set(2)
         }
     })
+
+    const getMainDropEffect = (e:DragEvent): DataTransfer['dropEffect'] => {
+        const types = Array.from(e.dataTransfer?.types ?? [])
+        if(types.includes(RISU_SIDEBAR_DRAG_TYPE)){
+            return 'none'
+        }
+        if(types.includes(RISU_APP_INTERNAL_DRAG_TYPE)){
+            return 'none'
+        }
+        return types.includes('Files') ? 'copy' : 'none'
+    }
+
+    const markAppInternalDrag = (e:DragEvent) => {
+        e.dataTransfer?.setData(RISU_APP_INTERNAL_DRAG_TYPE, 'true')
+    }
+
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <main class="flex bg-bg w-full h-full max-w-100vw text-textcolor" ondragover={(e) => {
+    const dropEffect = getMainDropEffect(e)
     e.preventDefault()
-    e.dataTransfer.dropEffect = 'link'
-}} ondrop={async (e) => {
-    e.preventDefault()
-    if (e.dataTransfer.types.includes('application/x-risu-internal')) {
+    e.dataTransfer.dropEffect = dropEffect
+}} ondragstart={markAppInternalDrag} ondrop={async (e) => {
+    const types = Array.from(e.dataTransfer.types ?? [])
+    if (types.includes(RISU_APP_INTERNAL_DRAG_TYPE) || types.includes(RISU_SIDEBAR_DRAG_TYPE)) {
+        e.preventDefault()
         return
     }
     const file = e.dataTransfer.files[0]
-    if (file) {
-        const name = file.name.toLowerCase()
+    if (!file) {
+        e.preventDefault()
+        return
+    }
+    e.preventDefault()
+    const name = file.name.toLowerCase()
 
-        if (name.endsWith('.risup')) {
-            const data = new Uint8Array(await file.arrayBuffer())
-            await importPreset({ name: file.name, data })
-            alertNormal(language.successImport)
-        } else if (name.endsWith('.risum')) {
-            const data = new Uint8Array(await file.arrayBuffer())
-            const module = await readModule(Buffer.from(data))
-            DBState.db.modules.push(module)
-            alertNormal(language.successImport)
-        } else {
-            await importCharacterProcess({
-                name: file.name,
-                data: file
-            })
-            checkCharOrder()
-        }
+    if (name.endsWith('.risup')) {
+        const data = new Uint8Array(await file.arrayBuffer())
+        await importPreset({ name: file.name, data })
+        alertNormal(language.successImport)
+    } else if (name.endsWith('.risum')) {
+        const data = new Uint8Array(await file.arrayBuffer())
+        const module = await readModule(Buffer.from(data))
+        DBState.db.modules.push(module)
+        alertNormal(language.successImport)
+    } else {
+        await importCharacterProcess({
+            name: file.name,
+            data: file
+        })
+        checkCharOrder()
     }
 }} onclick={() => {
     if(keepingSessionAlive){

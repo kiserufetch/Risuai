@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { character, groupChat, Message } from 'src/ts/storage/database.svelte';
+    import type { character, groupChat, Message, StreamingDisplayOptimizationMode } from 'src/ts/storage/database.svelte';
     import { mount, onDestroy, unmount } from 'svelte';
     import Chat from './Chat.svelte';
     import { getCharImage } from 'src/ts/characters';
@@ -56,6 +56,9 @@
         name: string
         isComment: boolean
         disabled: boolean | 'allBefore'
+        isOptimizedStreamingMessage: boolean
+        streamingOptimizationMode: StreamingDisplayOptimizationMode
+        rawStreamingText: string
     }
     type MountRecord = {
         inst: Record<string, any>
@@ -97,6 +100,14 @@
         const roomKey = getCurrentChatRoomId() ?? ''
         let loadStart = messages.length - 1
         let loadEnd = messages.length - loadPages
+        const currentChat = currentCharacter.chats?.[currentCharacter.chatPage]
+        const configuredPerformanceMode = DBState.db.streamingDisplayOptimizationMode ?? 'off';
+        const performanceMode = currentChat?.isStreaming
+            ? currentChat.activeStreamingDisplayOptimizationMode ?? configuredPerformanceMode
+            : configuredPerformanceMode
+        const activeStreamingIndex = performanceMode !== 'off' && currentChat?.isStreaming
+            ? messages.length - 1
+            : -1
 
         if(chatFoldedStateMessageIndex.index !== -1){
             loadStart = chatFoldedStateMessageIndex.index
@@ -110,10 +121,15 @@
             const message = messages[i];
             const messageLargePortrait = message.role === 'user' ? (userIconPortrait ?? false) : ((currentCharacter as character).largePortrait ?? false);
             const reloadPointer = reloadPointerMap[i] ?? 0;
+            const activeStreamingMessage = i === activeStreamingIndex && message.role === 'char';
             // Identity hash: message content is intentionally NOT part of it, so
             // streaming/edits update the existing component through props instead
             // of remounting (which would re-parse markdown and flash images).
-            const hashd = roomKey + '|' + (message.chatId ?? '') + '|' + i.toString() + '|' + messageLargePortrait.toString() + '|' + (message.role ?? '') + '|' + (message.isComment ?? false).toString() + '|' + reloadPointer.toString();
+            // 'strong' streaming is the exception: it remounts at stream start/end
+            // so per-message UI state (translated view, edit mode) can't hide the
+            // raw streaming text, e.g. when continuing a translated message.
+            const rawStreamKey = activeStreamingMessage && performanceMode === 'strong' ? '|raw' : '';
+            const hashd = roomKey + '|' + (message.chatId ?? '') + '|' + i.toString() + '|' + messageLargePortrait.toString() + '|' + (message.role ?? '') + '|' + (message.isComment ?? false).toString() + '|' + reloadPointer.toString() + rawStreamKey;
             const currentHash = hashCode(hashd);
             currentHashes.add(currentHash);
             const existing = mountRecords.get(currentHash);
@@ -125,12 +141,17 @@
                 if(existing.lastData !== message.data){
                     existing.lastData = message.data;
                     p.message = message.data;
+                    // Written here (not compared against p.rawStreamingText) so this
+                    // effect doesn't subscribe to the field and re-run per chunk.
+                    p.rawStreamingText = message.data;
                 }
                 if(p.totalLength !== messages.length) p.totalLength = messages.length;
                 if(p.messageGenerationInfo !== (message.generationInfo ?? null)) p.messageGenerationInfo = message.generationInfo ?? null;
                 if(p.disabled !== (message.disabled ?? false)) p.disabled = message.disabled ?? false;
                 const nameVal = message.role === 'user' ? currentUsername : currentCharacter.name;
                 if(p.name !== nameVal) p.name = nameVal;
+                if(p.isOptimizedStreamingMessage !== activeStreamingMessage) p.isOptimizedStreamingMessage = activeStreamingMessage;
+                if(p.streamingOptimizationMode !== performanceMode) p.streamingOptimizationMode = performanceMode;
             }
             else{
                 const b = document.createElement('div');
@@ -152,6 +173,9 @@
                     name: message.role === 'user' ? currentUsername : currentCharacter.name,
                     isComment: message.isComment ?? false,
                     disabled: message.disabled ?? false,
+                    isOptimizedStreamingMessage: activeStreamingMessage,
+                    streamingOptimizationMode: performanceMode,
+                    rawStreamingText: message.data,
                 })
                 const inst = mount(Chat, {
                     target: b,
