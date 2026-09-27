@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createRawSnippet, mount, tick, unmount } from 'svelte'
+import { createRawSnippet, flushSync, mount, tick, unmount } from 'svelte'
 import McIconButton from '../McIconButton.svelte'
 import Sheet from '../Sheet.svelte'
+import { reactive } from './reactiveProps.svelte'
 
 const mounted: unknown[] = []
 
@@ -58,6 +59,40 @@ describe('Sheet', () => {
         ;(target.querySelector('#last') as HTMLElement).focus()
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }))
         expect(document.activeElement?.id).toBe('first')
+    })
+
+    it('returns focus to the previously focused element once it closes', async () => {
+        const outsideButton = document.createElement('button')
+        outsideButton.id = 'outside-trigger'
+        document.body.appendChild(outsideButton)
+        outsideButton.focus()
+
+        const target = document.createElement('div')
+        document.body.appendChild(target)
+        const props = reactive({
+            open: true,
+            label: 'Actions',
+            onclose: vi.fn(),
+            children: snippet('<div><button id="first">One</button></div>'),
+        })
+        mounted.push(mount(Sheet, { target, props }))
+
+        await tick()
+        await tick()
+        const dialog = target.querySelector('[role="dialog"]') as HTMLElement
+        expect(dialog.contains(document.activeElement)).toBe(true)
+
+        props.open = false
+        flushSync()
+
+        expect(document.activeElement).toBe(outsideButton)
+    })
+
+    it('does not call onclose on Escape while closed', () => {
+        const onclose = vi.fn()
+        render(Sheet, { open: false, label: 'Actions', onclose, children: snippet('<div><button>One</button></div>') })
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+        expect(onclose).not.toHaveBeenCalled()
     })
 })
 
