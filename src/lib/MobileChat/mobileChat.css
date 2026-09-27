@@ -1,0 +1,29 @@
+/*
+ * Mobile chat v2 design tokens (spec §4.1). Everything is derived from the user's
+ * color scheme, so built-in and custom schemes keep working. The rules live in
+ * Tailwind's `components` layer: utilities can still override them, and the
+ * unlayered user customCSS always wins.
+ */
+@layer components {
+    .risu-mc-screen {
+        --mc-bg: var(--risu-theme-bgcolor);
+        --mc-surface: var(--risu-theme-darkbutton);
+        --mc-bubble: var(--risu-theme-selected);
+        --mc-group: color-mix(in oklab, var(--risu-theme-darkbutton), var(--risu-theme-textcolor) 5%);
+        --mc-line: var(--risu-theme-darkborderc);
+        --mc-text: var(--risu-theme-textcolor);
+        --mc-text2: var(--risu-theme-textcolor2);
+        --mc-accent: var(--risu-theme-borderc);
+        --mc-accent-soft: color-mix(in oklab, var(--risu-theme-borderc) 18%, transparent);
+        --mc-on-accent: #ffffff;
+        --mc-danger: var(--risu-theme-draculared);
+        --mc-glass: color-mix(in oklab, var(--risu-theme-bgcolor) 80%, transparent);
+        --mc-scrim: rgb(0 0 0 / 0.55);
+        background-color: var(--mc-bg);
+        color: var(--mc-text);
+    }
+
+    .risu-mc-screen[data-scheme='light'] {
+        --mc-scrim: rgb(20 20 35 / 0.35);
+    }
+}
