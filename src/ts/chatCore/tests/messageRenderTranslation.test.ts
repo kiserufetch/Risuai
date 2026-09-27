@@ -53,6 +53,17 @@ describe('shouldAutoTranslate', () => {
 		await shouldAutoTranslate('raw', context)
 		expect(getLLMCache).toHaveBeenLastCalledWith('raw')
 	})
+
+	it('falls back to no translation when the cache lookup fails', async () => {
+		DBState.db.autoTranslate = true
+		DBState.db.autoTranslateCachedOnly = true
+		DBState.db.translatorType = 'llm'
+		vi.mocked(getLLMCache).mockRejectedValueOnce(new Error('cache down'))
+		const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+		await expect(shouldAutoTranslate('x', context)).resolves.toBe(false)
+		expect(consoleErrorSpy).toHaveBeenCalled()
+		consoleErrorSpy.mockRestore()
+	})
 })
 
 describe('renderTranslatedMarkdown', () => {

@@ -81,13 +81,18 @@ export async function shouldAutoTranslate(displayText: string, context: BodyCont
 	if (!(DBState.db.autoTranslateCachedOnly && DBState.db.translatorType === 'llm')) {
 		return true
 	}
-	const cbs = getBodyCbsConditions(context.role, context.firstMessage)
-	const cache = DBState.db.translateBeforeHTMLFormatting
-		? await getLLMCache(displayText)
-		: !DBState.db.legacyTranslation
-			? await getLLMCache(await ParseMarkdown(displayText, context.character, 'pretranslate', context.idx, cbs))
-			: await getLLMCache(await ParseMarkdown(displayText, context.character, 'notrim', context.idx, cbs))
-	return cache !== null
+	try {
+		const cbs = getBodyCbsConditions(context.role, context.firstMessage)
+		const cache = DBState.db.translateBeforeHTMLFormatting
+			? await getLLMCache(displayText)
+			: !DBState.db.legacyTranslation
+				? await getLLMCache(await ParseMarkdown(displayText, context.character, 'pretranslate', context.idx, cbs))
+				: await getLLMCache(await ParseMarkdown(displayText, context.character, 'notrim', context.idx, cbs))
+		return cache !== null
+	} catch (error) {
+		console.error(error)
+		return false
+	}
 }
 
 /** ChatBody.svelte markParsing, translated branches. */
