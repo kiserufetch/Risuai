@@ -310,7 +310,10 @@
                         })
                     }}>NO</Button>
                 </div>
-            {:else if $alertStore.type === 'tos' && import.meta.env.VITE_RISU_LEGAL_CONFIGURED}
+            {:else if $alertStore.type === 'tos'}
+                <!-- Accept/decline must always be available whenever the ToS alert
+                     is shown. Gating on VITE_RISU_LEGAL_CONFIGURED left the modal
+                     buttonless on fork builds and trapped the user. -->
                 <div class="flex gap-2 w-full">
                     <Button className="mt-4 grow" onclick={() => {
                         alertStore.set({

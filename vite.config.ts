@@ -80,7 +80,15 @@ export default defineConfig(({command, mode}) => {
       host: '0.0.0.0', // listen on all addresses
       port: 5174,
       strictPort: true,
-      allowedHosts: ['.ngrok-free.app', '.ngrok-free.dev', '.ngrok.app', '.ngrok.dev', '.ngrok.io'],
+      allowedHosts: [
+        '.ngrok-free.app',
+        '.ngrok-free.dev',
+        '.ngrok.app',
+        '.ngrok.dev',
+        '.ngrok.io',
+        '.trycloudflare.com',
+        '.cloudflare.com',
+      ],
       // The RisuRealm hub API only whitelists known origins (localhost, *.risuai.xyz,
       // Tauri) for CORS, so browsing Realm breaks when the dev server is opened from
       // another origin (phone via ngrok/LAN IP). Proxy hub traffic through the dev
