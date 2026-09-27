@@ -17,6 +17,7 @@ vi.mock('src/ts/alert', () => ({ alertError: vi.fn() }))
 
 import { fixAssetImages } from '../messageRender'
 import { DBState, currentCharacter, resetHarness } from './harness'
+import { getFileSrc } from 'src/ts/globalApi.svelte'
 
 function imagesIn(html: string): { root: HTMLElement; images: HTMLImageElement[] } {
     const root = document.createElement('div')
@@ -70,5 +71,15 @@ describe('fixAssetImages', () => {
         await fixAssetImages(root)
         expect(images[0].getAttribute('src')).toBe('https://example.com/a.png')
         expect(images[1].hasAttribute('noimage')).toBe(false)
+    })
+
+    it('keeps resolving other images when one asset fails to load', async () => {
+        vi.mocked(getFileSrc).mockRejectedValueOnce(new Error('missing file'))
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+        const { root, images } = imagesIn('<img src="portrait.png"><img src="module map.png">')
+        await fixAssetImages(root)
+        expect(images[1].getAttribute('src')).toBe('blob:assets/map.png')
+        expect(errorSpy).toHaveBeenCalled()
+        errorSpy.mockRestore()
     })
 })

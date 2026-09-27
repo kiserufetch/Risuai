@@ -184,48 +184,52 @@ export async function fixAssetImages(root: HTMLElement | null): Promise<void> {
 	const exactAssets = new Map(normalizedAssets.map((asset) => [asset.name, asset.path]))
 
 	await Promise.all(images.map(async (img) => {
-		const name = img.getAttribute('src')?.toLocaleLowerCase() || ''
-		if (name.length > 200 || name.includes(':')) {
-			img.setAttribute('noimage', 'true')
-			return
-		}
-		const exact = exactAssets.get(name)
-		if (exact) {
-			img.classList.add('root-loaded-image')
-			img.classList.add('root-loaded-image-' + style)
-			img.src = await getFileSrc(exact)
-			return
-		}
-		if (name.length < 3) {
-			img.setAttribute('noimage', 'true')
-			return
-		}
-		const prefixEnd = name.lastIndexOf('.')
-		const prefix = prefixEnd > 0 ? name.substring(0, prefixEnd) : ''
-		let bestDistance = 1000
-		let bestPath = ''
-		for (const asset of normalizedAssets) {
-			if (!asset.name.startsWith(prefix)) {
-				continue
+		try {
+			const name = img.getAttribute('src')?.toLocaleLowerCase() || ''
+			if (name.length > 200 || name.includes(':')) {
+				img.setAttribute('noimage', 'true')
+				return
 			}
-			const distance = getDistance(name, asset.name)
-			if (distance < bestDistance) {
-				bestDistance = distance
-				bestPath = asset.path
+			const exact = exactAssets.get(name)
+			if (exact) {
+				img.classList.add('root-loaded-image')
+				img.classList.add('root-loaded-image-' + style)
+				img.src = await getFileSrc(exact)
+				return
 			}
+			if (name.length < 3) {
+				img.setAttribute('noimage', 'true')
+				return
+			}
+			const prefixEnd = name.lastIndexOf('.')
+			const prefix = prefixEnd > 0 ? name.substring(0, prefixEnd) : ''
+			let bestDistance = 1000
+			let bestPath = ''
+			for (const asset of normalizedAssets) {
+				if (!asset.name.startsWith(prefix)) {
+					continue
+				}
+				const distance = getDistance(name, asset.name)
+				if (distance < bestDistance) {
+					bestDistance = distance
+					bestPath = asset.path
+				}
+			}
+			if (!bestPath) {
+				img.setAttribute('noimage', 'true')
+				return
+			}
+			const resolved = await getFileSrc(bestPath)
+			if (name === (img.getAttribute('src')?.toLocaleLowerCase() || '')) {
+				img.setAttribute('src', resolved)
+			}
+			if (img.classList.length === 0) {
+				img.classList.add('root-loaded-image')
+				img.classList.add('root-loaded-image-' + style)
+			}
+			img.removeAttribute('noimage')
+		} catch (error) {
+			console.error(error)
 		}
-		if (!bestPath) {
-			img.setAttribute('noimage', 'true')
-			return
-		}
-		const resolved = await getFileSrc(bestPath)
-		if (name === (img.getAttribute('src')?.toLocaleLowerCase() || '')) {
-			img.setAttribute('src', resolved)
-		}
-		if (img.classList.length === 0) {
-			img.classList.add('root-loaded-image')
-			img.classList.add('root-loaded-image-' + style)
-		}
-		img.removeAttribute('noimage')
 	}))
 }
