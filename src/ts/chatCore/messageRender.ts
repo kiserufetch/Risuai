@@ -1,4 +1,7 @@
-import { addMetadataToElement, ParseMarkdown, postTranslationParse, trimMarkdown, type CbsConditions, type simpleCharacterArgument } from 'src/ts/parser/parser.svelte'
+import { addMetadataToElement, getDistance, ParseMarkdown, postTranslationParse, trimMarkdown, type CbsConditions, type simpleCharacterArgument } from 'src/ts/parser/parser.svelte'
+import { getFileSrc } from 'src/ts/globalApi.svelte'
+import { getModuleAssets } from 'src/ts/process/modules'
+import { getCurrentCharacter, type character } from 'src/ts/storage/database.svelte'
 import { alertError } from 'src/ts/alert'
 import { DBState } from 'src/ts/stores.svelte'
 import { getLLMCache, translateHTML } from 'src/ts/translator/translator'
@@ -161,4 +164,68 @@ export async function renderBody(
 	const error = lastError as Error
 	alertError(`Error while parsing chat message: ${options.translate}, ${error?.message}, ${error?.stack}`)
 	return displayText
+}
+
+const LOCAL_IMAGE_SELECTOR = 'img:not([src^="data:"]):not([src^="http:"]):not([src^="https:"]):not([src^="blob:"]):not([src^="file:"]):not([src^="tauri:"]):not([noimage])'
+
+/** ChatBody.svelte checkImg: resolve bare asset names in <img src> (newImageHandlingBeta). */
+export async function fixAssetImages(root: HTMLElement | null): Promise<void> {
+	if (!DBState.db.newImageHandlingBeta || !root) {
+		return
+	}
+	const images = Array.from(root.querySelectorAll<HTMLImageElement>(LOCAL_IMAGE_SELECTOR))
+	if (images.length === 0) {
+		return
+	}
+	const currentCharacter = getCurrentCharacter() as character
+	const style = currentCharacter.prebuiltAssetStyle
+	const assets = getModuleAssets().concat(currentCharacter.additionalAssets ?? [])
+	const normalizedAssets = assets.map((asset) => ({ name: asset[0].toLocaleLowerCase(), path: asset[1] }))
+	const exactAssets = new Map(normalizedAssets.map((asset) => [asset.name, asset.path]))
+
+	await Promise.all(images.map(async (img) => {
+		const name = img.getAttribute('src')?.toLocaleLowerCase() || ''
+		if (name.length > 200 || name.includes(':')) {
+			img.setAttribute('noimage', 'true')
+			return
+		}
+		const exact = exactAssets.get(name)
+		if (exact) {
+			img.classList.add('root-loaded-image')
+			img.classList.add('root-loaded-image-' + style)
+			img.src = await getFileSrc(exact)
+			return
+		}
+		if (name.length < 3) {
+			img.setAttribute('noimage', 'true')
+			return
+		}
+		const prefixEnd = name.lastIndexOf('.')
+		const prefix = prefixEnd > 0 ? name.substring(0, prefixEnd) : ''
+		let bestDistance = 1000
+		let bestPath = ''
+		for (const asset of normalizedAssets) {
+			if (!asset.name.startsWith(prefix)) {
+				continue
+			}
+			const distance = getDistance(name, asset.name)
+			if (distance < bestDistance) {
+				bestDistance = distance
+				bestPath = asset.path
+			}
+		}
+		if (!bestPath) {
+			img.setAttribute('noimage', 'true')
+			return
+		}
+		const resolved = await getFileSrc(bestPath)
+		if (name === (img.getAttribute('src')?.toLocaleLowerCase() || '')) {
+			img.setAttribute('src', resolved)
+		}
+		if (img.classList.length === 0) {
+			img.classList.add('root-loaded-image')
+			img.classList.add('root-loaded-image-' + style)
+		}
+		img.removeAttribute('noimage')
+	}))
 }
