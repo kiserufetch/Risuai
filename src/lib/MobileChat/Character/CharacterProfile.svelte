@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from 'svelte'
     import {
         BookIcon, ChevronLeftIcon, ChevronRightIcon, CodeIcon, NotebookPenIcon, PlusIcon, Share2Icon,
         SlidersHorizontalIcon, SmileIcon, ToggleRightIcon, UserIcon, UsersIcon, Volume2Icon, WrenchIcon,
@@ -58,16 +59,23 @@
         }
     }
 
-    // System back steps back through the pages, then closes the profile.
-    $effect(() => {
-        const depth = stack.length
-        return pushBackHandler(() => {
-            if (depth > 1) {
-                stack = stack.slice(0, -1)
-            } else {
-                onclose()
-            }
-        })
+    // One history entry for the whole profile: the header arrow moves between pages
+    // without touching history, the system back pops a page and re-arms itself.
+    let release: (() => void) | null = null
+
+    function onSystemBack() {
+        release = null
+        if (stack.length > 1) {
+            stack = stack.slice(0, -1)
+            release = pushBackHandler(onSystemBack)
+        } else {
+            onclose()
+        }
+    }
+
+    onMount(() => {
+        release = pushBackHandler(onSystemBack)
+        return () => release?.()
     })
 
     function title(p: Page): string {
