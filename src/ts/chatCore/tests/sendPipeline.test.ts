@@ -189,6 +189,64 @@ describe('generate', () => {
         await running
         expect(receivedSignal?.aborted).toBe(true)
     })
+
+    it('records against the starting chat page when the user switches chats mid-generation', async () => {
+        DBState.db.characters[0].chats.push(makeChat({ id: 'chat-2' }))
+        currentChat().message.push(makeMessage('user', 'Hi'))
+        let count = 0
+        vi.mocked(sendChat).mockImplementation(async () => {
+            count += 1
+            DBState.db.characters[0].chats[0].message.push(makeMessage('char', `r${count}`))
+            DBState.db.characters[0].chatPage = 1
+            return true
+        })
+        await generate()
+        DBState.db.characters[0].chatPage = 0
+        await generate()
+        DBState.db.characters[0].chatPage = 0
+        expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+        expect(DBState.db.characters[0].chats[1].message).toEqual([])
+    })
+
+    it('resets the alternatives of the chat that received the message', async () => {
+        await generate()
+        await generate()
+        expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+
+        DBState.db.characters.push(makeCharacter({ name: 'Born', chaId: 'cha-born', chats: [makeChat({ id: 'chat-born' })] }))
+        vi.mocked(runTrigger).mockImplementationOnce(async () => {
+            selectCharacter(1)
+            return null
+        })
+        await sendMessage('Hi')
+        selectCharacter(0)
+        expect(getAlternativesCounter()).not.toEqual({ index: 2, total: 2 })
+        expect(getAlternativesCounter()).toBeNull()
+    })
+})
+
+describe('re-entrancy', () => {
+    it('ignores a second send while one is in flight', async () => {
+        let resolveSend: (() => void) | undefined
+        vi.mocked(sendChat).mockImplementationOnce(async () => {
+            await new Promise<void>((resolve) => {
+                resolveSend = resolve
+            })
+            currentChat().message.push(makeMessage('char', 'reply 1'))
+            return true
+        })
+        const first = sendMessage('first')
+        await expect(sendMessage('second')).resolves.toBe('busy')
+        // sendMessage awaits a real 10ms delay before calling sendChat; wait for that to land
+        // (resolveSend to be assigned) instead of racing it, or `first` never resolves.
+        await vi.waitFor(() => {
+            expect(resolveSend).toBeDefined()
+        })
+        resolveSend?.()
+        await expect(first).resolves.toBe('sent')
+        expect(sendChat).toHaveBeenCalledTimes(1)
+        expect(texts()).toEqual(['edited:first', 'reply 1'])
+    })
 })
 
 describe('requestAutoReply', () => {

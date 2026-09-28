@@ -18,14 +18,18 @@ import * as session from './session.svelte'
 export type SendOutcome = 'busy' | 'command' | 'sent'
 
 let abortController: AbortController | null = null
+/** Guards generate() against re-entry while an earlier generation is still streaming. */
+let generating = false
+/** Guards sendMessage() against re-entry while an earlier call is still building its message. */
+let sending = false
 
 function wait(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function chatOf(charIndex: number) {
-    const character = DBState.db.characters[charIndex]
-    return character.chats[character.chatPage]
+/** The chat pinned by an already-captured character/page pair, not the live selection. */
+function chatOf(charIndex: number, chatPage: number) {
+    return DBState.db.characters[charIndex].chats[chatPage]
 }
 
 export function playSendSound(): void {
@@ -38,21 +42,28 @@ export function playSendSound(): void {
 
 /** DefaultChatScreen.sendChatMain. */
 export async function generate(options: { continueResponse?: boolean } = {}): Promise<void> {
+    if (generating) {
+        return
+    }
+    generating = true
     const charIndex = get(selectedCharID)
+    const chatPage = DBState.db.characters[charIndex].chatPage
     const chatKey = session.getChatKey()
-    const previousLength = chatOf(charIndex).message.length
+    const previousLength = chatOf(charIndex, chatPage).message.length
     abortController = new AbortController()
     beginGeneration({ charIndex, retry: () => generate(options) })
     try {
         await sendChat(-1, { signal: abortController.signal, continue: options.continueResponse ?? false })
-        recordGeneration(chatKey, chatOf(charIndex).message, previousLength)
+        recordGeneration(chatKey, chatOf(charIndex, chatPage).message, previousLength)
     } catch (error) {
         console.error(error)
         alertError(error)
+    } finally {
+        endGeneration()
+        doingChat.set(false)
+        playSendSound()
+        generating = false
     }
-    endGeneration()
-    doingChat.set(false)
-    playSendSound()
 }
 
 /** DefaultChatScreen.abortChat. */
@@ -68,50 +79,60 @@ export function canContinue(): boolean {
 
 /** DefaultChatScreen.sendMain. */
 export async function sendMessage(input: string, attachments: string[] = [], options: { continueResponse?: boolean } = {}): Promise<SendOutcome> {
-    const charIndex = get(selectedCharID)
-    if (get(doingChat)) {
+    if (sending || get(doingChat)) {
         return 'busy'
     }
-    const character = DBState.db.characters[charIndex]
-    let messages = character.chats[character.chatPage].message
-    let text = input
+    sending = true
+    try {
+        // Pin the send to the chat that started it: charIndex/chatPage/chatKey are read once,
+        // up front, so a selection change during the awaited trigger/script below can't make
+        // this land in, or reset alternatives for, a different chat.
+        const charIndex = get(selectedCharID)
+        const character = DBState.db.characters[charIndex]
+        const chatPage = character.chatPage
+        const chatKey = session.getChatKey()
+        const chat = character.chats[chatPage]
+        let messages = chat.message
+        let text = input
 
-    if (text.startsWith('/')) {
-        const commandProcessed = await processMultiCommand(text)
-        if (commandProcessed !== false) {
-            return 'command'
-        }
-    }
-
-    for (const file of attachments) {
-        text += `{{inlayed::${file}}}`
-    }
-
-    const multiuserName = get(ConnectionOpenStore) ? DBState.db.username : null
-    if (text === '') {
-        if (character.type !== 'group') {
-            if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
-                if (DBState.db.useSayNothing) {
-                    messages.push({ role: 'user', data: '*says nothing*', name: multiuserName })
-                }
+        if (text.startsWith('/')) {
+            const commandProcessed = await processMultiCommand(text)
+            if (commandProcessed !== false) {
+                return 'command'
             }
         }
-    } else if (character.type === 'character') {
-        const triggerResult = await runTrigger(character, 'input', { chat: character.chats[character.chatPage] })
-        if (triggerResult) {
-            messages = triggerResult.chat.message
-        }
-        messages.push({ role: 'user', data: await processScript(character, text, 'editinput'), time: Date.now(), name: multiuserName })
-    } else {
-        messages.push({ role: 'user', data: text, time: Date.now(), name: multiuserName })
-    }
 
-    const target = DBState.db.characters[charIndex]
-    target.chats[target.chatPage].message = messages
-    resetAlternatives()
-    await wait(10)
-    await generate({ continueResponse: options.continueResponse })
-    return 'sent'
+        for (const file of attachments) {
+            text += `{{inlayed::${file}}}`
+        }
+
+        const multiuserName = get(ConnectionOpenStore) ? DBState.db.username : null
+        if (text === '') {
+            if (character.type !== 'group') {
+                if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+                    if (DBState.db.useSayNothing) {
+                        messages.push({ role: 'user', data: '*says nothing*', name: multiuserName })
+                    }
+                }
+            }
+        } else if (character.type === 'character') {
+            const triggerResult = await runTrigger(character, 'input', { chat })
+            if (triggerResult) {
+                messages = triggerResult.chat.message
+            }
+            messages.push({ role: 'user', data: await processScript(character, text, 'editinput'), time: Date.now(), name: multiuserName })
+        } else {
+            messages.push({ role: 'user', data: text, time: Date.now(), name: multiuserName })
+        }
+
+        DBState.db.characters[charIndex].chats[chatPage].message = messages
+        resetAlternatives(chatKey)
+        await wait(10)
+        await generate({ continueResponse: options.continueResponse })
+        return 'sent'
+    } finally {
+        sending = false
+    }
 }
 
 /** DefaultChatScreen.sendContinue: sends the draft (if any), then continues the reply. */
