@@ -22,6 +22,7 @@
     let search = $state('')
     let sort: SpicyChatSortMode = $state('popular')
     let nsfw = $state(false)
+    let openDefinitionOnly = $state(false)
     let include: string[] = $state([])
     let exclude: string[] = $state([])
 
@@ -44,14 +45,14 @@
         { mode: 'toprated', label: () => language.spicyChat.sortTopRated },
     ]
 
-    let filterActive = $derived(nsfw || include.length > 0 || exclude.length > 0 || !quickSorts.some((s) => s.mode === sort))
+    let filterActive = $derived(nsfw || openDefinitionOnly || include.length > 0 || exclude.length > 0 || !quickSorts.some((s) => s.mode === sort))
     let hasMore = $derived(page < totalPages)
 
     async function load(reset: boolean) {
         const id = ++request
         const nextPage = reset ? 1 : page + 1
         loading = true
-        const result = await getSpicyChatHub({ search, page: nextPage, nsfw, sort, tags: include, excludeTags: exclude })
+        const result = await getSpicyChatHub({ search, page: nextPage, nsfw, sort, tags: include, excludeTags: exclude, openDefinitionOnly })
         if (id !== request) {
             return
         }
@@ -76,6 +77,7 @@
         void search
         void sort
         void nsfw
+        void openDefinitionOnly
         void include.length
         void exclude.length
         void JSON.stringify([include, exclude])
@@ -207,7 +209,7 @@
 </div>
 
 {#if filtersOpen}
-    <SpicyFilterSheet bind:sort bind:nsfw bind:include bind:exclude {availableTags} {facetCounts} {found} onclose={() => { filtersOpen = false }} />
+    <SpicyFilterSheet bind:sort bind:nsfw bind:openDefinitionOnly bind:include bind:exclude {availableTags} {facetCounts} {found} onclose={() => { filtersOpen = false }} />
 {/if}
 {#if opened}
     <SpicyCharacterSheet card={opened} onclose={() => { opened = null }} />

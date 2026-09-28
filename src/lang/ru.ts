@@ -1724,6 +1724,8 @@ export const languageRussian = {
         sort: "Сортировка",
         showNsfw: "Показывать NSFW",
         nsfwHint: "Персонажи 18+ и откровенные аватары",
+        openDefinitionOnly: "Только с открытым описанием",
+        openDefinitionHint: "Скрыть персонажей, чьё полное описание создатель спрятал",
         tags: "Теги",
         tagsSummary: "{0} нужны, {1} исключено",
         findTag: "Найти тег",

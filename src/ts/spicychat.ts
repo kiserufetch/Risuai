@@ -468,6 +468,8 @@ export interface SpicyChatHubParams {
     tags?: string[]
     /** Tags a result must NOT carry (`tags:!=[…]`). */
     excludeTags?: string[]
+    /** Only characters whose creator keeps the full definition visible (importable in full). */
+    openDefinitionOnly?: boolean
     perPage?: number
 }
 
@@ -493,6 +495,9 @@ export async function getSpicyChatHub(params: SpicyChatHubParams): Promise<Spicy
         const filters: string[] = []
         if (!params.nsfw) {
             filters.push('is_nsfw:false')
+        }
+        if (params.openDefinitionOnly) {
+            filters.push('definition_visible:true')
         }
         // Backtick-quoted so tags with spaces or commas stay one value in the filter DSL.
         const quote = (tag: string) => '`' + tag.replace(/`/g, '') + '`'

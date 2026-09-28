@@ -20,13 +20,13 @@
     let loading = $state(true)
     let greetingOpen = $state(false)
 
-    let charId = $derived(card.character_id ?? card.id ?? '')
-    let name = $derived(detail?.name ?? card.name ?? '')
-    let greeting = $derived(detail?.greeting ?? card.greeting ?? '')
-    let tags = $derived(detail?.tags ?? card.tags ?? [])
-    let messages = $derived(detail?.num_messages ?? card.num_messages)
-    let rating = $derived(detail?.rating_score ?? card.rating_score)
-    let tokens = $derived(detail?.token_count ?? card.token_count)
+    let charId = $derived(card?.character_id ?? card?.id ?? '')
+    let name = $derived(detail?.name ?? card?.name ?? '')
+    let greeting = $derived(detail?.greeting ?? card?.greeting ?? '')
+    let tags = $derived(detail?.tags ?? card?.tags ?? [])
+    let messages = $derived(detail?.num_messages ?? card?.num_messages)
+    let rating = $derived(detail?.rating_score ?? card?.rating_score)
+    let tokens = $derived(detail?.token_count ?? card?.token_count)
 
     $effect(() => {
         const id = charId
@@ -58,18 +58,20 @@
     }
 
     function importCharacter() {
+        // Read before closing: closing unmounts the sheet and `card` becomes null.
+        const id = charId
         onclose()
-        downloadSpicyChatCharacter(charId)
+        downloadSpicyChatCharacter(id)
     }
 </script>
 
 <Sheet open={true} label={name} {onclose} class="gap-4">
     <div class="relative -mx-3 -mt-2 h-[300px] shrink-0 overflow-hidden rounded-t-[24px]">
-        <SpicyCover url={detail?.avatar_url ?? card.avatar_url} {name} class="h-full w-full" />
+        <SpicyCover url={detail?.avatar_url ?? card?.avatar_url} {name} class="h-full w-full" />
         <button type="button" class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full" style="background: rgb(10 12 16 / 0.6); color: #ededf0;" aria-label={language.mobileCatalog.close} onclick={onclose}>
             <XIcon size={18} />
         </button>
-        {#if detail?.is_nsfw ?? card.is_nsfw}
+        {#if detail?.is_nsfw ?? card?.is_nsfw}
             <span class="absolute left-4 top-4 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-white" style="background: var(--mc-danger);">NSFW</span>
         {/if}
         <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-24" style="background: linear-gradient(to bottom, transparent, var(--mc-surface));"></span>
@@ -77,13 +79,13 @@
 
     <div class="-mt-8 relative flex flex-col gap-1 px-1">
         <h2 class="text-[26px] font-bold leading-tight tracking-tight">{name}</h2>
-        {#if detail?.creator_username ?? card.creator_username}
-            <span class="text-[14px] text-(--mc-text2)">{language.spicyChat.madeBy.replace('{}', detail?.creator_username ?? card.creator_username)}</span>
+        {#if detail?.creator_username ?? card?.creator_username}
+            <span class="text-[14px] text-(--mc-text2)">{language.spicyChat.madeBy.replace('{}', detail?.creator_username ?? card?.creator_username)}</span>
         {/if}
     </div>
 
-    {#if detail?.title ?? card.title}
-        <p class="px-1 text-[15px] leading-[22px]">{detail?.title ?? card.title}</p>
+    {#if detail?.title ?? card?.title}
+        <p class="px-1 text-[15px] leading-[22px]">{detail?.title ?? card?.title}</p>
     {/if}
 
     <div class="flex gap-2">

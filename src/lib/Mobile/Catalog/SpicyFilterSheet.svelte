@@ -10,6 +10,7 @@
     interface Props {
         sort: SpicyChatSortMode
         nsfw: boolean
+        openDefinitionOnly: boolean
         include: string[]
         exclude: string[]
         availableTags: string[]
@@ -21,6 +22,7 @@
     let {
         sort = $bindable(),
         nsfw = $bindable(),
+        openDefinitionOnly = $bindable(),
         include = $bindable(),
         exclude = $bindable(),
         availableTags,
@@ -59,6 +61,7 @@
     function reset() {
         sort = 'popular'
         nsfw = false
+        openDefinitionOnly = false
         include = []
         exclude = []
         tagQuery = ''
@@ -96,6 +99,16 @@
         </span>
         <span class="relative h-[26px] w-[44px] shrink-0 rounded-full transition-colors" style="background: {nsfw ? 'var(--mc-accent)' : 'var(--mc-line)'};">
             <span class="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow transition-all" style="left: {nsfw ? '21px' : '3px'};"></span>
+        </span>
+    </button>
+
+    <button type="button" role="switch" aria-checked={openDefinitionOnly} class="flex min-h-[52px] w-full items-center gap-3 rounded-2xl px-4 py-2 text-left" style="background: var(--mc-group);" onclick={() => { openDefinitionOnly = !openDefinitionOnly }}>
+        <span class="flex flex-1 flex-col gap-0.5">
+            <span class="text-[15px]">{language.mobileCatalog.openDefinitionOnly}</span>
+            <span class="text-[12px] text-(--mc-text2)">{language.mobileCatalog.openDefinitionHint}</span>
+        </span>
+        <span class="relative h-[26px] w-[44px] shrink-0 rounded-full transition-colors" style="background: {openDefinitionOnly ? 'var(--mc-accent)' : 'var(--mc-line)'};">
+            <span class="absolute top-[3px] h-5 w-5 rounded-full bg-white shadow transition-all" style="left: {openDefinitionOnly ? '21px' : '3px'};"></span>
         </span>
     </button>
 

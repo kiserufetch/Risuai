@@ -1742,6 +1742,8 @@ export const languageEnglish = {
         sort: "Sort",
         showNsfw: "Show NSFW",
         nsfwHint: "18+ characters and explicit avatars",
+        openDefinitionOnly: "Only with an open definition",
+        openDefinitionHint: "Hide characters whose creator hid the full description",
         tags: "Tags",
         tagsSummary: "{0} required, {1} excluded",
         findTag: "Find a tag",

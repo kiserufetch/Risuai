@@ -1,7 +1,7 @@
 import { get } from "svelte/store"
 import { alertMd, alertSelect, alertToast, alertWait, doingAlert, alertRequestLogs } from "./alert"
 import { changeToPreset as changeToPreset2, getDatabase  } from "./storage/database.svelte"
-import { alertStore, DBState, loadoutModalStore, MobileGUIStack, MobileSideBar, openPersonaList, openPresetList, OpenRealmStore, OpenSpicyChatStore, PlaygroundStore, QuickSettings, SafeModeStore, selectedCharID, settingsOpen } from "./stores.svelte"
+import { alertStore, DBState, loadoutModalStore, MobileSideBar, openPersonaList, openPresetList, OpenRealmStore, OpenSpicyChatStore, PlaygroundStore, QuickSettings, SafeModeStore, selectedCharID, settingsOpen } from "./stores.svelte"
 import { language } from "src/lang"
 import { updateTextThemeAndCSS } from "./gui/colorscheme"
 import { defaultHotkeys } from "./defaulthotkeys"
@@ -391,28 +391,19 @@ export function initMobileGesture(){
             const moveY = touch.clientY - d.y
             pressingPointers.delete(touch.identifier)
 
+            // Fork: horizontal swipes no longer switch the bottom tabs (Catalog,
+            // Characters, Settings); they only step through the in-chat drawer.
+            if(get(selectedCharID) === -1){
+                continue
+            }
             if(moveX > 50 && Math.abs(moveY) < Math.abs(moveX)){
-                if(get(selectedCharID) === -1){
-                    if(get(MobileGUIStack) > 0){
-                        MobileGUIStack.update(v => v - 1)
-                    }
-                }
-                else{
-                    if(get(MobileSideBar) > 0){
-                        MobileSideBar.update(v => v - 1)
-                    }
+                if(get(MobileSideBar) > 0){
+                    MobileSideBar.update(v => v - 1)
                 }
             }
             else if(moveX < -50 && Math.abs(moveY) < Math.abs(moveX)){
-                if(get(selectedCharID) === -1){
-                    if(get(MobileGUIStack) < 2){
-                        MobileGUIStack.update(v => v + 1)
-                    }
-                }
-                else{
-                    if(get(MobileSideBar) < 3){
-                        MobileSideBar.update(v => v + 1)
-                    }
+                if(get(MobileSideBar) < 3){
+                    MobileSideBar.update(v => v + 1)
                 }
             }
         }
