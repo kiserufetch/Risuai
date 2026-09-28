@@ -118,4 +118,48 @@ describe('alternatives', () => {
         expect(generate).not.toHaveBeenCalled()
         expect(texts()).toEqual(['narration only'])
     })
+
+    describe('stale history (tail no longer matches the applied snapshot)', () => {
+        // Reproduces: chat [u1, c1, u2, c2b] with history [[c2a], [c2b]]; something (removeMessagesFrom,
+        // a slash command, a trigger or Lua) then replaces the tail without going through reroll/unreroll.
+        async function buildHistoryWithTwoVariants() {
+            const chat = currentChat()
+            chat.message.push(makeMessage('user', 'u1'), makeMessage('char', 'c1'), makeMessage('user', 'u2'), makeMessage('char', 'c2a'))
+            recordGeneration('chat-1', chat.message, 3)
+            await reroll(generationPushing('c2b'))
+            expect(texts()).toEqual(['u1', 'c1', 'u2', 'c2b'])
+            expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+        }
+
+        it('returns a null counter once the tail has been cut back below the snapshot', async () => {
+            await buildHistoryWithTwoVariants()
+            currentChat().message = currentChat().message.slice(0, 2) // removeMessagesFrom(2): [u1, c1]
+            expect(getAlternativesCounter()).toBeNull()
+        })
+
+        it('leaves the chat untouched when unreroll is called against a stale history', async () => {
+            await buildHistoryWithTwoVariants()
+            currentChat().message = currentChat().message.slice(0, 2) // [u1, c1]
+            previousAlternative()
+            expect(texts()).toEqual(['u1', 'c1'])
+        })
+
+        it('resets and generates fresh when reroll is called against a stale history', async () => {
+            await buildHistoryWithTwoVariants()
+            currentChat().message = currentChat().message.slice(0, 2) // [u1, c1]
+            const generate = generationPushing('c3')
+            await reroll(generate)
+            expect(generate).toHaveBeenCalledTimes(1)
+            expect(texts()).toEqual(['u1', 'c3'])
+        })
+
+        it('also invalidates on a same-length trigger/Lua-style tail replacement', async () => {
+            await buildHistoryWithTwoVariants()
+            const chat = currentChat()
+            chat.message[chat.message.length - 1] = makeMessage('char', 'replaced by a trigger')
+            expect(getAlternativesCounter()).toBeNull()
+            previousAlternative()
+            expect(texts()).toEqual(['u1', 'c1', 'u2', 'replaced by a trigger'])
+        })
+    })
 })

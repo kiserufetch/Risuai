@@ -6,12 +6,22 @@ vi.mock('src/ts/globalApi.svelte', () => ({ changeChatTo: vi.fn(), createChatCop
 vi.mock('src/ts/process/tts', () => ({ sayTTS: vi.fn(async () => {}) }))
 vi.mock('src/ts/translator/translator', () => ({ setLLMCache: vi.fn(async () => {}) }))
 vi.mock('src/ts/util', () => ({ getUserName: vi.fn(() => 'Traveller') }))
+vi.mock('src/ts/process/index.svelte', async () => {
+    const harness = await import('./harness')
+    return { doingChat: harness.doingChat, chatProcessStage: harness.chatProcessStage }
+})
+vi.mock('src/ts/process/prereroll', () => ({
+    Prereroll: vi.fn(() => null),
+    PreUnreroll: vi.fn(() => null),
+    getPrerollState: vi.fn(() => null),
+}))
 
 import { language } from 'src/lang'
 import { alertConfirm, alertInput, alertRequestData } from 'src/ts/alert'
 import { changeChatTo } from 'src/ts/globalApi.svelte'
 import { sayTTS } from 'src/ts/process/tts'
 import { setLLMCache } from 'src/ts/translator/translator'
+import { getAlternativesCounter, recordGeneration } from '../alternatives.svelte'
 import {
     branchFromMessage,
     defaultBookmarkName,
@@ -70,6 +80,28 @@ describe('removing', () => {
         await expect(removeMessagesFrom(1)).resolves.toBe(true)
         expect(alertConfirm).toHaveBeenCalledWith(language.mobileChat.removeFromHereConfirm)
         expect(texts()).toEqual(['Hi'])
+    })
+
+    it('invalidates the reroll history after removing a message', async () => {
+        const chat = currentChat()
+        recordGeneration('chat-1', chat.message, 2) // pretends 'Bye' was a recorded generation
+        chat.message.push(makeMessage('char', 'Bye again'))
+        recordGeneration('chat-1', chat.message, 3)
+        expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+
+        await removeMessage(1)
+        expect(getAlternativesCounter()).toBeNull()
+    })
+
+    it('invalidates the reroll history after removing everything from a message on', async () => {
+        const chat = currentChat()
+        recordGeneration('chat-1', chat.message, 2)
+        chat.message.push(makeMessage('char', 'Bye again'))
+        recordGeneration('chat-1', chat.message, 3)
+        expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+
+        await removeMessagesFrom(1)
+        expect(getAlternativesCounter()).toBeNull()
     })
 })
 

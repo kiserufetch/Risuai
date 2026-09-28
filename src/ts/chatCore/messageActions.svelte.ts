@@ -7,6 +7,7 @@ import type { MessageGenerationInfo } from 'src/ts/storage/database.svelte'
 import { DBState } from 'src/ts/stores.svelte'
 import { setLLMCache } from 'src/ts/translator/translator'
 import { getUserName } from 'src/ts/util'
+import { resetAlternatives } from './alternatives.svelte'
 import * as session from './session.svelte'
 
 // Message actions of Chat.svelte and the greeting controls of DefaultChatScreen.svelte.
@@ -26,6 +27,10 @@ export async function removeMessage(idx: number): Promise<boolean> {
     const messages = chat.message
     messages.splice(idx, 1)
     chat.message = messages
+    // The removed message may have been part of a recorded reroll snapshot; the alternatives
+    // history is only valid against the exact tail it was recorded from, so drop it rather than
+    // risk an unrelated snapshot overwriting a reply later (simplest correct rule: always reset).
+    resetAlternatives()
     return true
 }
 
@@ -39,6 +44,7 @@ export async function removeMessagesFrom(idx: number): Promise<boolean> {
     }
     const chat = session.getChat()
     chat.message = chat.message.slice(0, idx)
+    resetAlternatives()
     return true
 }
 

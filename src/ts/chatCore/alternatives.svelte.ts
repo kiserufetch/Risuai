@@ -39,6 +39,33 @@ export function resetAlternatives(key: string = session.getChatKey()): void {
     touch()
 }
 
+/**
+ * The applied snapshot (`entry.snapshots[entry.index]`) is only meaningful while the chat's
+ * tail still is that exact snapshot. `removeMessage`/`removeMessagesFrom`, slash commands,
+ * triggers and Lua can all replace the tail without going through reroll/unreroll, which would
+ * otherwise let a stale snapshot overwrite an unrelated reply. Every entry point that acts on
+ * `entry.index` checks this first.
+ */
+function tailMatchesSnapshot(snapshot: Message[]): boolean {
+    const ids = snapshot.map((message) => message.chatId)
+    if (ids.length === 0 || ids.some((id) => !id)) {
+        return false
+    }
+    const messages = session.getMessages()
+    if (messages.length < ids.length) {
+        return false
+    }
+    const tail = messages.slice(messages.length - ids.length)
+    return tail.every((message, i) => message.chatId === ids[i])
+}
+
+function isEntryStale(entry: AlternativesEntry): boolean {
+    if (entry.index < 0 || entry.index >= entry.snapshots.length) {
+        return false
+    }
+    return !tailMatchesSnapshot(entry.snapshots[entry.index])
+}
+
 /** sendChatMain: remember the messages a generation appended. */
 export function recordGeneration(key: string, messages: Message[], previousLength: number): void {
     if (previousLength >= messages.length) {
@@ -85,7 +112,12 @@ export async function reroll(generate: () => Promise<void>): Promise<void> {
             return
         }
     }
-    const entry = getEntry(session.getChatKey())
+    const key = session.getChatKey()
+    let entry = getEntry(key)
+    if (isEntryStale(entry)) {
+        resetAlternatives(key)
+        entry = getEntry(key)
+    }
     if (entry.index < entry.snapshots.length - 1) {
         if (Array.isArray(entry.snapshots[entry.index + 1])) {
             entry.index += 1
@@ -140,7 +172,12 @@ export function previousAlternative(): void {
             return
         }
     }
-    const entry = getEntry(session.getChatKey())
+    const key = session.getChatKey()
+    const entry = getEntry(key)
+    if (isEntryStale(entry)) {
+        resetAlternatives(key)
+        return
+    }
     if (entry.index <= 0) {
         return
     }
@@ -161,8 +198,13 @@ export function getAlternativesCounter(): AlternativesCounter | null {
             return { index: preroll.index + 1, total: preroll.total }
         }
     }
-    const entry = entries.get(session.getChatKey())
+    const key = session.getChatKey()
+    const entry = entries.get(key)
     if (!entry || entry.snapshots.length < 2) {
+        return null
+    }
+    if (isEntryStale(entry)) {
+        resetAlternatives(key)
         return null
     }
     return { index: entry.index + 1, total: entry.snapshots.length }
