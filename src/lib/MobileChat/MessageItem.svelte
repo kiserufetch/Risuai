@@ -18,6 +18,7 @@
     import { copyMessage } from 'src/ts/chatCore/copyMessage'
     import MessageBody from './MessageBody.svelte'
     import ActionBar from './ActionBar.svelte'
+    import CustomHtmlMessage from './CustomHtmlMessage.svelte'
     import MessageActionsSheet from './MessageActionsSheet.svelte'
     import type { EditRequest } from './editRequest'
 
@@ -126,6 +127,31 @@
     {/await}
 {/snippet}
 
+{#snippet body()}
+    <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+{/snippet}
+
+{#snippet modelBadge()}
+    {#if showModelBadge}
+        <button type="button" class="ml-auto flex h-7 items-center gap-1 rounded-full px-2.5 text-[12px] text-(--mc-text2)" style="background: var(--mc-surface);" onclick={() => showGenerationInfo(idx, generationInfo)}>
+            <BotIcon size={13} />
+            {capitalize(modelShortName)}
+        </button>
+    {/if}
+{/snippet}
+
+{#snippet actions()}
+    {#if showActions}
+        <ActionBar {greeting} oncopy={copy} onedit={edit} onmore={openSheet} onspeak={() => speakMessage(text)} />
+    {/if}
+{/snippet}
+
+{#snippet customIcon()}
+    {#if showIdentity}
+        {@render avatar(40)}
+    {/if}
+{/snippet}
+
 <div class="chat-message-container" {...{ 'x-hashed': hashKey }}>
     {#key $ReloadChatPointer[idx] ?? 0}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -154,13 +180,15 @@
                 {/if}
             {:else if blank}
                 <div class="text-center text-[14px] italic text-(--mc-text2)">{language.noMessage}</div>
+            {:else if DBState.db.theme === 'customHTML'}
+                <CustomHtmlMessage {idx} firstMessage={greeting} textBox={body} icon={customIcon} buttons={actions} genInfo={modelBadge} />
             {:else}
                 {#if isUser}
                     {#if showIdentity && $ConnectionOpenStore && message?.name}
                         <span class="mb-1 self-end text-[12px] text-(--mc-text2)">{message.name}</span>
                     {/if}
                     <div class="risu-mc-bubble ml-14 self-end" style="background: var(--mc-bubble); border-radius: 20px 20px 6px 20px; padding: 10px 14px; max-width: calc(100% - 56px);">
-                        <MessageBody {idx} {text} {role} name={renderName} {character} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+                        {@render body()}
                     </div>
                 {:else}
                     {#if showIdentity}
@@ -170,16 +198,11 @@
                             {#if greeting}
                                 <span class="shrink-0 rounded-full px-2 py-0.5 text-[11px] text-(--mc-text2)" style="background: var(--mc-surface);">{language.mobileChat.greeting}</span>
                             {/if}
-                            {#if showModelBadge}
-                                <button type="button" class="ml-auto flex h-7 items-center gap-1 rounded-full px-2.5 text-[12px] text-(--mc-text2)" style="background: var(--mc-surface);" onclick={() => showGenerationInfo(idx, generationInfo)}>
-                                    <BotIcon size={13} />
-                                    {capitalize(modelShortName)}
-                                </button>
-                            {/if}
+                            {@render modelBadge()}
                         </div>
                     {/if}
                     <div class="min-w-0">
-                        <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+                        {@render body()}
                     </div>
                 {/if}
                 {#if message?.disabled}
@@ -188,9 +211,7 @@
                         {message.disabled === 'allBefore' ? language.mobileChat.hiddenBeforeFromAi : language.mobileChat.hiddenFromAi}
                     </span>
                 {/if}
-                {#if showActions}
-                    <ActionBar {greeting} oncopy={copy} onedit={edit} onmore={openSheet} onspeak={() => speakMessage(text)} />
-                {/if}
+                {@render actions()}
             {/if}
             {#if isLatest}
                 <!-- Hotkey stand-ins (hotkey.ts clicks these; they need no visible UI). -->

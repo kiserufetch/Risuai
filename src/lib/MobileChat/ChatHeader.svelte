@@ -1,16 +1,21 @@
 <script lang="ts">
-    import { ArrowLeftIcon, MenuIcon, SquarePenIcon } from '@lucide/svelte'
+    import { ArrowLeftIcon, ImageIcon, ImageOffIcon, MenuIcon, SquarePenIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { getCharImage } from 'src/ts/characters'
     import { DBState, MobileSideBar, selectedCharID } from 'src/ts/stores.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
     import { createNewChat } from 'src/ts/chatCore/newChat'
     import { generationStatus } from 'src/ts/chatCore/generationStatus.svelte'
+    import { portraitState } from 'src/ts/chatCore/portrait.svelte'
     import McIconButton from './McIconButton.svelte'
 
     // Glass header over the feed (spec §4.2).
 
-    let { height = $bindable(0) }: { height?: number } = $props()
+    let { height = $bindable(0), immersive = false, canHidePortrait = false }: { height?: number; immersive?: boolean; canHidePortrait?: boolean } = $props()
+
+    let headerStyle = $derived(immersive
+        ? 'background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent); border-color: transparent;'
+        : 'background: var(--mc-glass); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border-color: color-mix(in oklab, var(--mc-line) 60%, transparent);')
 
     let char = $derived(session.getCharacter())
     let chatName = $derived(session.getChat()?.name ?? '')
@@ -31,7 +36,7 @@
 <header
     bind:clientHeight={height}
     class="risu-mc-header absolute inset-x-0 top-0 z-20 border-b"
-    style="background: var(--mc-glass); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border-color: color-mix(in oklab, var(--mc-line) 60%, transparent); padding-top: var(--safe-top, 0px); padding-left: var(--safe-left, 0px); padding-right: var(--safe-right, 0px);"
+    style="{headerStyle} padding-top: var(--safe-top, 0px); padding-left: var(--safe-left, 0px); padding-right: var(--safe-right, 0px);"
 >
     <div class="flex h-14 items-center gap-1 px-1.5">
         <McIconButton label={language.goback} class="text-(--mc-text)" onclick={() => selectedCharID.set(-1)}>
@@ -64,6 +69,11 @@
                 {/if}
             </span>
         </button>
+        {#if canHidePortrait}
+            <McIconButton label={portraitState.hidden ? language.mobileChat.showPortrait : language.mobileChat.hidePortrait} pressed={portraitState.hidden} class="text-(--mc-text)" onclick={() => { portraitState.hidden = !portraitState.hidden }}>
+                {#if portraitState.hidden}<ImageIcon size={21} />{:else}<ImageOffIcon size={21} />{/if}
+            </McIconButton>
+        {/if}
         <McIconButton label={language.newChat} class="text-(--mc-text)" onclick={createNewChat}>
             <SquarePenIcon size={21} />
         </McIconButton>
