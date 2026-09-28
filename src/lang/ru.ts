@@ -1715,4 +1715,7 @@ export const languageRussian = {
     convertToModule: "Конвертировать в модуль",
     skipSavingAssetsOnWebSync: "Пропускать сохранение ассетов при веб-синхронизации",
     applyAdditionalParamsToAll: "Применять дополнительные параметры ко всем моделям",
+    mobileChat: {
+        removeFromHereConfirm: "Удалить это сообщение и все сообщения ниже?",
+    },
 } satisfies Record<string, any>;
