@@ -203,8 +203,9 @@ export function getAlternativesCounter(): AlternativesCounter | null {
     if (!entry || entry.snapshots.length < 2) {
         return null
     }
+    // Read-only: this runs inside $derived, so a stale history is reported as "no
+    // variants" here and reset by the next reroll/previousAlternative call.
     if (isEntryStale(entry)) {
-        resetAlternatives(key)
         return null
     }
     return { index: entry.index + 1, total: entry.snapshots.length }

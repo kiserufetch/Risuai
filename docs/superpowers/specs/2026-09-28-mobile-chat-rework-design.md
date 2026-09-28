@@ -591,7 +591,7 @@ MobileChatScreen  [data-scheme]
 |------|------------|---------------|
 | 0 | Токены (`mobileChat.css`, `schemeTokens`), примитивы (`Sheet`, кнопки), скелет `chatCore`, обвязка тестов | гейт §11.5 — выполнено, план `docs/superpowers/plans/2026-09-28-mobile-chat-core-phase-0-1.md` |
 | 1 | Ядро: `messageRender`, `scriptedClicks`, `sendPipeline`, `alternatives`, `messageActions`, `generationStatus`, `messageWindow` | модульные и паритетные тесты проходят — выполнено, план `docs/superpowers/plans/2026-09-28-mobile-chat-core-phase-0-1.md` |
-| 2 | Базовый чат: подключение (§6.1), `ChatHeader`, `MessageFeed`, `MessageItem`, `MessageBody`, `ActionBar`, `Composer`, генерация и стоп | переписка с тестовым персонажем 1 работает на 390×844 |
+| 2 | Базовый чат: подключение (§6.1), `ChatHeader`, `MessageFeed`, `MessageItem`, `MessageBody`, `ActionBar`, `Composer`, генерация и стоп | переписка с тестовым персонажем 1 работает на 390×844 — реализовано, план `docs/superpowers/plans/2026-09-28-mobile-chat-phase-2.md` |
 | 3 | Шторки действий и «+», редактор, подсказки, вложения, стикеры, «к последнему», переход к сообщению | все пункты §5.3–5.6 |
 | 4 | Новый чат и приветствие, группа, ветка, скрытые, карточка ошибки, плагины | тестовые персонажи 3 и 5 |
 | 5 | Иммерсивный режим, плавающий портрет, Custom HTML, фоны | тестовые персонажи 2 и 4 |

@@ -5,6 +5,7 @@
     import SpicyChatMain from "../UI/SpicyChat/SpicyChatMain.svelte";
     import MobileCharacters from "./MobileCharacters.svelte";
     import ChatScreen from "../ChatScreens/ChatScreen.svelte";
+    import MobileChatScreen from "../MobileChat/MobileChatScreen.svelte";
     import CharConfig from "../SideBars/CharConfig.svelte";
     import { WrenchIcon } from "@lucide/svelte";
     import { language } from "src/lang";
@@ -17,7 +18,11 @@
 
 <div class="w-full flex-1 overflow-y-auto bg-bgcolor relative">
     {#if $selectedCharID !== -1}
-        <ChatScreen />
+        {#if DBState.db.legacyMobileChat}
+            <ChatScreen />
+        {:else}
+            <MobileChatScreen />
+        {/if}
         {#if $MobileSideBar > 0}
             <!-- In-chat menu as an overlay panel: the conversation stays visible
                  behind it instead of being swapped out (ChatGPT-style drawer). -->

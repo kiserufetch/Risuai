@@ -1,14 +1,11 @@
 <script lang="ts">
     import { ArrowLeft, MenuIcon, SquarePenIcon } from "@lucide/svelte";
     import { language } from "src/lang";
-    import { v4 } from "uuid";
 
     import { DBState } from 'src/ts/stores.svelte';
-    import { MobileGUIStack, MobileSearch, ReloadGUIPointer, selectedCharID, SettingsMenuIndex, MobileSideBar } from "src/ts/stores.svelte";
+    import { MobileGUIStack, MobileSearch, selectedCharID, SettingsMenuIndex, MobileSideBar } from "src/ts/stores.svelte";
     import { getCharImage } from "src/ts/characters";
-    import { changeChatTo } from "src/ts/globalApi.svelte";
-    import { findCharacterbyId } from "src/ts/util";
-    import { haptic } from "src/ts/gui/haptics";
+    import { createNewChat } from "src/ts/chatCore/newChat";
 
     // Comfortable ~44px touch target for header nav actions (Apple HIG / WCAG AAA).
     const navButton = "flex items-center justify-center h-11 w-11 -mx-1 shrink-0 rounded-full text-textcolor hover:bg-selected active:bg-selected transition-colors"
@@ -16,30 +13,9 @@
     let currentChar = $derived(DBState.db.characters[$selectedCharID])
     let currentChatName = $derived(currentChar?.chats?.[currentChar.chatPage]?.name ?? '')
 
-    function newChat(){
-        const cha = currentChar
-        if(!cha) return
-        haptic(6)
-        const len = cha.chats.length
-        let chats = cha.chats
-        chats.unshift({
-            message:[], note:'', name:`New Chat ${len + 1}`, localLore:[], fmIndex: -1, id: v4()
-        })
-        if(cha.type === 'group'){
-            cha.characters.map((c) => {
-                chats[0].message.push({
-                    saying: c,
-                    role: 'char',
-                    data: findCharacterbyId(c).firstMessage
-                })
-            })
-        }
-        cha.chats = chats
-        changeChatTo(0)
-        MobileSideBar.set(0)
-        $ReloadGUIPointer += 1
-    }
 </script>
+<!-- The new mobile chat draws its own header (MobileChatScreen). -->
+{#if !($selectedCharID !== -1 && $MobileSideBar === 0 && !DBState.db.legacyMobileChat)}
 <div class="w-full px-4 h-16 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2" style="height: calc(4rem + var(--safe-top)); padding-top: var(--safe-top); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
     {#if $selectedCharID !== -1 && $MobileSideBar > 0}
         <button class={navButton} aria-label={language.goback} onclick={() => {
@@ -75,7 +51,7 @@
             </span>
         </button>
         <div class="flex justify-end shrink-0">
-            <button class={navButton} aria-label={language.newChat} onclick={newChat}>
+            <button class={navButton} aria-label={language.newChat} onclick={createNewChat}>
                 <SquarePenIcon size={22} />
             </button>
             <button class={navButton} aria-label={language.menu} onclick={() => {
@@ -100,3 +76,4 @@
 
     {/if}
 </div>
+{/if}

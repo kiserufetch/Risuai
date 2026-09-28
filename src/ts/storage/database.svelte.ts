@@ -1082,6 +1082,7 @@ export interface Database{
     comfyConfig: ComfyConfig
     comfyUiUrl: string
     useLegacyGUI: boolean
+    legacyMobileChat?: boolean
     claudeCachingExperimental: boolean
     hideApiKey: boolean
     unformatQuotes: boolean
