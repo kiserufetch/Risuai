@@ -21,6 +21,8 @@
     import ProfileAppearance from './ProfileAppearance.svelte'
     import ProfileLorebook from './ProfileLorebook.svelte'
     import ProfileScripts from './ProfileScripts.svelte'
+    import ProfileVoice from './ProfileVoice.svelte'
+    import ProfileAdvanced, { type AdvancedSection } from './ProfileAdvanced.svelte'
     import ProfileRegexEntry from './ProfileRegexEntry.svelte'
     import ProfileLoreEntry from './ProfileLoreEntry.svelte'
 
@@ -37,6 +39,8 @@
         | { kind: 'appearance' }
         | { kind: 'lorebook' }
         | { kind: 'scripts' }
+        | { kind: 'voice' }
+        | { kind: 'advanced'; section: AdvancedSection; title: string }
         | { kind: 'regex'; script: customscript }
         | { kind: 'loreEntry'; book: loreBook; list: loreBook[] }
         | { kind: 'toggles' }
@@ -96,6 +100,8 @@
             case 'appearance': return language.mobileProfile.appearance
             case 'lorebook': return language.mobileProfile.lorebook
             case 'scripts': return language.mobileProfile.scripts
+            case 'voice': return language.mobileProfile.tts
+            case 'advanced': return p.title
             case 'regex': return p.script.comment || language.mobileScripts.unnamed
             case 'loreEntry': return p.book.comment || p.book.key || language.mobileLore.unnamed
             case 'toggles': return language.mobileProfile.toggles
@@ -218,7 +224,7 @@
                         {@render row(BookIcon, language.mobileProfile.lorebook, '', { kind: 'lorebook' })}
                         {#if single}
                             <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
-                            {@render row(Volume2Icon, language.mobileProfile.tts, '', { kind: 'legacy', section: 5, title: language.mobileProfile.tts })}
+                            {@render row(Volume2Icon, language.mobileProfile.tts, '', { kind: 'voice' })}
                             <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
                             {@render row(CodeIcon, language.mobileProfile.scripts, language.mobileProfile.scriptsHint, { kind: 'scripts' })}
                         {/if}
@@ -227,7 +233,7 @@
                 {/if}
                 {#snippet third()}
                     {#if !isPrivate}
-                        {@render row(SlidersHorizontalIcon, language.mobileProfile.advanced, language.mobileProfile.advancedHint, { kind: 'legacy', section: 2, title: language.mobileProfile.advanced })}
+                        {@render row(SlidersHorizontalIcon, language.mobileProfile.advanced, language.mobileProfile.advancedHint, { kind: 'advanced', section: 'root', title: language.mobileProfile.advanced })}
                         <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
                     {/if}
                     {@render row(ToggleRightIcon, language.mobileProfile.toggles, '', { kind: 'toggles' })}
@@ -245,7 +251,7 @@
                 {#if single && !isPrivate}
                     <ProfileField label={language.mobileProfile.description} bind:value={single.desc} minRows={6} />
                     <ProfileField label={language.mobileProfile.firstMessage} bind:value={single.firstMessage} minRows={4} />
-                    <button type="button" class="flex min-h-[52px] items-center gap-3 rounded-2xl px-4 text-left text-[15px]" style="background: var(--mc-group);" onclick={() => push({ kind: 'legacy', section: 2, title: language.mobileProfile.advanced })}>
+                    <button type="button" class="flex min-h-[52px] items-center gap-3 rounded-2xl px-4 text-left text-[15px]" style="background: var(--mc-group);" onclick={() => push({ kind: 'advanced', section: 'greetings', title: language.altGreet })}>
                         <span class="flex-1">{language.mobileProfile.altGreetings}</span>
                         <span class="text-[13px] text-(--mc-text2)">{single.alternateGreetings?.length ?? 0}</span>
                         <ChevronRightIcon size={18} class="text-(--mc-text2)" />
@@ -299,6 +305,12 @@
                     <span class="px-2 text-[13px] text-(--mc-text2)">{language.mobileProfile.removeMemberHint}</span>
                 {/if}
             </div>
+        {:else if page.kind === 'voice'}
+            <ProfileVoice />
+        {:else if page.kind === 'advanced'}
+            {#key page.section}
+                <ProfileAdvanced section={page.section} onopen={(section, title) => push({ kind: 'advanced', section, title })} />
+            {/key}
         {:else if page.kind === 'scripts'}
             <ProfileScripts onopen={(script) => push({ kind: 'regex', script })} />
         {:else if page.kind === 'regex'}
