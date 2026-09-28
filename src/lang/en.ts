@@ -1744,7 +1744,6 @@ export const languageEnglish = {
         nsfwHint: "18+ characters and explicit avatars",
         tags: "Tags",
         tagsSummary: "{0} required, {1} excluded",
-        tagsHint: "Tap to require a tag, tap again to exclude it, a third time to clear",
         findTag: "Find a tag",
         showResults: "Show {} characters",
         found: "Found {}",

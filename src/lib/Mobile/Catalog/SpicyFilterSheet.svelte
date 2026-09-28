@@ -103,7 +103,6 @@
         <span class="px-2 text-[12px] font-semibold uppercase tracking-wide text-(--mc-text2)">
             {language.mobileCatalog.tags}{#if include.length + exclude.length > 0} · {language.mobileCatalog.tagsSummary.replace('{0}', String(include.length)).replace('{1}', String(exclude.length))}{/if}
         </span>
-        <span class="px-2 text-[13px] text-(--mc-text2)">{language.mobileCatalog.tagsHint}</span>
         <label class="flex h-10 items-center gap-2 rounded-full px-3.5" style="background: var(--mc-group);">
             <SearchIcon size={16} class="shrink-0 text-(--mc-text2)" />
             <input bind:value={tagQuery} placeholder={language.mobileCatalog.findTag} aria-label={language.mobileCatalog.findTag} class="min-w-0 flex-1 border-0 bg-transparent text-base outline-none" style="color: var(--mc-text);" />
