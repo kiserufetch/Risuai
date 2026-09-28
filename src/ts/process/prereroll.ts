@@ -27,3 +27,12 @@ export function addRerolls(genId:string, values:string[]){
     rerolls[genId] = values;
     rerollIndex[genId] = 0;
 }
+
+export function getPrerollState(genId:string):{index:number,total:number}|null{
+    const values = rerolls[genId]
+    if(!values || values.length === 0){
+        return null
+    }
+    const index = Math.min(Math.max(rerollIndex[genId] ?? 0, 0), values.length - 1)
+    return { index, total: values.length }
+}
