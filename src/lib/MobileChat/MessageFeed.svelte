@@ -7,7 +7,7 @@
     import * as session from 'src/ts/chatCore/session.svelte'
     import { type MessageWindow, isFolded, loadColdStorage, needsColdStorageLoad } from 'src/ts/chatCore/messageWindow.svelte'
     import { generationStatus, getErrorForCurrentChat } from 'src/ts/chatCore/generationStatus.svelte'
-    import { getGreetingCounter, getGreetingText } from 'src/ts/chatCore/messageActions.svelte'
+    import { getGreetingText } from 'src/ts/chatCore/messageActions.svelte'
     import MessageItem from './MessageItem.svelte'
     import TypingIndicator from './TypingIndicator.svelte'
     import ErrorCard from './ErrorCard.svelte'
@@ -66,7 +66,6 @@
 
     let error = $derived(getErrorForCurrentChat())
     let greetingText = $derived(getGreetingText())
-    let greetingHasPager = $derived(getGreetingCounter() !== null)
 
     function isAtBottom(): boolean {
         return !scroller || Math.abs(scroller.scrollTop) < 100
@@ -219,7 +218,7 @@
                     hashKey="greeting"
                     totalLength={total}
                     isLatest={total === 0}
-                    showActions={greetingHasPager}
+                    showActions={true}
                     streaming={false}
                     {streamingMode}
                     {onedit}

@@ -23,6 +23,17 @@
         color: var(--mc-text);
     }
 
+    /* Long press opens the actions sheet; native text selection would fire with it. */
+    .risu-mc-message {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+    .risu-mc-message :is(input, textarea, [contenteditable='true']) {
+        -webkit-user-select: text;
+        user-select: text;
+    }
+
     .risu-mc-screen[data-scheme='light'] {
         --mc-scrim: rgb(20 20 35 / 0.35);
     }

@@ -8,6 +8,7 @@
     import ChatHeader from './ChatHeader.svelte'
     import MessageFeed from './MessageFeed.svelte'
     import Composer from './Composer.svelte'
+    import PluginSurfaces from './PluginSurfaces.svelte'
     import MessageEditor from './MessageEditor.svelte'
     import ToolsSheet from './ToolsSheet.svelte'
     import StickerSheet from './StickerSheet.svelte'
@@ -56,7 +57,7 @@
     })
 </script>
 
-<div bind:this={root} class="risu-mc-screen absolute inset-0 overflow-hidden" data-scheme={$ColorSchemeTypeStore}>
+<div bind:this={root} class="risu-mc-screen absolute inset-0 overflow-hidden" data-scheme={$ColorSchemeTypeStore} data-risu-swipe-edge-only>
     {#if background.length > 2}
         <div aria-hidden="true" class="absolute inset-0 bg-cover bg-center" style={background}></div>
     {/if}
@@ -65,6 +66,7 @@
         <MessageFeed {messageWindow} topInset={headerHeight} bottomInset={composerHeight} onedit={(request) => { editing = request }} />
         <ChatHeader bind:height={headerHeight} />
         <Composer bind:height={composerHeight} onplus={() => { toolsOpen = true }} />
+        <PluginSurfaces top={headerHeight + 12} />
     </div>
     {#if editing}
         <MessageEditor request={editing} onclose={() => { editing = null }} />

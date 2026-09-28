@@ -14,7 +14,7 @@
     import * as session from 'src/ts/chatCore/session.svelte'
     import { handleScriptedClick } from 'src/ts/chatCore/scriptedClicks'
     import { getTranslationCacheKey, isBlankMessage, prepareDisplayText } from 'src/ts/chatCore/messageRender'
-    import { removeMessage, showGenerationInfo } from 'src/ts/chatCore/messageActions.svelte'
+    import { removeMessage, showGenerationInfo, speakMessage } from 'src/ts/chatCore/messageActions.svelte'
     import { copyMessage } from 'src/ts/chatCore/copyMessage'
     import MessageBody from './MessageBody.svelte'
     import ActionBar from './ActionBar.svelte'
@@ -107,6 +107,7 @@
         if (streaming || (blank && !isComment)) {
             return
         }
+        window.getSelection()?.removeAllRanges()
         sheetAvatar = await avatarCss(speaker.image)
         sheetOpen = true
     }
@@ -166,6 +167,9 @@
                         <div class="mb-1.5 flex min-h-7 items-center gap-2">
                             {@render avatar(28)}
                             <span class="min-w-0 truncate text-[14px] font-semibold text-(--mc-text)">{speaker.name}</span>
+                            {#if greeting}
+                                <span class="shrink-0 rounded-full px-2 py-0.5 text-[11px] text-(--mc-text2)" style="background: var(--mc-surface);">{language.mobileChat.greeting}</span>
+                            {/if}
                             {#if showModelBadge}
                                 <button type="button" class="ml-auto flex h-7 items-center gap-1 rounded-full px-2.5 text-[12px] text-(--mc-text2)" style="background: var(--mc-surface);" onclick={() => showGenerationInfo(idx, generationInfo)}>
                                     <BotIcon size={13} />
@@ -185,7 +189,7 @@
                     </span>
                 {/if}
                 {#if showActions}
-                    <ActionBar {greeting} oncopy={copy} onedit={edit} onmore={openSheet} />
+                    <ActionBar {greeting} oncopy={copy} onedit={edit} onmore={openSheet} onspeak={() => speakMessage(text)} />
                 {/if}
             {/if}
             {#if isLatest}

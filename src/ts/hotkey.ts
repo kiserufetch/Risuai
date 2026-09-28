@@ -370,6 +370,10 @@ export function initMobileGesture(){
             if(ele.tagName === 'BUTTON' || ele.tagName === 'INPUT' || ele.tagName === 'SELECT' || ele.tagName === 'TEXTAREA'){
                 return
             }
+            // Screens opting in only react to swipes that start near the screen edge.
+            if(ele.closest?.('[data-risu-swipe-edge-only]') && touch.clientX > 24 && touch.clientX < window.innerWidth - 24){
+                continue
+            }
             pressingPointers.set(touch.identifier, {x: touch.clientX, y: touch.clientY})
         }
     }, {
