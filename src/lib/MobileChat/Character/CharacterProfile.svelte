@@ -9,8 +9,8 @@
     import { getCharImage } from 'src/ts/characters'
     import { longpress } from 'src/ts/gui/longtouch'
     import { addGroupChar, rmCharFromGroup } from 'src/ts/process/group'
-    import type { character, groupChat, loreBook } from 'src/ts/storage/database.svelte'
-    import { CharConfigSubMenu, DBState } from 'src/ts/stores.svelte'
+    import type { character, customscript, groupChat, loreBook } from 'src/ts/storage/database.svelte'
+    import { CharConfigSubMenu, DBState, ReloadGUIPointer } from 'src/ts/stores.svelte'
     import { findCharacterbyId, getAuthorNoteDefaultText } from 'src/ts/util'
     import { pushBackHandler } from 'src/ts/chatCore/backStack'
     import * as session from 'src/ts/chatCore/session.svelte'
@@ -20,6 +20,8 @@
     import ProfileField from './ProfileField.svelte'
     import ProfileAppearance from './ProfileAppearance.svelte'
     import ProfileLorebook from './ProfileLorebook.svelte'
+    import ProfileScripts from './ProfileScripts.svelte'
+    import ProfileRegexEntry from './ProfileRegexEntry.svelte'
     import ProfileLoreEntry from './ProfileLoreEntry.svelte'
 
     // Character profile (mockups "Профиль персонажа", "Основное", "Участники"): a
@@ -34,6 +36,8 @@
         | { kind: 'members' }
         | { kind: 'appearance' }
         | { kind: 'lorebook' }
+        | { kind: 'scripts' }
+        | { kind: 'regex'; script: customscript }
         | { kind: 'loreEntry'; book: loreBook; list: loreBook[] }
         | { kind: 'toggles' }
         | { kind: 'debug' }
@@ -91,6 +95,8 @@
             case 'members': return language.mobileProfile.members
             case 'appearance': return language.mobileProfile.appearance
             case 'lorebook': return language.mobileProfile.lorebook
+            case 'scripts': return language.mobileProfile.scripts
+            case 'regex': return p.script.comment || language.mobileScripts.unnamed
             case 'loreEntry': return p.book.comment || p.book.key || language.mobileLore.unnamed
             case 'toggles': return language.mobileProfile.toggles
             case 'debug': return language.mobileProfile.debug
@@ -112,6 +118,16 @@
         if (book.id && chat) {
             chat.localLore = chat.localLore.filter((b) => !(b.mode === 'child' && b.id === book.id))
         }
+        back()
+    }
+
+    async function deleteRegex(script: customscript) {
+        const target = single
+        if (!target || !(await alertConfirm(language.removeConfirm + (script.comment || language.mobileScripts.unnamed)))) {
+            return
+        }
+        target.customscript = target.customscript.filter((s) => s !== script)
+        ReloadGUIPointer.update((v) => v + 1)
         back()
     }
 
@@ -150,6 +166,12 @@
         {#if page.kind === 'root' && single && !isPrivate}
             <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" aria-label={language.mobileProfile.share} onclick={() => push({ kind: 'legacy', section: 6, title: language.mobileProfile.share })}>
                 <Share2Icon size={20} />
+            </button>
+        {/if}
+        {#if page.kind === 'regex'}
+            {@const entry = page}
+            <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" style="color: var(--mc-danger);" aria-label={language.mobileScripts.delete} onclick={() => deleteRegex(entry.script)}>
+                <Trash2Icon size={20} />
             </button>
         {/if}
         {#if page.kind === 'loreEntry'}
@@ -198,7 +220,7 @@
                             <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
                             {@render row(Volume2Icon, language.mobileProfile.tts, '', { kind: 'legacy', section: 5, title: language.mobileProfile.tts })}
                             <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
-                            {@render row(CodeIcon, language.mobileProfile.scripts, language.mobileProfile.scriptsHint, { kind: 'legacy', section: 4, title: language.mobileProfile.scripts })}
+                            {@render row(CodeIcon, language.mobileProfile.scripts, language.mobileProfile.scriptsHint, { kind: 'scripts' })}
                         {/if}
                     {/snippet}
                     {@render group_(second)}
@@ -277,6 +299,12 @@
                     <span class="px-2 text-[13px] text-(--mc-text2)">{language.mobileProfile.removeMemberHint}</span>
                 {/if}
             </div>
+        {:else if page.kind === 'scripts'}
+            <ProfileScripts onopen={(script) => push({ kind: 'regex', script })} />
+        {:else if page.kind === 'regex'}
+            {#key page.script}
+                <ProfileRegexEntry script={page.script} />
+            {/key}
         {:else if page.kind === 'lorebook'}
             <ProfileLorebook onopen={(book, list) => push({ kind: 'loreEntry', book, list })} />
         {:else if page.kind === 'loreEntry'}
