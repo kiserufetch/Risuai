@@ -21,11 +21,20 @@
     import { MessageWindow } from 'src/ts/chatCore/messageWindow.svelte'
     import { takeChatScreenshot } from 'src/ts/chatCore/screenshot'
     import type { EditRequest } from './editRequest'
+    import ChatsSheet from './Character/ChatsSheet.svelte'
+    import CharacterProfile from './Character/CharacterProfile.svelte'
+    import { chatOverlay } from 'src/ts/chatCore/chatList.svelte'
+    import { onDestroy } from 'svelte'
 
     // Root of the new mobile chat (spec §6.4). Background layers bottom to top:
     // customBackground, BackgroundDom, the immersive portrait, then the feed.
 
     let root: HTMLElement | null = $state(null)
+
+    // Leaving the chat closes its chats sheet / profile.
+    onDestroy(() => {
+        chatOverlay.view = 'none'
+    })
     let headerHeight = $state(56)
     let composerHeight = $state(72)
     let portraitOccupied = $state(0)
@@ -167,6 +176,11 @@
     {/if}
     {#if stickersOpen}
         <StickerSheet onclose={() => { stickersOpen = false }} />
+    {/if}
+    {#if chatOverlay.view === 'chats'}
+        <ChatsSheet onclose={() => { chatOverlay.view = 'none' }} />
+    {:else if chatOverlay.view === 'profile'}
+        <CharacterProfile onclose={() => { chatOverlay.view = 'none' }} />
     {/if}
 </div>
 {#if chatListOpen}

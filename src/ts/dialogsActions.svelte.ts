@@ -4,6 +4,7 @@ import { language } from 'src/lang'
 import { alertError, alertSelect } from './alert'
 import { changeChar } from './characters'
 import { createNewChat } from './chatCore/newChat'
+import { chatOverlay } from './chatCore/chatList.svelte'
 import { checkCharOrder } from './globalApi.svelte'
 import { getColdStorageItem } from './process/coldstorage.svelte'
 import type { character, folder, groupChat } from './storage/database.svelte'
@@ -26,8 +27,13 @@ export async function openWithNewChat(index: number): Promise<void> {
 /** Opens the character with its chat list (MobileSideBar 1) or its settings (2) on top. */
 export async function openWithDrawer(index: number, drawer: 1 | 2): Promise<void> {
     await changeChar(index)
-    if (get(selectedCharID) === index) {
+    if (get(selectedCharID) !== index) {
+        return
+    }
+    if (DBState.db.legacyMobileChat) {
         MobileSideBar.set(drawer)
+    } else {
+        chatOverlay.view = drawer === 1 ? 'chats' : 'profile'
     }
 }
 

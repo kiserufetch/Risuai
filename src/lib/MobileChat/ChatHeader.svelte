@@ -2,11 +2,12 @@
     import { ArrowLeftIcon, ImageIcon, ImageOffIcon, MenuIcon, SquarePenIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { getCharImage } from 'src/ts/characters'
-    import { DBState, MobileSideBar, selectedCharID } from 'src/ts/stores.svelte'
+    import { DBState, selectedCharID } from 'src/ts/stores.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
     import { createNewChat } from 'src/ts/chatCore/newChat'
     import { generationStatus } from 'src/ts/chatCore/generationStatus.svelte'
     import { portraitState } from 'src/ts/chatCore/portrait.svelte'
+    import { chatOverlay } from 'src/ts/chatCore/chatList.svelte'
     import McIconButton from './McIconButton.svelte'
 
     // Glass header over the feed (spec §4.2).
@@ -42,7 +43,7 @@
         <McIconButton label={language.goback} class="text-(--mc-text)" onclick={() => selectedCharID.set(-1)}>
             <ArrowLeftIcon size={22} />
         </McIconButton>
-        <button type="button" class="flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-1 text-left active:opacity-70" onclick={() => MobileSideBar.set(2)}>
+        <button type="button" class="flex min-h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-1 text-left active:opacity-70" onclick={() => { chatOverlay.view = 'profile' }}>
             {#if group && members.length > 0}
                 <span class="relative h-9 w-11 shrink-0">
                     {#each members.slice(0, 2) as member, i (member.chaId)}
@@ -77,7 +78,7 @@
         <McIconButton label={language.newChat} class="text-(--mc-text)" onclick={createNewChat}>
             <SquarePenIcon size={21} />
         </McIconButton>
-        <McIconButton label={language.menu} class="text-(--mc-text)" onclick={() => MobileSideBar.set(1)}>
+        <McIconButton label={language.menu} class="text-(--mc-text)" onclick={() => { chatOverlay.view = 'chats' }}>
             <MenuIcon size={22} />
         </McIconButton>
     </div>
