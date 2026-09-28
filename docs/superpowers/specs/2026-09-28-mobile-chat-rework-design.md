@@ -265,7 +265,8 @@ src/ts/chatCore/                      логика без UI
   scriptedClicks.ts                   клики risu-trigger / risu-btn / risu-id
   sendPipeline.ts                     отправка, стоп, продолжить, автоответ, авто-режим группы
   alternatives.svelte.ts              варианты ответа: реролл, назад/вперёд, счётчик (по id чата)
-  messageActions.ts                   удалить, удалить ниже, сохранить правку, закладка, ветвь, скрыть, копировать, TTS, сведения, приветствие
+  messageActions.svelte.ts            удалить, удалить ниже, сохранить правку, закладка, ветвь, скрыть, TTS, сведения, приветствие
+  copyMessage.ts                      копирование сообщения карточкой или текстом
   generationStatus.svelte.ts          идёт ли генерация, этап, таймер, перехваченная ошибка
   messageWindow.svelte.ts             окно сообщений, подгрузка, cold storage, свёрнутый вид, переход к сообщению
   schemeTokens.ts                     --mc-on-accent по контрасту
@@ -283,6 +284,7 @@ src/lib/MobileChat/                   компоненты
   GenerationStatus.svelte             плашка этапа
   Composer.svelte                     поле ввода, вложения, подсказки, перевод ввода, заместители хоткеев
   Sheet.svelte                        примитив нижней шторки
+  McIconButton.svelte                 иконочная кнопка 44×44
   MessageActionsSheet.svelte, ToolsSheet.svelte, StickerSheet.svelte
   MessageEditor.svelte                полноэкранный редактор
   ImmersiveStage.svelte, EmotionPortrait.svelte
@@ -308,6 +310,7 @@ src/lib/MobileChat/                   компоненты
   - Если есть `risu-trigger` и `risu-id`, `CurrentTriggerIdStore` сбрасывается через 100 мс.
   - В группах ничего не делает.
   - Возвращает, был ли клик скриптовым: так `clickToEdit` не срабатывает на кнопках.
+  - API: `findScriptedOrigin(target)` — синхронная проверка, которой UI пользуется, чтобы не открывать редактор по тапу на скриптовом элементе, и `handleScriptedClick(event, idx): Promise<void>` — сам обработчик клика.
 - `sendPipeline.ts` — перенос из `DefaultChatScreen.svelte`.
   - `sendMessage(text, attachments)` выполняет шаги по порядку:
     1. слэш-команды (`processMultiCommand`);
@@ -320,12 +323,14 @@ src/lib/MobileChat/                   компоненты
     8. `sendChat(-1, { signal })`;
     9. сброс `doingChat` после успешной генерации.
   - `continueResponse()`, `abortGeneration()`, `requestAutoReply()`, `setGroupAutoMode(on)`.
+  - Операции закрепляют стартового персонажа, страницу чата и ключ чата в момент вызова; защита от повторного входа делает так, что повторная отправка возвращает `'busy'`, а повторный запуск генерации — no-op.
 - `alternatives.svelte.ts`
   - Реролл по порядку: кэш `Prereroll` → история вариантов → удаление последних ответов персонажа и `sendChat`.
   - «Назад» — `PreUnreroll` / история.
   - Счётчик n/N для панели.
   - **История хранится по id чата** (`Chat.id`) в памяти сессии: не теряется при выходе из экрана и не смешивается между чатами одного персонажа.
-- `messageActions.ts` — перенос `rm`, `edit`, `toggleBookmark`, ветвления, `disabled`, копирования (обычный текст + HTML), `sayTTS`, `alertRequestData`, переключения `fmIndex`. Индекс −1 защищён для всех действий, которые его не поддерживают.
+- `messageActions.svelte.ts` — перенос `rm`, `edit`, `toggleBookmark`, ветвления, `disabled`, `sayTTS`, `alertRequestData`, переключения `fmIndex`, сохранения правки перевода. Индекс −1 защищён для всех действий, которые его не поддерживают.
+- `copyMessage.ts` — копирование сообщения карточкой (HTML + текст) или только текстом, как в `Chat.svelte`.
 - `generationStatus.svelte.ts` — `{ running, stage, startedAt, error }`. Этап берётся из `chatProcessStage`. Перехват ошибок — §6.6.
 - `messageWindow.svelte.ts` — окно по `chatLoadInitialPages`/`chatLoadAdditionalPages`, cold storage, `chatFoldedStateMessageIndex`, `ScrollToMessageStore`.
 
@@ -378,6 +383,7 @@ MobileChatScreen  [data-scheme]
 | `src/lib/Mobile/MobileBody.svelte` | выбор `MobileChatScreen` / `ChatScreen` | форк |
 | `src/lib/Mobile/MobileHeader.svelte` | не рисовать шапку чата при новом чате | форк |
 | `src/ts/hotkey.ts` (`initMobileGesture`) | 2–3 строки: свайп, начатый внутри `[data-risu-swipe-edge-only]` дальше 24 px от края экрана, игнорируется | апстрим |
+| `src/ts/process/prereroll.ts` | функция `getPrerollState` в конце файла — счётчик заранее сгенерированных вариантов | апстрим |
 | `src/ts/storage/database.svelte.ts` | поле `legacyMobileChat` | апстрим |
 | `src/ts/setting/displaySettingsData.svelte.ts` | переключатель «Старый мобильный чат» | апстрим |
 | `src/lang/en.ts`, `src/lang/ru.ts` | новые строки (en — источник типа, остальные языки берут английский) | апстрим |
@@ -548,7 +554,7 @@ MobileChatScreen  [data-scheme]
 - `{{char}}`/`{{user}}`/`{{chatindex}}`;
 - `<style>` с классами (скоупинг `x-risu-`);
 - `{{button::…}}`;
-- inlay-изображение;
+- inlay-изображение — покрыто `src/ts/process/files/tests/inlays.test.ts` (IndexedDB недоступна в happy-dom, а разбор inlay у старого и нового пути общий);
 - regex `editdisplay`;
 - приветствие;
 - группа.
@@ -581,8 +587,8 @@ MobileChatScreen  [data-scheme]
 
 | Этап | Содержание | Готово, когда |
 |------|------------|---------------|
-| 0 | Токены (`mobileChat.css`, `schemeTokens`), примитивы (`Sheet`, кнопки), скелет `chatCore`, обвязка тестов | гейт §11.5 |
-| 1 | Ядро: `messageRender`, `scriptedClicks`, `sendPipeline`, `alternatives`, `messageActions`, `generationStatus`, `messageWindow` | модульные и паритетные тесты проходят |
+| 0 | Токены (`mobileChat.css`, `schemeTokens`), примитивы (`Sheet`, кнопки), скелет `chatCore`, обвязка тестов | гейт §11.5 — выполнено, план `docs/superpowers/plans/2026-09-28-mobile-chat-core-phase-0-1.md` |
+| 1 | Ядро: `messageRender`, `scriptedClicks`, `sendPipeline`, `alternatives`, `messageActions`, `generationStatus`, `messageWindow` | модульные и паритетные тесты проходят — выполнено, план `docs/superpowers/plans/2026-09-28-mobile-chat-core-phase-0-1.md` |
 | 2 | Базовый чат: подключение (§6.1), `ChatHeader`, `MessageFeed`, `MessageItem`, `MessageBody`, `ActionBar`, `Composer`, генерация и стоп | переписка с тестовым персонажем 1 работает на 390×844 |
 | 3 | Шторки действий и «+», редактор, подсказки, вложения, стикеры, «к последнему», переход к сообщению | все пункты §5.3–5.6 |
 | 4 | Новый чат и приветствие, группа, ветка, скрытые, карточка ошибки, плагины | тестовые персонажи 3 и 5 |
