@@ -2,7 +2,7 @@
     import { MobileGUIStack, MobileSideBar, selectedCharID } from "src/ts/stores.svelte";
     import Settings from "../Setting/Settings.svelte";
     import MobileCatalog from "./Catalog/MobileCatalog.svelte";
-    import MobileCharacters from "./MobileCharacters.svelte";
+    import MobileDialogs from "./Dialogs/MobileDialogs.svelte";
     import ChatScreen from "../ChatScreens/ChatScreen.svelte";
     import MobileChatScreen from "../MobileChat/MobileChatScreen.svelte";
     import CharConfig from "../SideBars/CharConfig.svelte";
@@ -15,7 +15,8 @@
     import { DBState } from 'src/ts/stores.svelte';
 </script>
 
-<div class="w-full flex-1 overflow-y-auto bg-bgcolor relative">
+<!-- Bottom padding keeps the last settings rows clear of the floating tab bar. -->
+<div class="w-full flex-1 overflow-y-auto bg-bgcolor relative" style={$selectedCharID === -1 ? 'padding-bottom: calc(96px + var(--safe-bottom, 0px));' : ''}>
     {#if $selectedCharID !== -1}
         {#if DBState.db.legacyMobileChat}
             <ChatScreen />
@@ -66,7 +67,7 @@
     {:else if $MobileGUIStack === 0}
         <MobileCatalog />
     {:else if $MobileGUIStack === 1}
-        <MobileCharacters />
+        <MobileDialogs />
     {:else if $MobileGUIStack === 2}
         <Settings />
     {/if}
