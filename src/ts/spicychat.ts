@@ -466,6 +466,8 @@ export interface SpicyChatHubParams {
     nsfw: boolean
     sort: SpicyChatSortMode
     tags?: string[]
+    /** Tags a result must NOT carry (`tags:!=[…]`). */
+    excludeTags?: string[]
     perPage?: number
 }
 
@@ -492,12 +494,15 @@ export async function getSpicyChatHub(params: SpicyChatHubParams): Promise<Spicy
         if (!params.nsfw) {
             filters.push('is_nsfw:false')
         }
+        // Backtick-quoted so tags with spaces or commas stay one value in the filter DSL.
+        const quote = (tag: string) => '`' + tag.replace(/`/g, '') + '`'
         const tags = (params.tags ?? []).filter((t) => !!t)
-        if (tags.length === 1) {
-            filters.push(`tags:=${tags[0]}`)
+        if (tags.length > 0) {
+            filters.push(`tags:=[${tags.map(quote).join(',')}]`)
         }
-        else if (tags.length > 1) {
-            filters.push(`tags:=[${tags.join(',')}]`)
+        const excluded = (params.excludeTags ?? []).filter((t) => !!t)
+        if (excluded.length > 0) {
+            filters.push(`tags:!=[${excluded.map(quote).join(',')}]`)
         }
         const query = new URLSearchParams({
             q: search === '' ? '*' : search,

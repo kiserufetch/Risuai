@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import { SettingsIcon, GlobeIcon, MessageSquareIcon, Volume2Icon, Braces, ActivityIcon, BookIcon, SmileIcon, UserIcon } from "@lucide/svelte";
+  import { SettingsIcon, LayoutGridIcon, MessageSquareIcon, Volume2Icon, Braces, ActivityIcon, BookIcon, SmileIcon, UserIcon } from "@lucide/svelte";
   import { language } from "src/lang";
   import { haptic } from "src/ts/gui/haptics";
   import { CharConfigSubMenu, MobileGUIStack, MobileSideBar, selectedCharID } from "src/ts/stores.svelte";
@@ -14,8 +14,8 @@
 
     <div class="w-full py-2 border-t border-t-darkborderc bg-darkbg flex items-stretch justify-center gap-2 text-textcolor2" style="padding-bottom: calc(0.5rem + var(--safe-bottom)); padding-left: calc(0.5rem + var(--safe-left)); padding-right: calc(0.5rem + var(--safe-right));">
         <button class="flex justify-center items-center flex-col gap-1 w-20 py-1 rounded-lg active:bg-selected active:scale-95 transition-all" class:text-textcolor={$MobileGUIStack === 0} onclick={() => switchTab(0)}>
-            <GlobeIcon size={24} />
-            <span class="text-xs">RisuRealm</span>
+            <LayoutGridIcon size={24} />
+            <span class="text-xs">{language.mobileCatalog.title}</span>
         </button>
         <button class="flex justify-center items-center flex-col gap-1 w-20 py-1 rounded-lg active:bg-selected active:scale-95 transition-all" class:text-textcolor={$MobileGUIStack === 1} onclick={() => switchTab(1)}>
             <MessageSquareIcon size={24} />
