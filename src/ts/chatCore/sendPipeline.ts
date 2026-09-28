@@ -46,22 +46,31 @@ export async function generate(options: { continueResponse?: boolean } = {}): Pr
         return
     }
     generating = true
-    const charIndex = get(selectedCharID)
-    const chatPage = DBState.db.characters[charIndex].chatPage
-    const chatKey = session.getChatKey()
-    const previousLength = chatOf(charIndex, chatPage).message.length
-    abortController = new AbortController()
-    beginGeneration({ charIndex, retry: () => generate(options) })
     try {
-        await sendChat(-1, { signal: abortController.signal, continue: options.continueResponse ?? false })
-        recordGeneration(chatKey, chatOf(charIndex, chatPage).message, previousLength)
+        // If this preamble throws (e.g. charIndex no longer has a character, as can happen when
+        // a retry or the group auto-mode loop calls generate() after the selection moved on),
+        // fall through to the outer catch: report it and release the guard, but do not touch
+        // doingChat, since sendChat never started and another flow may own it.
+        const charIndex = get(selectedCharID)
+        const chatPage = DBState.db.characters[charIndex].chatPage
+        const chatKey = session.getChatKey()
+        const previousLength = chatOf(charIndex, chatPage).message.length
+        abortController = new AbortController()
+        beginGeneration({ charIndex, retry: () => generate(options) })
+        try {
+            await sendChat(-1, { signal: abortController.signal, continue: options.continueResponse ?? false })
+            recordGeneration(chatKey, chatOf(charIndex, chatPage).message, previousLength)
+        } catch (error) {
+            console.error(error)
+            alertError(error)
+        }
+        endGeneration()
+        doingChat.set(false)
+        playSendSound()
     } catch (error) {
         console.error(error)
         alertError(error)
     } finally {
-        endGeneration()
-        doingChat.set(false)
-        playSendSound()
         generating = false
     }
 }
@@ -149,6 +158,12 @@ export async function toggleGroupAutoMode(): Promise<void> {
     const charIndex = get(selectedCharID)
     generationStatus.autoMode = true
     while (generationStatus.autoMode) {
+        // Another generation is already running (e.g. started directly via generate()): stop
+        // instead of spinning on instant early returns from the re-entrancy guard.
+        if (generating) {
+            generationStatus.autoMode = false
+            return
+        }
         await generate()
         if (charIndex !== get(selectedCharID)) {
             generationStatus.autoMode = false

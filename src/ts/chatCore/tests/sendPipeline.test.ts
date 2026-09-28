@@ -223,6 +223,24 @@ describe('generate', () => {
         expect(getAlternativesCounter()).not.toEqual({ index: 2, total: 2 })
         expect(getAlternativesCounter()).toBeNull()
     })
+
+    it('recovers from a generation that cannot start', async () => {
+        // generate()'s preamble throws for a selection with no character; silence the expected
+        // console.error noise from the outer catch.
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+        try {
+            selectCharacter(5)
+            await expect(generate()).resolves.toBeUndefined()
+            expect(alertError).toHaveBeenCalled()
+        } finally {
+            consoleError.mockRestore()
+        }
+
+        selectCharacter(0)
+        currentChat().message.push(makeMessage('user', 'Hi'))
+        await generate()
+        expect(sendChat).toHaveBeenCalledTimes(1)
+    })
 })
 
 describe('re-entrancy', () => {
@@ -246,6 +264,29 @@ describe('re-entrancy', () => {
         await expect(first).resolves.toBe('sent')
         expect(sendChat).toHaveBeenCalledTimes(1)
         expect(texts()).toEqual(['edited:first', 'reply 1'])
+    })
+
+    it('stops auto mode instead of spinning while another generation runs', async () => {
+        DBState.db.characters.push(makeGroup())
+        selectCharacter(1)
+        let resolveSend: (() => void) | undefined
+        vi.mocked(sendChat).mockImplementationOnce(async () => {
+            await new Promise<void>((resolve) => {
+                resolveSend = resolve
+            })
+            return true
+        })
+        const firstGenerate = generate()
+        // Wait for the direct generate() call to actually reach sendChat instead of assuming it
+        // has, so this stays correct even if the microtask ordering ever shifts.
+        await vi.waitFor(() => {
+            expect(sendChat).toHaveBeenCalled()
+        })
+        await toggleGroupAutoMode()
+        expect(generationStatus.autoMode).toBe(false)
+        expect(sendChat).toHaveBeenCalledTimes(1)
+        resolveSend?.()
+        await firstGenerate
     })
 })
 
