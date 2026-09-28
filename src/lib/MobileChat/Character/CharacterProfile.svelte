@@ -98,7 +98,7 @@
     <button type="button" class="flex min-h-14 w-full items-center gap-3 px-4 text-left text-[15px] active:opacity-70" onclick={() => push(next)}>
         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px]" style="background: var(--mc-accent-soft); color: var(--mc-accent);"><Icon size={18} /></span>
         <span class="min-w-0 flex-1 truncate">{label}</span>
-        {#if hint}<span class="max-w-[45%] truncate text-[13px] text-(--mc-text2)">{hint}</span>{/if}
+        {#if hint}<span class="ml-auto max-w-[48%] truncate text-right text-[13px] text-(--mc-text2)">{hint}</span>{/if}
         <ChevronRightIcon size={18} class="shrink-0 text-(--mc-text2)" />
     </button>
 {/snippet}

@@ -30,7 +30,7 @@
     {/if}
     <span class="min-w-0 flex-1 truncate">{label}</span>
     {#if trailing}
-        <span class="text-[13px] text-(--mc-text2)">{trailing}</span>
+        <span class="ml-auto max-w-[45%] truncate text-right text-[13px] text-(--mc-text2)">{trailing}</span>
     {/if}
     {#if toggle !== null}
         <span class="relative h-[26px] w-[44px] shrink-0 rounded-full transition-colors" style="background: {toggle ? 'var(--mc-accent)' : 'var(--mc-line)'};">
