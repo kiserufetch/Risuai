@@ -41,5 +41,7 @@
                 <RealmLibrary {scroller} />
             </div>
         {/if}
+        <!-- Room for the floating tab bar -->
+        <div aria-hidden="true" style="height: calc(96px + var(--safe-bottom, 0px));"></div>
     </div>
 </div>
