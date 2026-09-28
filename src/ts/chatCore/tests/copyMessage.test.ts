@@ -50,10 +50,13 @@ beforeEach(() => {
             this.items = items
         }
     })
+    // happy-dom does not implement execCommand; stub it so the plain-text fallback is testable.
+    document.execCommand = vi.fn(() => true)
 })
 
 afterEach(() => {
     vi.unstubAllGlobals()
+    delete (document as { execCommand?: unknown }).execCommand
 })
 
 describe('copyMessage', () => {
@@ -89,5 +92,25 @@ describe('copyMessage', () => {
         Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: clipboard.writeText }, configurable: true })
         await expect(copyMessage(request)).resolves.toBe('plain')
         expect(clipboard.writeText).toHaveBeenCalledWith('Hello there')
+    })
+
+    it('falls back to execCommand and still reports success when there is no clipboard API at all', async () => {
+        Object.defineProperty(window.navigator, 'clipboard', { value: undefined, configurable: true })
+        await expect(copyMessage(request)).resolves.toBe('plain')
+        expect(document.execCommand).toHaveBeenCalledWith('copy')
+    })
+
+    it('reports failure instead of throwing when writeText rejects and execCommand returns false', async () => {
+        Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: vi.fn(async () => { throw new Error('denied') }) }, configurable: true })
+        vi.mocked(document.execCommand).mockReturnValue(false)
+        await expect(copyMessage(request)).resolves.toBe('failed')
+    })
+
+    it('reports failure instead of throwing when writeText rejects and execCommand throws', async () => {
+        Object.defineProperty(window.navigator, 'clipboard', { value: { writeText: vi.fn(async () => { throw new Error('denied') }) }, configurable: true })
+        vi.mocked(document.execCommand).mockImplementation(() => {
+            throw new Error('execCommand unsupported')
+        })
+        await expect(copyMessage(request)).resolves.toBe('failed')
     })
 })

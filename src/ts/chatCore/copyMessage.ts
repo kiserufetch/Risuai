@@ -23,7 +23,7 @@ export interface CopyRequest {
     characterImage: string
 }
 
-export type CopyResult = 'rich' | 'plain'
+export type CopyResult = 'rich' | 'plain' | 'failed'
 
 const EMBEDDABLE_PREFIXES = ['http://asset.localhost', 'https://asset.localhost', 'https://sv.risuai', 'data:', 'http', '/']
 
@@ -135,6 +135,37 @@ function buildCard(root: HTMLElement, card: { bodyHtml: string; displayName: str
 </div>`
 }
 
+/**
+ * Plain-text copy: `navigator.clipboard.writeText` when available, falling back to a
+ * hidden-textarea `document.execCommand('copy')` (mirrors AlertComp.svelte's copyToClipboard)
+ * when the Clipboard API is missing entirely (plain HTTP) or rejects. Never throws.
+ */
+async function copyPlainText(text: string): Promise<boolean> {
+    const clipboard = window.navigator.clipboard
+    if (clipboard?.writeText) {
+        try {
+            await clipboard.writeText(text)
+            return true
+        } catch {
+            // Fall through to the execCommand fallback below.
+        }
+    }
+    let textarea: HTMLTextAreaElement | null = null
+    try {
+        textarea = document.createElement('textarea')
+        textarea.value = text
+        document.body.appendChild(textarea)
+        textarea.select()
+        return document.execCommand('copy')
+    } catch {
+        return false
+    } finally {
+        if (textarea?.isConnected) {
+            document.body.removeChild(textarea)
+        }
+    }
+}
+
 export async function copyMessage(request: CopyRequest): Promise<CopyResult> {
     const clipboard = window.navigator.clipboard
     if (clipboard?.write) {
@@ -172,6 +203,5 @@ export async function copyMessage(request: CopyRequest): Promise<CopyResult> {
             alertClear()
         }
     }
-    await clipboard?.writeText(request.copyText)
-    return 'plain'
+    return (await copyPlainText(request.copyText)) ? 'plain' : 'failed'
 }
