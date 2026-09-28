@@ -35,7 +35,7 @@
         streaming?: boolean
         streamingMode?: string
         /** Remount-free re-render trigger (last messages when the chat length changes). */
-        renderKey?: number
+        renderKey?: number | string
         translated?: boolean
         retranslate?: boolean
         msgDisplay?: string

@@ -5,13 +5,14 @@
     import { DBState, ScrollToMessageStore } from 'src/ts/stores.svelte'
     import type { character } from 'src/ts/storage/database.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
-    import { MessageWindow, isFolded, loadColdStorage, needsColdStorageLoad } from 'src/ts/chatCore/messageWindow.svelte'
+    import { type MessageWindow, isFolded, loadColdStorage, needsColdStorageLoad } from 'src/ts/chatCore/messageWindow.svelte'
     import { generationStatus, getErrorForCurrentChat } from 'src/ts/chatCore/generationStatus.svelte'
     import { getGreetingCounter, getGreetingText } from 'src/ts/chatCore/messageActions.svelte'
     import MessageItem from './MessageItem.svelte'
     import TypingIndicator from './TypingIndicator.svelte'
     import ErrorCard from './ErrorCard.svelte'
     import ChatIntro from './ChatIntro.svelte'
+    import type { EditRequest } from './editRequest'
 
     // The scroller (spec §6.5): column-reverse keeps the bottom pinned while streaming,
     // newest messages come first in the DOM (hotkeys and user CSS rely on that).
@@ -19,12 +20,12 @@
     interface Props {
         topInset: number
         bottomInset: number
-        onedit: (idx: number) => void
+        onedit: (request: EditRequest) => void
+        messageWindow: MessageWindow
     }
 
-    let { topInset, bottomInset, onedit }: Props = $props()
+    let { topInset, bottomInset, onedit, messageWindow }: Props = $props()
 
-    const messageWindow = new MessageWindow()
     let scroller: HTMLDivElement | null = $state(null)
     let showToLatest = $state(false)
     let hasUnread = $state(false)

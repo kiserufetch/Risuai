@@ -1,6 +1,6 @@
 <script lang="ts">
     import { tick } from 'svelte'
-    import { ArrowUpIcon, SquareIcon, XIcon } from '@lucide/svelte'
+    import { ArrowUpIcon, LanguagesIcon, PlusIcon, SquareIcon, XIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { alertError } from 'src/ts/alert'
     import { haptic } from 'src/ts/gui/haptics'
@@ -14,11 +14,63 @@
     import { reroll } from 'src/ts/chatCore/alternatives.svelte'
     import { clearDraft, getDraft } from 'src/ts/chatCore/composerDraft.svelte'
     import { generationStatus } from 'src/ts/chatCore/generationStatus.svelte'
+    import { isExpTranslator, translate } from 'src/ts/translator/translator'
     import GenerationStatus from './GenerationStatus.svelte'
+    import Suggestion from '../ChatScreens/Suggestion.svelte'
 
     // Floating composer (spec §4.2, §5.2, §7.4). Drafts live per chat (§10.15).
 
-    let { height = $bindable(0) }: { height?: number } = $props()
+    let { height = $bindable(0), onplus }: { height?: number; onplus: () => void } = $props()
+
+    let translatedInput = $state('')
+    let showInputTranslation = $derived(DBState.db.useAutoTranslateInput && DBState.db.translator !== '')
+
+    function wait(ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+
+    /** DefaultChatScreen.updateInputTransateMessage: reverse = typed into the translation field. */
+    async function syncInputTranslation(reverse: boolean) {
+        if (!DBState.db.useAutoTranslateInput) {
+            return
+        }
+        const target = draft
+        if (isExpTranslator()) {
+            if (!reverse) {
+                translatedInput = ''
+                return
+            }
+            if (translatedInput === '') {
+                target.text = ''
+                return
+            }
+            const snapshot = translatedInput
+            await wait(1500)
+            if (snapshot !== translatedInput) {
+                return
+            }
+        } else if (reverse && translatedInput === '') {
+            target.text = ''
+            return
+        } else if (!reverse && target.text === '') {
+            translatedInput = ''
+            return
+        }
+        const result = await translate(reverse ? translatedInput : target.text, reverse)
+        if (result) {
+            if (reverse) {
+                target.text = result
+            } else {
+                translatedInput = result
+            }
+        }
+    }
+
+    function applySuggestion(message: string) {
+        const sub = DBState.db.subModel
+        const clean = (sub === 'textgen_webui' || sub === 'mancer' || sub.startsWith('local_')) && DBState.db.autoSuggestClean
+        draft.text = clean ? message.replace(/ +\(.+?\) *$| - [^"'*]*?$/, '') : message
+    }
 
     const MAX_LINES_HEIGHT = 5 * 24 + 20
 
@@ -50,6 +102,7 @@
         const text = draft.text
         const attachments = [...draft.attachments]
         clearDraft(key)
+        translatedInput = ''
         const restore = () => {
             const current = getDraft(key)
             if (current.text === '' && current.attachments.length === 0) {
@@ -132,6 +185,11 @@
     {#if generatingHere}
         <GenerationStatus />
     {/if}
+    {#if DBState.db.useAutoSuggestions}
+        <div class="-mx-3">
+            <Suggestion messageInput={applySuggestion} {send} />
+        </div>
+    {/if}
     {#if chatPanelStore.length > 0}
         <div class="flex flex-col gap-2">
             {#each chatPanelStore as panel (panel.id)}
@@ -159,12 +217,30 @@
             {/each}
         </div>
     {/if}
-    <div class="flex items-end gap-1 rounded-[28px] border p-1 pl-4 shadow-lg" style="background: var(--mc-surface); border-color: var(--mc-line);">
+    {#if showInputTranslation}
+        <label class="flex items-center gap-2 rounded-[22px] border px-3" style="background: var(--mc-surface); border-color: var(--mc-line);">
+            <LanguagesIcon size={17} class="shrink-0 text-(--mc-text2)" />
+            <textarea
+                bind:value={translatedInput}
+                {onkeydown}
+                oninput={() => syncInputTranslation(true)}
+                rows="1"
+                placeholder={language.enterMessageForTranslateToEnglish}
+                class="min-w-0 flex-1 resize-none border-0 bg-transparent py-2.5 text-base leading-6 outline-none"
+                style="color: var(--mc-text); max-height: 96px;"
+            ></textarea>
+        </label>
+    {/if}
+    <div class="flex items-end gap-1 rounded-[28px] border p-1 shadow-lg" style="background: var(--mc-surface); border-color: var(--mc-line);">
+        <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-(--mc-text2) active:scale-95" aria-label={language.mobileChat.tools} onclick={() => { haptic(4); onplus() }}>
+            <PlusIcon size={22} />
+        </button>
         <textarea
             bind:this={area}
             bind:value={draft.text}
             {onkeydown}
             {onpaste}
+            oninput={() => syncInputTranslation(false)}
             rows="1"
             placeholder={language.mobileChat.messagePlaceholder}
             class="text-input-area min-w-0 flex-1 resize-none self-center overflow-y-auto border-0 bg-transparent py-2.5 text-base leading-6 outline-none"

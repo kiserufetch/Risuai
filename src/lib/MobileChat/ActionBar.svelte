@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ChevronLeftIcon, ChevronRightIcon, CopyIcon, PencilIcon, RefreshCwIcon } from '@lucide/svelte'
+    import { ChevronLeftIcon, ChevronRightIcon, CopyIcon, EllipsisIcon, PencilIcon, RefreshCwIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { haptic } from 'src/ts/gui/haptics'
     import { getAlternativesCounter, previousAlternative, reroll } from 'src/ts/chatCore/alternatives.svelte'
@@ -14,9 +14,10 @@
         greeting?: boolean
         oncopy?: () => void
         onedit?: () => void
+        onmore?: () => void
     }
 
-    let { greeting = false, oncopy, onedit }: Props = $props()
+    let { greeting = false, oncopy, onedit, onmore }: Props = $props()
 
     let counter = $derived(greeting ? getGreetingCounter() : getAlternativesCounter())
 
@@ -64,6 +65,11 @@
         </McIconButton>
         <McIconButton label={language.edit} class="button-icon-edit" onclick={() => onedit?.()}>
             <PencilIcon size={19} />
+        </McIconButton>
+    {/if}
+    {#if onmore}
+        <McIconButton label={language.mobileChat.more} onclick={() => onmore()}>
+            <EllipsisIcon size={19} />
         </McIconButton>
     {/if}
 </div>

@@ -9,6 +9,13 @@
     import MessageFeed from './MessageFeed.svelte'
     import Composer from './Composer.svelte'
     import MessageEditor from './MessageEditor.svelte'
+    import ToolsSheet from './ToolsSheet.svelte'
+    import StickerSheet from './StickerSheet.svelte'
+    import ChatList from '../Others/ChatList.svelte'
+    import ModuleChatMenu from '../Setting/Pages/Module/ModuleChatMenu.svelte'
+    import { MessageWindow } from 'src/ts/chatCore/messageWindow.svelte'
+    import { takeChatScreenshot } from 'src/ts/chatCore/screenshot'
+    import type { EditRequest } from './editRequest'
 
     // Root of the new mobile chat (spec §6.4). Background layers bottom to top:
     // customBackground, BackgroundDom, then the feed.
@@ -16,7 +23,12 @@
     let root: HTMLElement | null = $state(null)
     let headerHeight = $state(56)
     let composerHeight = $state(72)
-    let editingIdx = $state<number | null>(null)
+    let editing = $state<EditRequest | null>(null)
+    let toolsOpen = $state(false)
+    let stickersOpen = $state(false)
+    let chatListOpen = $state(false)
+    let modulesOpen = $state(false)
+    const messageWindow = new MessageWindow()
     let background = $state('')
     let lastBackground: string | null = null
 
@@ -50,11 +62,28 @@
     {/if}
     <BackgroundDom />
     <div class="relative h-full w-full">
-        <MessageFeed topInset={headerHeight} bottomInset={composerHeight} onedit={(idx) => { editingIdx = idx }} />
+        <MessageFeed {messageWindow} topInset={headerHeight} bottomInset={composerHeight} onedit={(request) => { editing = request }} />
         <ChatHeader bind:height={headerHeight} />
-        <Composer bind:height={composerHeight} />
+        <Composer bind:height={composerHeight} onplus={() => { toolsOpen = true }} />
     </div>
-    {#if editingIdx !== null}
-        <MessageEditor idx={editingIdx} onclose={() => { editingIdx = null }} />
+    {#if editing}
+        <MessageEditor request={editing} onclose={() => { editing = null }} />
+    {/if}
+    {#if toolsOpen}
+        <ToolsSheet
+            onclose={() => { toolsOpen = false }}
+            onstickers={() => { stickersOpen = true }}
+            onchatlist={() => { chatListOpen = true }}
+            onmodules={() => { modulesOpen = true }}
+            onscreenshot={() => takeChatScreenshot(messageWindow)}
+        />
+    {/if}
+    {#if stickersOpen}
+        <StickerSheet onclose={() => { stickersOpen = false }} />
     {/if}
 </div>
+{#if chatListOpen}
+    <ChatList close={() => { chatListOpen = false }} />
+{:else if modulesOpen}
+    <ModuleChatMenu close={() => { modulesOpen = false }} />
+{/if}

@@ -8,14 +8,18 @@
     import { ConnectionOpenStore } from 'src/ts/sync/multiuser'
     import { capitalize } from 'src/ts/util'
     import { haptic } from 'src/ts/gui/haptics'
+    import { longpress } from 'src/ts/gui/longtouch'
+    import { getLLMCache } from 'src/ts/translator/translator'
     import type { Message } from 'src/ts/storage/database.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
     import { handleScriptedClick } from 'src/ts/chatCore/scriptedClicks'
-    import { isBlankMessage, prepareDisplayText } from 'src/ts/chatCore/messageRender'
+    import { getTranslationCacheKey, isBlankMessage, prepareDisplayText } from 'src/ts/chatCore/messageRender'
     import { removeMessage, showGenerationInfo } from 'src/ts/chatCore/messageActions.svelte'
     import { copyMessage } from 'src/ts/chatCore/copyMessage'
     import MessageBody from './MessageBody.svelte'
     import ActionBar from './ActionBar.svelte'
+    import MessageActionsSheet from './MessageActionsSheet.svelte'
+    import type { EditRequest } from './editRequest'
 
     // One feed entry (spec §4.2, §6.4, §7.2): .chat-message-container > .risu-chat.
     // `message` is null for the greeting (index -1).
@@ -31,7 +35,7 @@
         isLatest: boolean
         streaming: boolean
         streamingMode: string
-        onedit: (idx: number) => void
+        onedit: (request: EditRequest) => void
     }
 
     let { idx, message, greetingText = '', hashKey, totalLength, showActions, isLatest, streaming, streamingMode, onedit }: Props = $props()
@@ -54,6 +58,10 @@
     let translated = $state(false)
     let retranslate = $state(false)
     let msgDisplay = $state('')
+    /** Bumped after a translation edit so the body re-renders from the cache. */
+    let revision = $state(0)
+    let sheetOpen = $state(false)
+    let sheetAvatar = $state('')
 
     // Comments (branch markers) only get the CBS pass, like Chat.svelte displaya.
     $effect.pre(() => {
@@ -79,10 +87,28 @@
         })
     }
 
+    function edit() {
+        onedit({ kind: 'message', idx })
+    }
+
     function tapToEdit() {
         if (DBState.db.clickToEdit && idx > -1 && !streaming) {
-            onedit(idx)
+            edit()
         }
+    }
+
+    async function editTranslation() {
+        const key = await getTranslationCacheKey(msgDisplay, { character, idx, firstMessage: greeting })
+        const cached = await getLLMCache(key)
+        onedit({ kind: 'translation', idx, key, text: cached ?? '', onsaved: () => { revision += 1 } })
+    }
+
+    async function openSheet() {
+        if (streaming || (blank && !isComment)) {
+            return
+        }
+        sheetAvatar = await avatarCss(speaker.image)
+        sheetOpen = true
     }
 
     function openBranchSource(parts: string[]) {
@@ -111,6 +137,7 @@
             data-chat-index={idx}
             data-chat-id={message?.chatId ?? ''}
             onclickcapture={(event) => handleScriptedClick(event, idx)}
+            use:longpress={openSheet}
         >
             {#if isComment}
                 {#if msgDisplay.startsWith('{{specialcomment')}
@@ -132,7 +159,7 @@
                         <span class="mb-1 self-end text-[12px] text-(--mc-text2)">{message.name}</span>
                     {/if}
                     <div class="risu-mc-bubble ml-14 self-end" style="background: var(--mc-bubble); border-radius: 20px 20px 6px 20px; padding: 10px 14px; max-width: calc(100% - 56px);">
-                        <MessageBody {idx} {text} {role} name={renderName} {character} {renderKey} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+                        <MessageBody {idx} {text} {role} name={renderName} {character} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
                     </div>
                 {:else}
                     {#if showIdentity}
@@ -148,7 +175,7 @@
                         </div>
                     {/if}
                     <div class="min-w-0">
-                        <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} {renderKey} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+                        <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
                     </div>
                 {/if}
                 {#if message?.disabled}
@@ -158,7 +185,7 @@
                     </span>
                 {/if}
                 {#if showActions}
-                    <ActionBar {greeting} oncopy={copy} onedit={() => onedit(idx)} />
+                    <ActionBar {greeting} oncopy={copy} onedit={edit} onmore={openSheet} />
                 {/if}
             {/if}
             {#if isLatest}
@@ -174,6 +201,23 @@
             {/if}
         </div>
     {/key}
+    {#if sheetOpen}
+        <MessageActionsSheet
+            {idx}
+            {message}
+            {text}
+            avatarCss={sheetAvatar}
+            speakerName={speaker.name}
+            {translated}
+            branchMarker={isComment}
+            oncopy={copy}
+            onedit={edit}
+            onedittranslation={editTranslation}
+            ontranslate={() => { translated = !translated }}
+            onretranslate={() => { retranslate = true }}
+            onclose={() => { sheetOpen = false }}
+        />
+    {/if}
 </div>
 
 <style>
