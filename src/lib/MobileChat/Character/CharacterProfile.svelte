@@ -18,6 +18,7 @@
     import DevTool from '../../SideBars/DevTool.svelte'
     import Toggles from '../../SideBars/Toggles.svelte'
     import ProfileField from './ProfileField.svelte'
+    import ProfileAppearance from './ProfileAppearance.svelte'
 
     // Character profile (mockups "Профиль персонажа", "Основное", "Участники"): a
     // full-screen page over the chat with a small navigation stack. The big editors
@@ -29,6 +30,7 @@
         | { kind: 'basic' }
         | { kind: 'note' }
         | { kind: 'members' }
+        | { kind: 'appearance' }
         | { kind: 'toggles' }
         | { kind: 'debug' }
         | { kind: 'legacy'; section: number; title: string }
@@ -83,6 +85,7 @@
             case 'basic': return language.mobileProfile.basic
             case 'note': return language.mobileProfile.note
             case 'members': return language.mobileProfile.members
+            case 'appearance': return language.mobileProfile.appearance
             case 'toggles': return language.mobileProfile.toggles
             case 'debug': return language.mobileProfile.debug
             case 'legacy': return p.title
@@ -156,7 +159,7 @@
                     {@render row(NotebookPenIcon, language.mobileProfile.note, language.mobileProfile.noteHint, { kind: 'note' })}
                     {#if !isPrivate}
                         <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
-                        {@render row(SmileIcon, language.mobileProfile.appearance, language.mobileProfile.appearanceHint, { kind: 'legacy', section: 1, title: language.mobileProfile.appearance })}
+                        {@render row(SmileIcon, language.mobileProfile.appearance, language.mobileProfile.appearanceHint, { kind: 'appearance' })}
                     {/if}
                 {/snippet}
                 {@render group_(first)}
@@ -246,6 +249,8 @@
                     <span class="px-2 text-[13px] text-(--mc-text2)">{language.mobileProfile.removeMemberHint}</span>
                 {/if}
             </div>
+        {:else if page.kind === 'appearance'}
+            <ProfileAppearance />
         {:else if page.kind === 'toggles'}
             <div class="risu-mc-legacy pt-2"><Toggles bind:chara={DBState.db.characters[session.getCharacterIndex()]} /></div>
         {:else if page.kind === 'debug'}
