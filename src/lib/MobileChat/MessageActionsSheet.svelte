@@ -6,6 +6,7 @@
     import { language } from 'src/lang'
     import { DBState } from 'src/ts/stores.svelte'
     import { ConnectionOpenStore } from 'src/ts/sync/multiuser'
+    import { doingChat } from 'src/ts/process/index.svelte'
     import type { Message } from 'src/ts/storage/database.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
     import {
@@ -66,7 +67,7 @@
 
     {#if branchMarker}
         <SheetGroup>
-            <SheetRow label={language.remove} danger onclick={() => run(() => removeMessage(idx))}><Trash2Icon size={19} /></SheetRow>
+            <SheetRow label={language.remove} danger disabled={$doingChat} onclick={() => run(() => removeMessage(idx))}><Trash2Icon size={19} /></SheetRow>
         </SheetGroup>
     {:else}
         <div class="flex gap-2">
@@ -84,7 +85,7 @@
 
         {#if !greeting}
             <SheetGroup>
-                <SheetRow label={language.mobileChat.branchFromHere} onclick={() => run(() => branchFromMessage(idx))}><SplitIcon size={19} /></SheetRow>
+                <SheetRow label={language.mobileChat.branchFromHere} disabled={$doingChat} onclick={() => run(() => branchFromMessage(idx))}><SplitIcon size={19} /></SheetRow>
                 {#if DBState.db.enableBookmark}
                     <SheetRow label={bookmarked ? language.mobileChat.removeBookmark : language.mobileChat.addBookmark} onclick={() => run(() => toggleBookmark(idx))}><BookmarkIcon size={19} /></SheetRow>
                 {/if}
@@ -104,8 +105,8 @@
 
         {#if canRemove}
             <SheetGroup>
-                <SheetRow label={language.remove} danger onclick={() => run(() => removeMessage(idx))}><Trash2Icon size={19} /></SheetRow>
-                <SheetRow label={language.mobileChat.removeFromHere} danger onclick={() => run(() => removeMessagesFrom(idx))}><ListXIcon size={19} /></SheetRow>
+                <SheetRow label={language.remove} danger disabled={$doingChat} onclick={() => run(() => removeMessage(idx))}><Trash2Icon size={19} /></SheetRow>
+                <SheetRow label={language.mobileChat.removeFromHere} danger disabled={$doingChat} onclick={() => run(() => removeMessagesFrom(idx))}><ListXIcon size={19} /></SheetRow>
             </SheetGroup>
         {/if}
     {/if}

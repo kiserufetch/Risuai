@@ -37,4 +37,33 @@
     .risu-mc-screen[data-scheme='light'] {
         --mc-scrim: rgb(20 20 35 / 0.35);
     }
+
+    /* Motion (spec §4.3): speed follows the user's animation setting. */
+    .risu-mc-fade {
+        animation: risu-mc-fade-in calc(var(--risu-animation-speed, 0.2s) * 1.1) ease-out;
+    }
+    .risu-mc-slide-up {
+        animation: risu-mc-slide-up calc(var(--risu-animation-speed, 0.2s) * 1.3) cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .risu-mc-feed .risu-chat-body > .chat-message-container:first-child {
+        animation: risu-mc-rise calc(var(--risu-animation-speed, 0.2s) * 1.2) ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .risu-mc-fade,
+        .risu-mc-slide-up,
+        .risu-mc-feed .risu-chat-body > .chat-message-container:first-child {
+            animation: none;
+        }
+    }
+}
+
+@keyframes risu-mc-fade-in {
+    from { opacity: 0; }
+}
+@keyframes risu-mc-slide-up {
+    from { transform: translateY(100%); }
+}
+@keyframes risu-mc-rise {
+    from { opacity: 0; transform: translateY(8px); }
 }

@@ -7,6 +7,7 @@
     import { getAlternativesCounter } from 'src/ts/chatCore/alternatives.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
     import type { EditRequest } from './editRequest'
+    import { pushBackHandler } from 'src/ts/chatCore/backStack'
 
     // Full-screen editor (spec §5.5): Cancel asks before dropping changes, Save writes
     // the message (or the translation cache), chips wrap the selection.
@@ -35,6 +36,10 @@
     $effect(() => {
         tick().then(() => area?.focus())
     })
+
+    // System back behaves like Cancel; the popped entry is gone, so a declined
+    // confirmation just keeps the editor open without one.
+    $effect(() => pushBackHandler(() => untrack(() => cancel())))
 
     async function cancel() {
         if (value !== original && !(await alertConfirm(language.mobileChat.discardEditConfirm))) {
@@ -81,7 +86,7 @@
     role="dialog"
     aria-modal="true"
     aria-label={language.mobileChat.editMessage}
-    class="risu-mc-editor fixed inset-0 z-50 flex flex-col"
+    class="risu-mc-editor risu-mc-slide-up fixed inset-0 z-50 flex flex-col"
     style="background: var(--mc-bg); color: var(--mc-text); padding-top: var(--safe-top); padding-bottom: calc(var(--safe-bottom) + var(--kb-inset, 0px));"
 >
     <header class="flex h-14 shrink-0 items-center gap-2 border-b px-2" style="border-color: var(--mc-line);">

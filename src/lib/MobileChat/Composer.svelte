@@ -15,6 +15,7 @@
     import { clearDraft, getDraft } from 'src/ts/chatCore/composerDraft.svelte'
     import { generationStatus } from 'src/ts/chatCore/generationStatus.svelte'
     import { isExpTranslator, translate } from 'src/ts/translator/translator'
+    import { needsColdStorageLoad } from 'src/ts/chatCore/messageWindow.svelte'
     import GenerationStatus from './GenerationStatus.svelte'
     import Suggestion from '../ChatScreens/Suggestion.svelte'
 
@@ -79,6 +80,8 @@
     let draft = $derived(getDraft(chatKey))
     let generatingHere = $derived(generationStatus.running && generationStatus.charIndex === session.getCharacterIndex())
     let busy = $derived($doingChat || generatingHere)
+    // A cold-stored chat is still being restored: sending now would write into the stub.
+    let coldLoading = $derived(needsColdStorageLoad())
 
     function resize() {
         if (!area) {
@@ -94,7 +97,7 @@
     })
 
     async function send() {
-        if (busy) {
+        if (busy || coldLoading) {
             return
         }
         haptic(6)
@@ -254,7 +257,7 @@
                 <SquareIcon size={13} class="fill-current" />
             </button>
         {:else}
-            <button type="button" class="button-icon-send flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:scale-95" style="background: var(--mc-accent); color: var(--mc-on-accent);" aria-label={language.mobileChat.send} onclick={send}>
+            <button type="button" class="button-icon-send flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:scale-95 disabled:opacity-40" style="background: var(--mc-accent); color: var(--mc-on-accent);" aria-label={language.mobileChat.send} disabled={coldLoading} onclick={send}>
                 <ArrowUpIcon size={22} strokeWidth={2.5} />
             </button>
         {/if}

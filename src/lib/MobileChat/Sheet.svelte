@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { tick, type Snippet } from 'svelte'
+    import { tick, untrack, type Snippet } from 'svelte'
+    import { pushBackHandler } from 'src/ts/chatCore/backStack'
 
     interface Props {
         open: boolean
@@ -12,6 +13,13 @@
     let { open, label, onclose, children, class: className = '' }: Props = $props()
 
     let panel: HTMLElement | null = $state(null)
+
+    $effect(() => {
+        if (!open) {
+            return
+        }
+        return pushBackHandler(() => untrack(() => onclose()))
+    })
 
     const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
@@ -58,7 +66,7 @@
 {#if open}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="risu-mc-sheet-scrim fixed inset-0 z-50" style="background: var(--mc-scrim, rgb(0 0 0 / 0.55));" onclick={onclose}></div>
+    <div class="risu-mc-sheet-scrim risu-mc-fade fixed inset-0 z-50" style="background: var(--mc-scrim, rgb(0 0 0 / 0.55));" onclick={onclose}></div>
     <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
     <section
         bind:this={panel}
@@ -66,7 +74,7 @@
         aria-modal="true"
         aria-label={label}
         tabindex="-1"
-        class="risu-mc-sheet fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col gap-3 overflow-y-auto overscroll-contain rounded-t-[24px] px-3 pt-2 outline-none {className}"
+        class="risu-mc-sheet risu-mc-slide-up fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col gap-3 overflow-y-auto overscroll-contain rounded-t-[24px] px-3 pt-2 outline-none {className}"
         style="background: var(--mc-surface, var(--risu-theme-darkbutton)); color: var(--mc-text, var(--risu-theme-textcolor)); padding-bottom: calc(1rem + var(--safe-bottom, 0px));"
     >
         <span aria-hidden="true" class="mx-auto h-[5px] w-9 shrink-0 rounded-full" style="background: var(--mc-line, var(--risu-theme-darkborderc));"></span>
