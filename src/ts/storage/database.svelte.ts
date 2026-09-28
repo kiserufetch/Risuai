@@ -1483,6 +1483,9 @@ export interface character{
     },
     vits?: OnnxModelFiles
     realmId?:string
+    /** RisuRealm card this character was imported from, and that card's upload date (minutes). */
+    realmSourceId?:string
+    realmSourceDate?:number
     imported?:boolean
     trashTime?:number
     nickname?:string

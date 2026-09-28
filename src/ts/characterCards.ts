@@ -1796,11 +1796,13 @@ export async function getRisuHub(arg:{
             return []
         }
         const jso = await da.json()
+        // The hub sends `haslore`; hubType (and the UI) read `hasLore`.
+        const withLore = (cards:hubType[]) => cards.map((c) => ({...c, hasLore: c.hasLore ?? (c as {haslore?:boolean}).haslore}))
         if(Array.isArray(jso)){
-            return jso
+            return withLore(jso)
         }
         hubAdditionalHTML = jso.additionalHTML || hubAdditionalHTML
-        return jso.cards
+        return withLore(jso.cards ?? [])
     } catch (error) {
         return[]
     }

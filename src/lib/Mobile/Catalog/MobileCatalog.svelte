@@ -4,7 +4,7 @@
     import { ColorSchemeTypeStore } from 'src/ts/gui/colorscheme'
     import { applySchemeTokens } from 'src/ts/chatCore/schemeTokens'
     import { DBState, OpenSpicyChatStore } from 'src/ts/stores.svelte'
-    import RealmMain from '../../UI/Realm/RealmMain.svelte'
+    import RealmLibrary from './RealmLibrary.svelte'
     import SpicyLibrary from './SpicyLibrary.svelte'
 
     // "Каталог" tab of the mobile shell (mockup A): one screen, a RisuRealm | SpicyChat
@@ -37,7 +37,9 @@
                 <SpicyLibrary {scroller} />
             </div>
         {:else}
-            <RealmMain />
+            <div class="px-4 pb-6">
+                <RealmLibrary {scroller} />
+            </div>
         {/if}
     </div>
 </div>
