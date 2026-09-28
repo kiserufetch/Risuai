@@ -2,14 +2,14 @@
     import { onMount } from 'svelte'
     import {
         BookIcon, ChevronLeftIcon, ChevronRightIcon, CodeIcon, NotebookPenIcon, PlusIcon, Share2Icon,
-        SlidersHorizontalIcon, SmileIcon, ToggleRightIcon, UserIcon, UsersIcon, Volume2Icon, WrenchIcon,
+        SlidersHorizontalIcon, SmileIcon, ToggleRightIcon, Trash2Icon, UserIcon, UsersIcon, Volume2Icon, WrenchIcon,
     } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { alertConfirm } from 'src/ts/alert'
     import { getCharImage } from 'src/ts/characters'
     import { longpress } from 'src/ts/gui/longtouch'
     import { addGroupChar, rmCharFromGroup } from 'src/ts/process/group'
-    import type { character, groupChat } from 'src/ts/storage/database.svelte'
+    import type { character, groupChat, loreBook } from 'src/ts/storage/database.svelte'
     import { CharConfigSubMenu, DBState } from 'src/ts/stores.svelte'
     import { findCharacterbyId, getAuthorNoteDefaultText } from 'src/ts/util'
     import { pushBackHandler } from 'src/ts/chatCore/backStack'
@@ -19,6 +19,8 @@
     import Toggles from '../../SideBars/Toggles.svelte'
     import ProfileField from './ProfileField.svelte'
     import ProfileAppearance from './ProfileAppearance.svelte'
+    import ProfileLorebook from './ProfileLorebook.svelte'
+    import ProfileLoreEntry from './ProfileLoreEntry.svelte'
 
     // Character profile (mockups "Профиль персонажа", "Основное", "Участники"): a
     // full-screen page over the chat with a small navigation stack. The big editors
@@ -31,6 +33,8 @@
         | { kind: 'note' }
         | { kind: 'members' }
         | { kind: 'appearance' }
+        | { kind: 'lorebook' }
+        | { kind: 'loreEntry'; book: loreBook; list: loreBook[] }
         | { kind: 'toggles' }
         | { kind: 'debug' }
         | { kind: 'legacy'; section: number; title: string }
@@ -86,11 +90,29 @@
             case 'note': return language.mobileProfile.note
             case 'members': return language.mobileProfile.members
             case 'appearance': return language.mobileProfile.appearance
+            case 'lorebook': return language.mobileProfile.lorebook
+            case 'loreEntry': return p.book.comment || p.book.key || language.mobileLore.unnamed
             case 'toggles': return language.mobileProfile.toggles
             case 'debug': return language.mobileProfile.debug
             case 'legacy': return p.title
             default: return ''
         }
+    }
+
+    async function deleteLoreEntry(book: loreBook, list: loreBook[]) {
+        if (!(await alertConfirm(language.removeConfirm + (book.comment || book.key || language.mobileLore.unnamed)))) {
+            return
+        }
+        // Splice first: reassigning localLore below would detach `list` when it is that array.
+        const index = list.indexOf(book)
+        if (index !== -1) {
+            list.splice(index, 1)
+        }
+        const chat = session.getChat()
+        if (book.id && chat) {
+            chat.localLore = chat.localLore.filter((b) => !(b.mode === 'child' && b.id === book.id))
+        }
+        back()
     }
 
     function memberName(id: string): string {
@@ -130,6 +152,12 @@
                 <Share2Icon size={20} />
             </button>
         {/if}
+        {#if page.kind === 'loreEntry'}
+            {@const entry = page}
+            <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" style="color: var(--mc-danger);" aria-label={language.mobileLore.deleteEntry} onclick={() => deleteLoreEntry(entry.book, entry.list)}>
+                <Trash2Icon size={20} />
+            </button>
+        {/if}
         {#if page.kind === 'members'}
             <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" style="color: var(--mc-accent);" aria-label={language.mobileProfile.addMember} onclick={() => addGroupChar()}>
                 <PlusIcon size={22} />
@@ -165,7 +193,7 @@
                 {@render group_(first)}
                 {#if !isPrivate}
                     {#snippet second()}
-                        {@render row(BookIcon, language.mobileProfile.lorebook, '', { kind: 'legacy', section: 3, title: language.mobileProfile.lorebook })}
+                        {@render row(BookIcon, language.mobileProfile.lorebook, '', { kind: 'lorebook' })}
                         {#if single}
                             <div class="h-px" style="background: var(--mc-line); margin-left: 60px;"></div>
                             {@render row(Volume2Icon, language.mobileProfile.tts, '', { kind: 'legacy', section: 5, title: language.mobileProfile.tts })}
@@ -249,6 +277,12 @@
                     <span class="px-2 text-[13px] text-(--mc-text2)">{language.mobileProfile.removeMemberHint}</span>
                 {/if}
             </div>
+        {:else if page.kind === 'lorebook'}
+            <ProfileLorebook onopen={(book, list) => push({ kind: 'loreEntry', book, list })} />
+        {:else if page.kind === 'loreEntry'}
+            {#key page.book}
+                <ProfileLoreEntry book={page.book} />
+            {/key}
         {:else if page.kind === 'appearance'}
             <ProfileAppearance />
         {:else if page.kind === 'toggles'}
