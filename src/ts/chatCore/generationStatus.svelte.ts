@@ -1,6 +1,7 @@
 import type { Unsubscriber } from 'svelte/store'
 import { chatProcessStage } from 'src/ts/process/index.svelte'
 import { alertStore, DBState } from 'src/ts/stores.svelte'
+import * as session from './session.svelte'
 
 // UI-facing state of the running generation (spec §5.2, §6.6). While a generation
 // started from the new chat runs, error alerts are captured and shown inline.
@@ -9,6 +10,8 @@ export interface CapturedError {
     msg: string
     submsg?: string
     stackTrace?: string
+    /** Chat the generation that raised this error belonged to; scopes the error card and Retry. */
+    chatKey: string
 }
 
 class GenerationStatus {
@@ -35,7 +38,7 @@ function stopListening(): void {
     unsubscribers = []
 }
 
-export function beginGeneration(options: { charIndex: number; retry: () => Promise<void> }): void {
+export function beginGeneration(options: { charIndex: number; retry: () => Promise<void>; chatKey: string }): void {
     stopListening()
     retryAction = options.retry
     generationStatus.error = null
@@ -53,7 +56,7 @@ export function beginGeneration(options: { charIndex: number; retry: () => Promi
         if (initial || alert?.type !== 'error') {
             return
         }
-        generationStatus.error = { msg: alert.msg, submsg: alert.submsg, stackTrace: alert.stackTrace }
+        generationStatus.error = { msg: alert.msg, submsg: alert.submsg, stackTrace: alert.stackTrace, chatKey: options.chatKey }
         alertStore.set({ type: 'none', msg: '' })
     }))
     initial = false
@@ -78,9 +81,24 @@ export function dismissError(): void {
     generationStatus.error = null
 }
 
+/** The captured error, but only while it still belongs to the chat currently shown. */
+export function getErrorForCurrentChat(): CapturedError | null {
+    const error = generationStatus.error
+    if (!error || error.chatKey !== session.getChatKey()) {
+        return null
+    }
+    return error
+}
+
 export async function retryGeneration(): Promise<void> {
+    const error = generationStatus.error
     const action = retryAction
     generationStatus.error = null
+    // The error (and the action it captured) belongs to whatever chat was showing when the
+    // generation failed; if the user has since switched chats, Retry must not fire there.
+    if (error && error.chatKey !== session.getChatKey()) {
+        return
+    }
     if (action) {
         await action()
     }

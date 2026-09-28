@@ -26,9 +26,9 @@ import { processScript } from 'src/ts/process/scripts'
 import { runTrigger } from 'src/ts/process/triggers'
 import { ConnectionOpenStore } from 'src/ts/sync/multiuser'
 import { getAlternativesCounter, reroll, resetAlternatives } from '../alternatives.svelte'
-import { generationStatus } from '../generationStatus.svelte'
+import { generationStatus, getErrorForCurrentChat, retryGeneration } from '../generationStatus.svelte'
 import { abortGeneration, canContinue, continueResponse, generate, requestAutoReply, sendMessage, toggleGroupAutoMode } from '../sendPipeline'
-import { DBState, currentChat, doingChat, makeCharacter, makeChat, makeGroup, makeMessage, resetHarness, selectCharacter } from './harness'
+import { alertStore, DBState, currentChat, doingChat, makeCharacter, makeChat, makeGroup, makeMessage, resetHarness, selectCharacter } from './harness'
 
 let replyCount = 0
 
@@ -118,10 +118,31 @@ describe('sendMessage', () => {
         expect(currentChat().message[0].name).toBe('Traveller')
     })
 
-    it('continues the last reply', async () => {
+    it('continues the last reply without touching the draft or pushing a message', async () => {
         currentChat().message.push(makeMessage('user', 'Q'), makeMessage('char', 'A'))
-        await continueResponse('')
+        vi.mocked(sendChat).mockImplementationOnce(async (_index, arg) => {
+            if (arg.continue) {
+                const messages = currentChat().message
+                messages[messages.length - 1].data += ' [continued]'
+            }
+            return true
+        })
+        await expect(continueResponse()).resolves.toBe('sent')
         expect(sendChat).toHaveBeenCalledWith(-1, { signal: expect.any(AbortSignal), continue: true })
+        expect(texts()).toEqual(['Q', 'A [continued]'])
+    })
+
+    it('refuses to continue when there is nothing to continue', async () => {
+        await expect(continueResponse()).resolves.toBe('busy')
+        expect(sendChat).not.toHaveBeenCalled()
+        expect(currentChat().message).toHaveLength(0)
+    })
+
+    it('refuses to continue while a generation is running', async () => {
+        currentChat().message.push(makeMessage('user', 'Q'), makeMessage('char', 'A'))
+        doingChat.set(true)
+        await expect(continueResponse()).resolves.toBe('busy')
+        expect(sendChat).not.toHaveBeenCalled()
     })
 })
 
@@ -160,6 +181,26 @@ describe('generate', () => {
         await generate()
         selectCharacter(0)
         expect(getAlternativesCounter()).toEqual({ index: 2, total: 2 })
+    })
+
+    it('scopes a captured error and Retry to the chat that started the generation', async () => {
+        currentChat().message.push(makeMessage('user', 'Hi'))
+        vi.mocked(sendChat).mockImplementationOnce(async () => {
+            alertStore.set({ type: 'error', msg: 'rate limited' })
+            return true
+        })
+        await generate()
+        expect(getErrorForCurrentChat()).toMatchObject({ msg: 'rate limited' })
+
+        // Switch to a different chat: the error card must disappear there...
+        DBState.db.characters[0].chats.push(makeChat({ id: 'chat-2' }))
+        DBState.db.characters[0].chatPage = 1
+        expect(getErrorForCurrentChat()).toBeNull()
+
+        // ...and Retry must not fire the captured action (which would generate in the wrong chat).
+        await retryGeneration()
+        expect(sendChat).toHaveBeenCalledTimes(1)
+        expect(generationStatus.error).toBeNull()
     })
 
     it('reports failures and always releases the chat', async () => {
@@ -300,6 +341,11 @@ describe('requestAutoReply', () => {
         doingChat.set(true)
         await expect(requestAutoReply()).resolves.toBeNull()
         expect(generateAutoReply).not.toHaveBeenCalled()
+    })
+
+    it('treats an empty model reply as no suggestion', async () => {
+        vi.mocked(generateAutoReply).mockResolvedValueOnce('')
+        await expect(requestAutoReply()).resolves.toBeNull()
     })
 
     it('reports errors', async () => {

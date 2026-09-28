@@ -56,7 +56,7 @@ export async function generate(options: { continueResponse?: boolean } = {}): Pr
         const chatKey = session.getChatKey()
         const previousLength = chatOf(charIndex, chatPage).message.length
         abortController = new AbortController()
-        beginGeneration({ charIndex, retry: () => generate(options) })
+        beginGeneration({ charIndex, retry: () => generate(options), chatKey })
         try {
             await sendChat(-1, { signal: abortController.signal, continue: options.continueResponse ?? false })
             recordGeneration(chatKey, chatOf(charIndex, chatPage).message, previousLength)
@@ -144,9 +144,18 @@ export async function sendMessage(input: string, attachments: string[] = [], opt
     }
 }
 
-/** DefaultChatScreen.sendContinue: sends the draft (if any), then continues the reply. */
-export function continueResponse(input: string, attachments: string[] = []): Promise<SendOutcome> {
-    return sendMessage(input, attachments, { continueResponse: true })
+/**
+ * "Continue" only continues the last character reply: it never sends the draft and never
+ * pushes a message (unlike the legacy `sendContinue`, which routed through `sendMain` and could
+ * push a `*says nothing*` user message or send a non-empty draft as one — an intentional
+ * deviation from the legacy behavior).
+ */
+export async function continueResponse(): Promise<SendOutcome> {
+    if (!canContinue() || sending || get(doingChat)) {
+        return 'busy'
+    }
+    await generate({ continueResponse: true })
+    return 'sent'
 }
 
 /** DefaultChatScreen.runAutoMode: group chats keep generating until toggled off. */
@@ -178,7 +187,8 @@ export async function requestAutoReply(): Promise<string | null> {
     }
     generationStatus.autoReplyPending = true
     try {
-        return await generateAutoReply()
+        // Contract is "reply or null": an empty string from the model is not a suggestion.
+        return (await generateAutoReply()) || null
     } catch (error) {
         alertError(`${error}`)
         return null
