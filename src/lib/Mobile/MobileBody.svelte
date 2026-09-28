@@ -1,6 +1,6 @@
 <script lang="ts">
     import { MobileGUIStack, MobileSideBar, selectedCharID } from "src/ts/stores.svelte";
-    import Settings from "../Setting/Settings.svelte";
+    import MobileSettings from "./Settings/MobileSettings.svelte";
     import MobileCatalog from "./Catalog/MobileCatalog.svelte";
     import MobileDialogs from "./Dialogs/MobileDialogs.svelte";
     import ChatScreen from "../ChatScreens/ChatScreen.svelte";
@@ -69,7 +69,7 @@
     {:else if $MobileGUIStack === 1}
         <MobileDialogs />
     {:else if $MobileGUIStack === 2}
-        <Settings />
+        <MobileSettings />
     {/if}
 </div>
 

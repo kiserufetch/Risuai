@@ -15,7 +15,7 @@
 
 </script>
 <!-- The new mobile chat and the catalog draw their own headers. -->
-{#if !($selectedCharID !== -1 && $MobileSideBar === 0 && !DBState.db.legacyMobileChat) && !($selectedCharID === -1 && ($MobileGUIStack === 0 || $MobileGUIStack === 1))}
+{#if !($selectedCharID !== -1 && $MobileSideBar === 0 && !DBState.db.legacyMobileChat) && !($selectedCharID === -1 && ($MobileGUIStack === 0 || $MobileGUIStack === 1 || $MobileGUIStack === 2))}
 <div class="w-full px-4 h-16 border-b border-b-darkborderc bg-darkbg flex justify-start items-center gap-2" style="height: calc(4rem + var(--safe-top)); padding-top: var(--safe-top); padding-left: calc(1rem + var(--safe-left)); padding-right: calc(1rem + var(--safe-right));">
     {#if $selectedCharID !== -1 && $MobileSideBar > 0}
         <button class={navButton} aria-label={language.goback} onclick={() => {
