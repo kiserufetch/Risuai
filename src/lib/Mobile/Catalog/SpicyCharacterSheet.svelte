@@ -18,7 +18,8 @@
 
     let detail: SpicyChatCharacterDetail | null = $state(null)
     let loading = $state(true)
-    let greetingOpen = $state(false)
+    /** Which text sections are expanded past four lines. */
+    let expanded: Record<string, boolean> = $state({})
 
     let charId = $derived(card?.character_id ?? card?.id ?? '')
     let name = $derived(detail?.name ?? card?.name ?? '')
@@ -27,6 +28,13 @@
     let messages = $derived(detail?.num_messages ?? card?.num_messages)
     let rating = $derived(detail?.rating_score ?? card?.rating_score)
     let tokens = $derived(detail?.token_count ?? card?.token_count)
+    /** What the import writes into the character (parseSpicyChatDetailToCard): persona → description. */
+    let sections = $derived([
+        { key: 'persona', label: language.mobileCatalog.description, text: detail?.persona ?? '' },
+        { key: 'scenario', label: language.mobileCatalog.scenario, text: detail?.scenario ?? '' },
+        { key: 'dialogue', label: language.mobileCatalog.exampleDialogue, text: detail?.dialogue ?? '' },
+        { key: 'greeting', label: language.mobileCatalog.greeting, text: greeting },
+    ].filter((section) => section.text.trim() !== ''))
 
     $effect(() => {
         const id = charId
@@ -114,15 +122,15 @@
         <span class="px-1 text-[13px] text-(--mc-text2)">{language.spicyChat.definitionHidden}</span>
     {/if}
 
-    {#if greeting}
+    {#each sections as section (section.key)}
         <div class="flex flex-col gap-1.5 rounded-2xl px-3.5 py-3" style="background: var(--mc-group);">
-            <span class="text-[12px] font-semibold uppercase tracking-wide text-(--mc-text2)">{language.mobileCatalog.greeting}</span>
-            <p class="text-[14px] leading-[21px] whitespace-pre-wrap break-words" class:line-clamp-4={!greetingOpen}>{greeting}</p>
-            <button type="button" class="h-8 self-start text-[14px] font-medium" style="color: var(--mc-accent);" onclick={() => { greetingOpen = !greetingOpen }}>
-                {greetingOpen ? language.mobileCatalog.showLess : language.mobileCatalog.showMore}
+            <span class="text-[12px] font-semibold uppercase tracking-wide text-(--mc-text2)">{section.label}</span>
+            <p class="text-[14px] leading-[21px] whitespace-pre-wrap break-words" class:line-clamp-4={!expanded[section.key]}>{section.text}</p>
+            <button type="button" class="h-8 self-start text-[14px] font-medium" style="color: var(--mc-accent);" onclick={() => { expanded[section.key] = !expanded[section.key] }}>
+                {expanded[section.key] ? language.mobileCatalog.showLess : language.mobileCatalog.showMore}
             </button>
         </div>
-    {/if}
+    {/each}
 
     <div class="sticky bottom-0 -mx-3 flex gap-2.5 border-t px-4 pt-3" style="background: var(--mc-surface); border-color: var(--mc-line);">
         <button type="button" class="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full border" style="border-color: var(--mc-line);" aria-label={language.mobileCatalog.copyLink} onclick={copyLink}>
