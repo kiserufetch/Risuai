@@ -7,9 +7,9 @@
     import FormStepper from 'src/lib/MobileChat/Form/FormStepper.svelte'
     import FormText from 'src/lib/MobileChat/Form/FormText.svelte'
     import FormToggle from 'src/lib/MobileChat/Form/FormToggle.svelte'
-    import ChatFormatSettings from 'src/lib/Setting/Pages/ChatFormatSettings.svelte'
-    import OobaSettings from 'src/lib/Setting/Pages/OobaSettings.svelte'
-    import OpenrouterSettings from 'src/lib/Setting/Pages/OpenrouterSettings.svelte'
+    import { chatFormatSettingsItems } from 'src/ts/setting/chatFormatSettingsData'
+    import MobileSettingsList from '../MobileSettingsList.svelte'
+    import BotOoba from './BotOoba.svelte'
     import { getModelInfo, LLMFormat } from 'src/ts/model/modellist'
     import { resolveClaudeThinkingType } from 'src/ts/model/types'
     import { allBasicParameterItems } from 'src/ts/setting/botSettingsParamsData'
@@ -66,6 +66,14 @@
     ]
     let providerSliders = $derived(localFormat ? OOBA : modelInfo.format === LLMFormat.NovelAI ? NAI : modelInfo.format === LLMFormat.NovelList ? NOVELLIST : [])
 
+    function routingSummary(p: { order: string[]; only: string[]; ignore: string[] }): string {
+        const parts = [[t.orOrder, p.order], [t.orOnly, p.only], [t.orIgnore, p.ignore]]
+            .map(([label, list]) => [label, (list as string[]).filter(Boolean).length] as const)
+            .filter(([, n]) => n > 0)
+            .map(([label, n]) => `${(label as string).toLowerCase()} ${n}`)
+        return parts.join(' · ') || t.orAuto
+    }
+
     function toggleStopStrings(on: boolean) {
         DBState.db.localStopStrings = on ? [] : null
     }
@@ -116,10 +124,15 @@
                 <FormToggle label="Ban EOS Token" bind:checked={DBState.db.ooba.ban_eos_token} />
                 <FormToggle label="Skip Special Tokens" bind:checked={DBState.db.ooba.skip_special_tokens} />
                 <FormToggle label={language.useNamePrefix} bind:checked={DBState.db.ooba.formating.useName} />
-                <FormToggle label={language.customStopWords} checked={!!DBState.db.localStopStrings} onchange={toggleStopStrings} />
             {/if}
         </FormGroup>
-        {#if localFormat && DBState.db.localStopStrings}
+    {/if}
+
+    {#if localFormat || DBState.db.aiModel === 'ooba'}
+        <FormGroup>
+            <FormToggle label={language.customStopWords} checked={!!DBState.db.localStopStrings} onchange={toggleStopStrings} />
+        </FormGroup>
+        {#if DBState.db.localStopStrings}
             <FormGroup label={language.customStopWords}>
                 {#each DBState.db.localStopStrings as _, i (i)}
                     <div class="flex items-center pr-2">
@@ -130,16 +143,25 @@
                 <button type="button" class="flex min-h-[52px] w-full items-center gap-2 px-4 text-[15px] font-medium" style="color: var(--mc-accent);" onclick={() => { DBState.db.localStopStrings.push('') }}><PlusIcon size={18} />{t.add}</button>
             </FormGroup>
         {/if}
-        {#if localFormat}
-            <div class="risu-mc-legacy flex flex-col text-textcolor"><ChatFormatSettings /></div>
-        {/if}
+    {/if}
+    {#if localFormat}
+        <MobileSettingsList items={chatFormatSettingsItems} />
     {/if}
 
     {#if (DBState.db.reverseProxyOobaMode && DBState.db.aiModel === 'reverse_proxy') || DBState.db.aiModel === 'ooba'}
-        <div class="risu-mc-legacy flex flex-col text-textcolor"><OobaSettings instructionMode={DBState.db.aiModel === 'ooba'} /></div>
+        <BotOoba instructionMode={DBState.db.aiModel === 'ooba'} />
     {/if}
     {#if DBState.db.aiModel.startsWith('openrouter')}
-        <div class="risu-mc-legacy flex flex-col text-textcolor"><OpenrouterSettings /></div>
+        {@const routed = DBState.db.openrouterProvider}
+        <FormGroup label="OpenRouter">
+            <FormToggle label={t.orFallback} hint={t.orFallbackHint} bind:checked={DBState.db.openrouterFallback} />
+            <FormToggle label={t.orMiddleOut} hint={t.orMiddleOutHint} bind:checked={DBState.db.openrouterMiddleOut} />
+            <FormToggle label={t.orInstruct} hint={t.orInstructHint} bind:checked={DBState.db.useInstructPrompt} />
+            <FormNav label={t.page_routing} value={routingSummary(routed)} onclick={() => { botPage.current = 'routing' }} />
+        </FormGroup>
+        {#if DBState.db.useInstructPrompt}
+            <MobileSettingsList items={chatFormatSettingsItems} />
+        {/if}
     {/if}
 
     <FormGroup>

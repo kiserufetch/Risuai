@@ -6,6 +6,7 @@
     import type { SettingContext, SettingItem } from 'src/ts/setting/types'
     import { getLabel, getSettingValue, setSettingValue } from 'src/ts/setting/utils'
     import MobileSettingsList from './MobileSettingsList.svelte'
+    import FormSlider from 'src/lib/MobileChat/Form/FormSlider.svelte'
 
     // One data-driven setting (src/ts/setting/*Data) drawn as a mobile row. Reads and
     // writes go through the same getSettingValue/setSettingValue as the desktop wrappers.
@@ -75,20 +76,17 @@
         </div>
     </div>
 {:else if item.type === 'slider'}
-    <div class="flex flex-col gap-2 px-4 py-3">
-        <span class="flex items-center justify-between gap-2 text-[15px]">
-            <span class="flex items-center gap-1">{@render labelText()}</span>
-            <span class="tabular-nums text-(--mc-text2)">{shown}</span>
-        </span>
-        <div class="flex items-center gap-3">
-            {#if item.options?.disableable}
-                <button type="button" role="switch" aria-checked={!disabled} aria-label={label} class="relative h-[22px] w-[38px] shrink-0 rounded-full" style="background: {disabled ? 'var(--mc-line)' : 'var(--mc-accent)'};" onclick={() => set(disabled ? (item.options?.min ?? 0) : -1000)}>
-                    <span class="absolute top-[3px] h-4 w-4 rounded-full bg-white" style="left: {disabled ? '3px' : '19px'};"></span>
-                </button>
-            {/if}
-            <input type="range" aria-label={label} class="min-w-0 flex-1" style="accent-color: var(--mc-accent);" min={item.options?.min} max={item.options?.max} step={item.options?.step ?? 1} disabled={disabled} value={disabled ? item.options?.min : value} oninput={(e) => set(Number((e.currentTarget as HTMLInputElement).value))} />
-        </div>
-    </div>
+    <FormSlider
+        {label}
+        bind:value={() => value as number, (v) => set(v)}
+        min={item.options?.min ?? 0}
+        max={item.options?.max ?? 100}
+        step={item.options?.step ?? 1}
+        fixed={item.options?.fixed ?? 0}
+        multiple={item.options?.multiple ?? 1}
+        disableable={!!item.options?.disableable}
+        format={item.options?.customText ? () => shown : undefined}
+    />
 {:else if item.type === 'number'}
     <label class="flex min-h-[52px] items-center gap-3 px-4 py-2">
         <span class="flex min-w-0 flex-1 flex-wrap items-center gap-1 text-[15px]">{@render labelText()}</span>

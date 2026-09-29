@@ -7,10 +7,11 @@
     import FormText from 'src/lib/MobileChat/Form/FormText.svelte'
     import FormToggle from 'src/lib/MobileChat/Form/FormToggle.svelte'
     import CodeField from 'src/lib/MobileChat/Character/CodeField.svelte'
-    import ModelGrid from 'src/lib/UI/ModelGrid.svelte'
-    import NanoGPTDashboard from 'src/lib/UI/NanoGPTDashboard.svelte'
-    import NanoGPTProviderPicker from 'src/lib/UI/NanoGPTProviderPicker.svelte'
-    import ChatFormatSettings from 'src/lib/Setting/Pages/ChatFormatSettings.svelte'
+    import { chatFormatSettingsItems } from 'src/ts/setting/chatFormatSettingsData'
+    import MobileSettingsList from '../MobileSettingsList.svelte'
+    import ModelGridPicker from './ModelGridPicker.svelte'
+    import NanoAccount from './NanoAccount.svelte'
+    import NanoProviders from './NanoProviders.svelte'
     import type { ModelGridPinnedItem } from 'src/ts/model/modelGrid'
     import { getModelInfo, LLMFlags, LLMFormat, LLMProvider } from 'src/ts/model/modellist'
     import { getNanoGPTModels, getNanoGPTSubscriptionModels, toModelGridItem as ngToGridItem } from 'src/ts/model/nanogpt'
@@ -26,7 +27,7 @@
 
     // Mockup "Модель и ключи": both model slots, the credentials they need, response
     // options, then provider-specific connection fields (as in the Model tab of
-    // BotSettings.svelte; model grids and the NanoGPT dashboard are the existing widgets).
+    // BotSettings.svelte; provider catalogs open in ModelGridPicker sheets).
 
     const t = $derived(language.mobileBot)
 
@@ -99,6 +100,13 @@
 <div class="flex flex-col gap-4">
     <FormGroup>
         <ModelRow label={t.mainModel} bind:value={DBState.db.aiModel} />
+        {#if uses('openrouter')}
+            {#await getOpenRouterModels()}
+                <ModelGridPicker label={t.openrouterModel} bind:value={DBState.db.openrouterRequestModel} pinnedItems={openrouterPinned} loading />
+            {:then models}
+                <ModelGridPicker label={t.openrouterModel} bind:value={DBState.db.openrouterRequestModel} items={(models ?? []).map(orToGridItem)} pinnedItems={openrouterPinned} />
+            {/await}
+        {/if}
         <ModelRow label={t.subModel} hint={t.subModelHint} bind:value={DBState.db.subModel} />
     </FormGroup>
 
@@ -156,6 +164,18 @@
                 <FormSegmented label={t.cloudModel} bind:value={DBState.db.ollamaInputMode} options={[{ value: 'list', label: t.fromList }, { value: 'manual', label: t.manual }]} />
                 {#if DBState.db.ollamaInputMode === 'manual'}
                     <FormText label={t.modelName} bind:value={DBState.db.ollamaCloudModel} placeholder="Model" oninput={() => { DBState.db.ollamaCloudModelName = '' }} />
+                {:else}
+                    {#await getOllamaModels(DBState.db.ollamaURL, 'cloud', DBState.db.ollamaApiKey)}
+                        <ModelGridPicker label={t.cloudModel} bind:value={DBState.db.ollamaCloudModel} loading />
+                    {:then cloudModels}
+                        <ModelGridPicker
+                            label={t.cloudModel}
+                            bind:value={DBState.db.ollamaCloudModel}
+                            items={cloudModels ?? []}
+                            selectedLabelOverride={DBState.db.ollamaCloudModelName || DBState.db.ollamaCloudModel || undefined}
+                            onselect={(_id, name) => { DBState.db.ollamaModelSource = 'cloud'; DBState.db.ollamaCloudModelName = name }}
+                        />
+                    {/await}
                 {/if}
                 <FormSelect label={language.format} bind:value={DBState.db.ollamaRequestFormat} options={OLLAMA_FORMATS} />
                 <FormToggle label={t.streaming} bind:checked={DBState.db.useStreaming} />
@@ -164,64 +184,35 @@
                 <FormSelect label={t.thinking} bind:value={DBState.db.ollamaThinkingMode} options={OLLAMA_THINKING} />
             {/if}
         </FormGroup>
-        {#if ollamaCloud && DBState.db.ollamaInputMode !== 'manual'}
-            <div class="risu-mc-legacy flex flex-col text-textcolor">
-                {#await getOllamaModels(DBState.db.ollamaURL, 'cloud', DBState.db.ollamaApiKey)}
-                    <ModelGrid bind:value={DBState.db.ollamaCloudModel} loading={true} />
-                {:then cloudModels}
-                    <ModelGrid
-                        bind:value={DBState.db.ollamaCloudModel}
-                        items={cloudModels ?? []}
-                        selectedLabelOverride={DBState.db.ollamaCloudModel ? `Cloud / ${DBState.db.ollamaCloudModelName || DBState.db.ollamaCloudModel}` : undefined}
-                        onselect={(_id, name) => { DBState.db.ollamaModelSource = 'cloud'; DBState.db.ollamaCloudModelName = name }}
-                    />
-                {/await}
-            </div>
-        {/if}
     {/if}
 
     {#if uses('nanogpt')}
+        <NanoAccount apiKey={DBState.db.nanogptKey} />
         <FormGroup label="NanoGPT">
             {#if DBState.db.nanogptSubscriptionState === 'active' || DBState.db.nanogptSubscriptionState === 'grace'}
-                <FormToggle label={language.nanoGPTUseSubscriptionEndpoint} checked={DBState.db.nanogptUseSubscriptionEndpoint} onchange={setNanogptSubscription} />
+                <FormToggle label={language.nanoGPTUseSubscriptionEndpoint} hint={t.subscriptionHint} checked={DBState.db.nanogptUseSubscriptionEndpoint} onchange={setNanogptSubscription} />
             {/if}
             <FormSegmented label={language.model} value={nanogptMode} options={[{ value: 'list', label: t.fromList }, { value: 'manual', label: t.manual }]} onchange={setNanogptMode} />
             {#if nanogptMode === 'manual'}
                 <FormText label={t.modelName} bind:value={DBState.db.nanogptRequestModel} oninput={() => { DBState.db.nanogptRequestModelName = ''; DBState.db.nanogptProvider = '' }} />
-            {/if}
-        </FormGroup>
-        <div class="risu-mc-legacy flex flex-col text-textcolor">
-            <NanoGPTDashboard apiKey={DBState.db.nanogptKey} />
-            {#if nanogptMode === 'list'}
+            {:else}
                 {#await Promise.all([getNanoGPTModels(), getNanoGPTSubscriptionModels(DBState.db.nanogptKey)])}
-                    <ModelGrid bind:value={DBState.db.nanogptRequestModel} loading={true} />
+                    <ModelGridPicker label={t.nanogptModel} bind:value={DBState.db.nanogptRequestModel} loading />
                 {:then [regular, subscription]}
-                    <ModelGrid
+                    <ModelGridPicker
+                        label={t.nanogptModel}
                         bind:value={DBState.db.nanogptRequestModel}
                         items={DBState.db.nanogptUseSubscriptionEndpoint ? (subscription ?? []).map(ngToGridItem) : (regular ?? []).map(ngToGridItem)}
                         showSubBadge={DBState.db.nanogptUseSubscriptionEndpoint}
-                        selectedLabelOverride={DBState.db.nanogptRequestModel && !DBState.db.nanogptRequestModelName ? DBState.db.nanogptRequestModel : undefined}
+                        selectedLabelOverride={DBState.db.nanogptRequestModelName || DBState.db.nanogptRequestModel || undefined}
                         onselect={(_id, name) => { DBState.db.nanogptRequestModelName = name; DBState.db.nanogptProvider = '' }}
                     />
-                    {#if !DBState.db.nanogptUseSubscriptionEndpoint}
-                        <NanoGPTProviderPicker apiKey={DBState.db.nanogptKey} modelId={DBState.db.nanogptRequestModel} bind:value={DBState.db.nanogptProvider} />
-                    {/if}
                 {/await}
             {/if}
-        </div>
-    {/if}
-
-    {#if uses('openrouter')}
-        <div class="flex flex-col gap-2">
-            <span class="px-2 text-[12px] font-semibold uppercase tracking-wide text-(--mc-text2)">OpenRouter · {language.model}</span>
-            <div class="risu-mc-legacy flex flex-col text-textcolor">
-                {#await getOpenRouterModels()}
-                    <ModelGrid bind:value={DBState.db.openrouterRequestModel} pinnedItems={openrouterPinned} loading={true} />
-                {:then models}
-                    <ModelGrid bind:value={DBState.db.openrouterRequestModel} items={(models ?? []).map(orToGridItem)} pinnedItems={openrouterPinned} />
-                {/await}
-            </div>
-        </div>
+        </FormGroup>
+        {#if !DBState.db.nanogptUseSubscriptionEndpoint}
+            <NanoProviders apiKey={DBState.db.nanogptKey} modelId={DBState.db.nanogptRequestModel} bind:value={DBState.db.nanogptProvider} />
+        {/if}
     {/if}
 
     {#if uses('custom')}
@@ -254,6 +245,6 @@
     {/if}
 
     {#if usesPrefix('horde') || DBState.db.aiModel === 'kobold'}
-        <div class="risu-mc-legacy flex flex-col text-textcolor"><ChatFormatSettings /></div>
+        <MobileSettingsList items={chatFormatSettingsItems} />
     {/if}
 </div>

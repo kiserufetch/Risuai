@@ -17,6 +17,7 @@
     import BotPromptSettings from './BotPromptSettings.svelte'
     import BotRegex from './BotRegex.svelte'
     import BotRoot from './BotRoot.svelte'
+    import BotRouting from './BotRouting.svelte'
     import BotSeparate from './BotSeparate.svelte'
     import { botPage } from './botPage.svelte'
 
@@ -36,6 +37,8 @@
         <BotModel />
     {:else if botPage.current === 'params'}
         <BotParams />
+    {:else if botPage.current === 'routing'}
+        <BotRouting />
     {:else if botPage.current === 'separate'}
         <BotSeparate />
     {:else if botPage.current === 'prompt'}
