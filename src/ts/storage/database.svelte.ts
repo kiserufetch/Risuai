@@ -1885,6 +1885,8 @@ export interface Message{
 
 export interface MessageGenerationInfo{
     model?: string
+    /** How long the model reasoned before answering, when the app saw it live. */
+    thinkingMs?: number
     /** Usage OpenRouter reports for this reply (cost in USD). */
     openrouter?: { cost?: number; promptTokens?: number; completionTokens?: number; reasoningTokens?: number; cachedTokens?: number; finishReason?: string }
     generationId?: string

@@ -2670,6 +2670,11 @@ export const languageEnglish = {
         linkNotFound: "No character found for this link",
     },
     mobileChat: {
+        stepOne: "step",
+        stepFew: "steps",
+        stepMany: "steps",
+        seconds: "{} s",
+        thinkingStep: "Thinking · step {}",
         usageIn: "in",
         usageThinking: "thinking",
         usageAnswer: "reply",

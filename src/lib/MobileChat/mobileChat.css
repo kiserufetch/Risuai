@@ -67,3 +67,88 @@
 @keyframes risu-mc-rise {
     from { opacity: 0; transform: translateY(8px); }
 }
+
+/* Reasoning block as a step timeline (mockup "C · Шаги"); markup built by chatCore/thinking.ts. */
+.risu-mc-screen details.risu-mc-thoughts {
+    margin: 0 0 10px;
+    padding: 0;
+    border-radius: 16px;
+    border: 1px solid transparent;
+}
+.risu-mc-screen details.risu-mc-thoughts[open] {
+    padding: 12px 14px;
+    border-color: var(--mc-line);
+}
+.risu-mc-screen details.risu-mc-thoughts > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    list-style: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    font-style: normal;
+    color: var(--mc-text2);
+}
+.risu-mc-screen details.risu-mc-thoughts > summary::-webkit-details-marker {
+    display: none;
+}
+.risu-mc-screen details.risu-mc-thoughts-live > summary {
+    color: color-mix(in oklab, var(--mc-accent) 70%, var(--mc-text));
+}
+.risu-mc-screen details.risu-mc-thoughts .risu-mc-thoughts-chevron {
+    margin-left: auto;
+    transition: transform 150ms;
+}
+.risu-mc-screen details.risu-mc-thoughts[open] .risu-mc-thoughts-chevron {
+    transform: rotate(180deg);
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0 0 0 2px;
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 10px 20px;
+    font-size: 13px;
+    line-height: 19px;
+    font-style: normal;
+    color: var(--mc-text2);
+    white-space: pre-wrap;
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--mc-line);
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 17px;
+    bottom: 0;
+    width: 2px;
+    background: var(--mc-line);
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li.risu-mc-step-live {
+    color: var(--mc-text);
+}
+.risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li.risu-mc-step-live::before {
+    background: var(--mc-accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--mc-accent) 25%, transparent);
+    animation: risu-mc-step-pulse 1.4s ease-in-out infinite;
+}
+@keyframes risu-mc-step-pulse {
+    50% { box-shadow: 0 0 0 7px color-mix(in oklab, var(--mc-accent) 10%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .risu-mc-screen .risu-mc-thoughts ol.risu-mc-steps > li.risu-mc-step-live::before { animation: none; }
+}

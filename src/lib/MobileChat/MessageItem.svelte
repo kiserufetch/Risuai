@@ -21,6 +21,9 @@
     import CustomHtmlMessage from './CustomHtmlMessage.svelte'
     import MessageActionsSheet from './MessageActionsSheet.svelte'
     import ReplyMeta from './ReplyMeta.svelte'
+    import { doingChat } from 'src/ts/process/index.svelte'
+    import { extractReasoning, hasAnswer, thinkingFinished, thinkingStarted, type ThoughtsInfo } from 'src/ts/chatCore/thinking'
+    import { onDestroy } from 'svelte'
     import type { EditRequest } from './editRequest'
 
     // One feed entry (spec §4.2, §6.4, §7.2): .chat-message-container > .risu-chat.
@@ -56,6 +59,35 @@
     let renderKey = $derived(idx > totalLength - 6 ? totalLength : 0)
     let isUser = $derived(role === 'user')
     let showIdentity = $derived(!$HideIconStore)
+
+    // Reasoning block (mockup "C · Шаги"): live while the latest reply is still thinking,
+    // with a running timer; the time is kept on the message when the answer starts.
+    let reasoning = $derived(message && !greeting ? extractReasoning(text) : null)
+    let thinkingLive = $derived(reasoning !== null && isLatest && (streaming || $doingChat) && !hasAnswer(text))
+    let now = $state(Date.now())
+    let ticker: ReturnType<typeof setInterval> | null = null
+    $effect(() => {
+        const id = message?.chatId
+        if (!id || reasoning === null) return
+        if (thinkingLive) {
+            thinkingStarted(id)
+            ticker ??= setInterval(() => { now = Date.now() }, 1000)
+            return
+        }
+        if (ticker) {
+            clearInterval(ticker)
+            ticker = null
+        }
+        const ms = thinkingFinished(id)
+        if (ms && message?.generationInfo && !message.generationInfo.thinkingMs) message.generationInfo.thinkingMs = ms
+    })
+    onDestroy(() => { if (ticker) clearInterval(ticker) })
+    let thoughts: ThoughtsInfo | null = $derived.by(() => {
+        if (reasoning === null) return null
+        if (thinkingLive && message?.chatId) return { live: true, seconds: Math.max(0, Math.round((now - thinkingStarted(message.chatId)) / 1000)) }
+        const ms = message?.generationInfo?.thinkingMs
+        return { live: false, seconds: ms ? Math.round(ms / 1000) : null }
+    })
 
     let translated = $state(false)
     let retranslate = $state(false)
@@ -129,7 +161,7 @@
 {/snippet}
 
 {#snippet body()}
-    <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} />
+    <MessageBody {idx} {text} {role} name={renderName} {character} firstMessage={greeting} {modelShortName} renderKey={`${renderKey}|${revision}`} {streaming} {streamingMode} bind:translated bind:retranslate bind:msgDisplay ontap={tapToEdit} {thoughts} />
 {/snippet}
 
 {#snippet modelBadge()}

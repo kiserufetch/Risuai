@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { enhanceThoughts, type ThoughtsInfo } from 'src/ts/chatCore/thinking'
     import { tick, untrack } from 'svelte'
     import { ColorSchemeTypeStore } from 'src/ts/gui/colorscheme'
     import { getLLMCache } from 'src/ts/translator/translator'
@@ -40,6 +41,8 @@
         retranslate?: boolean
         msgDisplay?: string
         ontap?: () => void
+        /** Reasoning state for the step-timeline restyle of the <Thoughts> block. */
+        thoughts?: ThoughtsInfo | null
     }
 
     let {
@@ -57,11 +60,20 @@
         retranslate = $bindable(false),
         msgDisplay = $bindable(''),
         ontap,
+        thoughts = null,
     }: Props = $props()
 
     let bodyRoot: HTMLElement | null = $state(null)
     let html = $state('')
     let revision = $state(0)
+
+    // The timer and live step change without new markup; update the block in place.
+    $effect(() => {
+        const info = thoughts
+        void html
+        tick().then(() => enhanceThoughts(bodyRoot, info))
+    })
+
     let autoTranslateDecided = false
     let requested = 0
     let applied = 0
@@ -125,6 +137,7 @@
         bodyRoot?.querySelectorAll('details').forEach((d, i) => {
             if (i < opened.length) d.open = opened[i]
         })
+        enhanceThoughts(bodyRoot, untrack(() => thoughts))
         await fixAssetImages(bodyRoot)
     }
 
