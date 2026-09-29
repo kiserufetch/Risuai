@@ -17,7 +17,6 @@
     import { getFullSettingsData, getLabel } from 'src/ts/setting/utils'
     import { additionalSettingsMenu, DBState, easyPanelStore, SettingsMenuIndex } from 'src/ts/stores.svelte'
     import PluginDefinedIcon from '../../Others/PluginDefinedIcon.svelte'
-    import BotSettings from '../../Setting/Pages/BotSettings.svelte'
     import OtherBotSettings from '../../Setting/Pages/OtherBotSettings.svelte'
     import PersonaSettings from '../../Setting/Pages/PersonaSettings.svelte'
     import PluginSettings from '../../Setting/Pages/PluginSettings.svelte'
@@ -28,6 +27,8 @@
     import MobileSettingsList from './MobileSettingsList.svelte'
     import DisplaySettings from './Display/DisplaySettings.svelte'
     import { displayPage, displayPageTitle } from './Display/displayPage.svelte'
+    import BotSettingsMobile from './Bot/BotSettingsMobile.svelte'
+    import { botBack, botPage, botPageTitle } from './Bot/botPage.svelte'
 
     // "Настройки" tab (mockups "Мобильные настройки"): a grouped hub with search, the
     // data-driven pages drawn natively, the rest of the pages in the new frame for now.
@@ -101,6 +102,9 @@
             displayPage.current = 'root'
             return true
         }
+        if ($SettingsMenuIndex === 1 && botBack()) {
+            return true
+        }
         SettingsMenuIndex.set(-1)
         return false
     }
@@ -112,16 +116,27 @@
         }
     }
 
-    // Display always opens on its root; sub-pages open scrolled to the top.
+    // Sectioned pages always open on their root; sub-pages open scrolled to the top.
     $effect(() => {
         if ($SettingsMenuIndex !== 3) {
             displayPage.current = 'root'
         }
+        if ($SettingsMenuIndex !== 1) {
+            botPage.current = 'root'
+        }
     })
     $effect(() => {
         void displayPage.current
+        void botPage.current
+        void botPage.promptIndex
         if (pageScroll) pageScroll.scrollTop = 0
     })
+
+    function pageTitle(index: number): string {
+        if (index === 3) return displayPageTitle(displayPage.current)
+        if (index === 1) return botPageTitle(botPage.current)
+        return TITLES[index]?.() ?? ''
+    }
 
     $effect(() => {
         if (!inPage) return
@@ -230,12 +245,14 @@
             <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" aria-label={language.goback} onclick={stepBack}>
                 <ChevronLeftIcon size={24} />
             </button>
-            <span class="min-w-0 flex-1 truncate text-[17px] font-semibold">{$SettingsMenuIndex === 3 ? displayPageTitle(displayPage.current) : TITLES[$SettingsMenuIndex]?.() ?? ''}</span>
+            <span class="min-w-0 flex-1 truncate text-[17px] font-semibold">{pageTitle($SettingsMenuIndex)}</span>
         </header>
         <div bind:this={pageScroll} class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pt-1">
             {#key $SettingsMenuIndex}
                 {#if $SettingsMenuIndex === 3}
                     <DisplaySettings />
+                {:else if $SettingsMenuIndex === 1}
+                    <BotSettingsMobile />
                 {:else if $SettingsMenuIndex === 10}
                     <MobileSettingsList items={languageSettingsItems} />
                 {:else if $SettingsMenuIndex === 11}
@@ -246,8 +263,6 @@
                     <div class="risu-mc-legacy flex flex-col text-textcolor">
                         {#if $SettingsMenuIndex === 0}
                             <UserSettings />
-                        {:else if $SettingsMenuIndex === 1}
-                            <BotSettings goPromptTemplate={() => SettingsMenuIndex.set(13)} />
                         {:else if $SettingsMenuIndex === 13}
                             <PromptSettings onGoBack={() => SettingsMenuIndex.set(1)} />
                         {:else if $SettingsMenuIndex === 2}
