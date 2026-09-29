@@ -18,6 +18,11 @@
     let providers: { name: string; slug: string }[] = $state([])
     getOpenRouterProviders().then((list) => { providers = list })
 
+    // Presets saved before provider routing existed carry no lists; fill them in once.
+    const stored = DBState.db.openrouterProvider
+    if (!stored || !Array.isArray(stored.order) || !Array.isArray(stored.only) || !Array.isArray(stored.ignore)) {
+        DBState.db.openrouterProvider = { order: stored?.order ?? [], only: stored?.only ?? [], ignore: stored?.ignore ?? [] }
+    }
     let lists = $derived(DBState.db.openrouterProvider)
     let current = $derived(lists[tab].filter(Boolean))
     const nameOf = (slug: string) => providers.find((p) => p.slug === slug)?.name ?? slug

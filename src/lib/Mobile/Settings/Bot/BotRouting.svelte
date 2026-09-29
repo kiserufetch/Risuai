@@ -30,8 +30,8 @@
 
     let listsSummary = $derived.by(() => {
         const p = DBState.db.openrouterProvider
-        const parts = ([[t.orOrder, p.order], [t.orOnly, p.only], [t.orIgnore, p.ignore]] as const)
-            .map(([label, list]) => [label, list.filter(Boolean).length] as const).filter(([, n]) => n > 0)
+        const parts = ([[t.orOrder, p?.order], [t.orOnly, p?.only], [t.orIgnore, p?.ignore]] as const)
+            .map(([label, list]) => [label, (list ?? []).filter(Boolean).length] as const).filter(([, n]) => n > 0)
             .map(([label, n]) => `${label.toLowerCase()} ${n}`)
         return parts.join(' · ') || t.orAuto
     })

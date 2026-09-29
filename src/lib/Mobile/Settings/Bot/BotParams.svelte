@@ -89,9 +89,9 @@
     ]
     let providerSliders = $derived(localFormat ? OOBA : modelInfo.format === LLMFormat.NovelAI ? NAI : modelInfo.format === LLMFormat.NovelList ? NOVELLIST : [])
 
-    function routingSummary(p: { order: string[]; only: string[]; ignore: string[] }): string {
-        const parts = [[t.orOrder, p.order], [t.orOnly, p.only], [t.orIgnore, p.ignore]]
-            .map(([label, list]) => [label, (list as string[]).filter(Boolean).length] as const)
+    function routingSummary(p: { order?: string[]; only?: string[]; ignore?: string[] } | undefined): string {
+        const parts = [[t.orOrder, p?.order], [t.orOnly, p?.only], [t.orIgnore, p?.ignore]]
+            .map(([label, list]) => [label, ((list as string[] | undefined) ?? []).filter(Boolean).length] as const)
             .filter(([, n]) => n > 0)
             .map(([label, n]) => `${(label as string).toLowerCase()} ${n}`)
         return parts.join(' · ') || t.orAuto
