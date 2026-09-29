@@ -17,9 +17,8 @@
     import { getFullSettingsData, getLabel } from 'src/ts/setting/utils'
     import { additionalSettingsMenu, DBState, easyPanelStore, SettingsMenuIndex } from 'src/ts/stores.svelte'
     import PluginDefinedIcon from '../../Others/PluginDefinedIcon.svelte'
-    import UserSettings from '../../Setting/Pages/UserSettings.svelte'
-    import ThanksPage from '../../Setting/Pages/ThanksPage.svelte'
-    import PromptSettings from '../../Setting/Pages/PromptSettings.svelte'
+    import AccountSettingsMobile from './Account/AccountSettingsMobile.svelte'
+    import ThanksMobile from './Account/ThanksMobile.svelte'
     import MobileSettingsList from './MobileSettingsList.svelte'
     import DisplaySettings from './Display/DisplaySettings.svelte'
     import { displayPage, displayPageTitle } from './Display/displayPage.svelte'
@@ -288,7 +287,7 @@
             {#key $SettingsMenuIndex}
                 {#if $SettingsMenuIndex === 3}
                     <DisplaySettings />
-                {:else if $SettingsMenuIndex === 1}
+                {:else if $SettingsMenuIndex === 1 || $SettingsMenuIndex === 13}
                     <BotSettingsMobile />
                 {:else if $SettingsMenuIndex === 12}
                     <PersonaSettingsMobile />
@@ -298,22 +297,16 @@
                     <ModulesSettingsMobile />
                 {:else if $SettingsMenuIndex === 4}
                     <PluginsSettingsMobile />
+                {:else if $SettingsMenuIndex === 0}
+                    <AccountSettingsMobile />
+                {:else if $SettingsMenuIndex === 77}
+                    <ThanksMobile />
                 {:else if $SettingsMenuIndex === 10}
                     <MobileSettingsList items={languageSettingsItems} />
                 {:else if $SettingsMenuIndex === 11}
                     <MobileSettingsList items={accessibilitySettingsItems} />
                 {:else if $SettingsMenuIndex === 6}
                     <MobileSettingsList items={advancedSettingsItems} />
-                {:else}
-                    <div class="risu-mc-legacy flex flex-col text-textcolor">
-                        {#if $SettingsMenuIndex === 0}
-                            <UserSettings />
-                        {:else if $SettingsMenuIndex === 13}
-                            <PromptSettings onGoBack={() => SettingsMenuIndex.set(1)} />
-                        {:else if $SettingsMenuIndex === 77}
-                            <ThanksPage />
-                        {/if}
-                    </div>
                 {/if}
             {/key}
             <div aria-hidden="true" style="height: calc(104px + var(--safe-bottom, 0px));"></div>
