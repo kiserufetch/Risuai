@@ -1,3 +1,4 @@
+import { applyOpenRouterExtras, parseOpenRouterUsage, recordOpenRouterUsage } from "../openrouterExtras"
 import { language } from "src/lang"
 import { alertError } from "src/ts/alert";
 import { getDatabase } from "src/ts/storage/database.svelte"
@@ -573,6 +574,10 @@ export async function requestOpenAI(arg:RequestDataArgumentExtended):Promise<req
         body.n = db.genTime
     }
     
+    if(aiModel === 'openrouter'){
+        body = applyOpenRouterExtras(body, arg.mode)
+    }
+
     body = applyAdditionalParameters(body, headers, getAdditionalParameters(aiModel))
 
     // Some aux flows are intentionally non-streaming (e.g. memory/translate).
@@ -717,6 +722,9 @@ export async function requestHTTPOpenAI(
         }
         if(reasoningContentField && !result.startsWith('<Thoughts>')){
             result = `<Thoughts>\n${reasoningContentField}\n</Thoughts>\n${result}`
+        }
+        if(arg.aiModel === 'openrouter'){
+            recordOpenRouterUsage(arg.chatId, parseOpenRouterUsage(dat?.usage, dat?.choices?.[0]?.finish_reason))
         }
         // For openrouter, https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request#response.body.choices.message.reasoning
         if(dat?.choices?.[0]?.message?.reasoning){
@@ -973,6 +981,8 @@ function getTranStream(arg:RequestDataArgumentExtended):TransformStream<Uint8Arr
     let dataUint:Uint8Array|Buffer = new Uint8Array([])
     let reasoningContent = ""
     let reasoningFromStructured = false
+    let openRouterUsage: unknown = null
+    let openRouterFinish: string | undefined
     const db = getDatabase()
 
     const appendStreamingFragment = (current:string, incoming?:string) => {
@@ -1001,6 +1011,9 @@ function getTranStream(arg:RequestDataArgumentExtended):TransformStream<Uint8Arr
                         try {
                             const rawChunk = data.replace("data: ", "")
                             if(rawChunk === "[DONE]"){
+                                if(arg.aiModel === 'openrouter'){
+                                    recordOpenRouterUsage(arg.chatId, parseOpenRouterUsage(openRouterUsage, openRouterFinish))
+                                }
                                 if(arg.modelInfo.flags.includes(LLMFlags.deepSeekThinkingOutput) && !reasoningFromStructured){
                                     readed["0"] = readed["0"].replace(/(.*)\<\/think\>/gms, (m, p1) => {
                                         reasoningContent = p1
@@ -1033,8 +1046,15 @@ function getTranStream(arg:RequestDataArgumentExtended):TransformStream<Uint8Arr
                                 }
                                 return
                             }
-                            const choices = JSON.parse(rawChunk).choices
+                            const parsedChunk = JSON.parse(rawChunk)
+                            if(parsedChunk?.usage){
+                                openRouterUsage = parsedChunk.usage
+                            }
+                            const choices = parsedChunk.choices
                             for(const choice of choices){
+                                if(choice?.finish_reason){
+                                    openRouterFinish = choice.finish_reason
+                                }
                                 const chunk = choice.delta.content ?? choice.text
                                 if(chunk){
                                     if(arg.multiGen){

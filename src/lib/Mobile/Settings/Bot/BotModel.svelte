@@ -22,6 +22,8 @@
     import { DBState } from 'src/ts/stores.svelte'
     import { tokenizerList } from 'src/ts/tokenizer'
     import KeyInput from './KeyInput.svelte'
+    import { CoinsIcon } from '@lucide/svelte'
+    import { getOpenRouterKeyInfo, getOpenRouterMeta, supportsReasoning } from 'src/ts/model/openrouterMeta.svelte'
     import ModelRow from './ModelRow.svelte'
     import { keyFields } from './keys'
 
@@ -94,6 +96,17 @@
     const OLLAMA_THINKING = ['auto', 'off', 'on', 'low', 'medium', 'high'].map((v) => ({ value: v, label: v.charAt(0).toUpperCase() + v.slice(1) }))
     const REGIONS = ['global', 'us-central1', 'us-west1'].map((v) => ({ value: v, label: v }))
 
+    let orMeta = $derived(uses('openrouter') ? getOpenRouterMeta() : undefined)
+    const compact = (n: number) => (n >= 1_000_000 ? `${Math.round(n / 100_000) / 10}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : String(n))
+    let orChips = $derived(orMeta ? [
+        ...(orMeta.contextLength ? [t.chipContext.replace('{}', compact(orMeta.contextLength))] : []),
+        ...(orMeta.maxCompletion ? [t.chipOutput.replace('{}', compact(orMeta.maxCompletion))] : []),
+        ...(supportsReasoning(orMeta) ? [t.capThinking] : []),
+        ...(orMeta.supported.includes('tools') ? [t.chipTools] : []),
+        ...(orMeta.inputModalities.includes('image') ? [t.capImages] : []),
+        ...(orMeta.supported.includes('structured_outputs') ? ['JSON'] : []),
+    ] : [])
+
     let showStreaming = $derived(!ollamaCloud && hasFlag(LLMFlags.hasStreaming))
 </script>
 
@@ -106,6 +119,11 @@
             {:then models}
                 <ModelGridPicker label={t.openrouterModel} bind:value={DBState.db.openrouterRequestModel} items={(models ?? []).map(orToGridItem)} pinnedItems={openrouterPinned} />
             {/await}
+            {#if orChips.length}
+                <div class="flex flex-wrap gap-1.5 px-4 py-3">
+                    {#each orChips as chip (chip)}<span class="rounded-md px-1.5 py-0.5 text-[11px] font-semibold text-(--mc-text2)" style="background: var(--mc-line);">{chip}</span>{/each}
+                </div>
+            {/if}
         {/if}
         <ModelRow label={t.subModel} hint={t.subModelHint} bind:value={DBState.db.subModel} />
     </FormGroup>
@@ -114,6 +132,25 @@
         <FormGroup label={t.apiKeys}>
             {#each keys as field (field.id)}<KeyInput {field} />{/each}
         </FormGroup>
+    {/if}
+
+    {#if uses('openrouter') && DBState.db.openrouterKey}
+        {#await getOpenRouterKeyInfo(DBState.db.openrouterKey) then info}
+            {#if info}
+                <div class="flex items-center gap-3 rounded-[18px] px-4 py-3.5" style="background: var(--mc-group);">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style="background: rgb(34 197 94 / 0.16); color: #22c55e;"><CoinsIcon size={22} /></span>
+                    <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+                        {#if info.remaining !== null}
+                            <span class="text-[12px] text-(--mc-text2)">{t.creditsLeft}</span>
+                            <span class="text-[20px] font-bold tabular-nums">${info.remaining.toFixed(2)}{#if info.limit !== null}<span class="text-[13px] font-medium text-(--mc-text2)"> {t.creditsOf.replace('{}', `$${info.limit.toFixed(2)}`)}</span>{/if}</span>
+                        {:else}
+                            <span class="text-[12px] text-(--mc-text2)">{t.creditsSpent}</span>
+                            <span class="text-[20px] font-bold tabular-nums">${info.usage.toFixed(2)}</span>
+                        {/if}
+                    </span>
+                </div>
+            {/if}
+        {/await}
     {/if}
 
     {#if showStreaming || uses('reverse_proxy') || usesProvider(LLMProvider.NovelAI)}

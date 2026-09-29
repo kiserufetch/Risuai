@@ -14,10 +14,13 @@
     import { resolveClaudeThinkingType } from 'src/ts/model/types'
     import { allBasicParameterItems } from 'src/ts/setting/botSettingsParamsData'
     import type { SettingContext, SettingItem } from 'src/ts/setting/types'
-    import { checkCondition } from 'src/ts/setting/utils'
+    import { checkCondition, getLabel } from 'src/ts/setting/utils'
     import { DBState } from 'src/ts/stores.svelte'
     import MobileSettingItem from '../MobileSettingItem.svelte'
     import { botPage } from './botPage.svelte'
+    import FormSegmented from 'src/lib/MobileChat/Form/FormSegmented.svelte'
+    import { getOpenRouterMeta, supportsReasoning } from 'src/ts/model/openrouterMeta.svelte'
+    import { openRouterReasoningReserve } from 'src/ts/process/request/openrouterExtras'
 
     // Mockup "Параметры": the context budget, reasoning and sampling from the shared
     // parameter data, then the provider-specific samplers of BotSettings.svelte.
@@ -37,7 +40,27 @@
     const SAMPLING = byId(['params.temperature', 'params.topP', 'params.topK', 'params.minP', 'params.topA', 'params.repetitionPenalty', 'params.frequencyPenalty', 'params.presencePenalty'])
     const OTHER = byId(['params.seed'])
 
-    let responseShare = $derived(Math.min(100, Math.max(0, (DBState.db.maxResponse / Math.max(1, DBState.db.maxContext)) * 100)))
+    // OpenRouter: the catalog says what the model takes, how much context it has, and
+    // whether it reasons; thinking gets its own budget next to the answer.
+    let openrouter = $derived(DBState.db.aiModel === 'openrouter')
+    let orMeta = $derived(openrouter ? getOpenRouterMeta() : undefined)
+    let orx = $derived(DBState.db.openrouterExtras)
+    let canReason = $derived(openrouter && (!orMeta || supportsReasoning(orMeta)))
+    let reserve = $derived(openrouter ? openRouterReasoningReserve() : 0)
+    const PARAM_OF: Record<string, string> = {
+        'params.temperature': 'temperature', 'params.topP': 'top_p', 'params.topK': 'top_k', 'params.minP': 'min_p', 'params.topA': 'top_a',
+        'params.repetitionPenalty': 'repetition_penalty', 'params.frequencyPenalty': 'frequency_penalty', 'params.presencePenalty': 'presence_penalty', 'params.seed': 'seed',
+    }
+    const accepted = (item: SettingItem) => !orMeta?.supported.length || orMeta.supported.includes(PARAM_OF[item.id] ?? '')
+    let sampling = $derived(SAMPLING.filter(accepted))
+    let other = $derived(OTHER.filter(accepted))
+    let hiddenSamplers = $derived(orMeta?.supported.length ? [...SAMPLING, ...OTHER].filter((item) => checkCondition(item, ctx) && !accepted(item)).map((item) => getLabel(item)) : [])
+
+    let total = $derived(Math.max(1, DBState.db.maxContext))
+    let responseShare = $derived(Math.min(100, Math.max(0, (DBState.db.maxResponse / total) * 100)))
+    let reserveShare = $derived(Math.min(100 - responseShare, Math.max(0, (reserve / total) * 100)))
+    let tooBig = $derived(!!orMeta?.contextLength && DBState.db.maxContext > orMeta.contextLength)
+    const compact = (n: number) => (n >= 1_000_000 ? `${Math.round(n / 100_000) / 10}M` : n >= 1000 ? `${Math.round(n / 1000)}k` : String(n))
 
     let localFormat = $derived(DBState.db.aiModel === 'textgen_webui' || DBState.db.aiModel === 'mancer' || DBState.db.aiModel.startsWith('local_') || DBState.db.aiModel.startsWith('hf:::'))
 
@@ -91,23 +114,44 @@
 <div class="flex flex-col gap-4">
     <FormGroup>
         <div class="flex flex-col gap-2 px-4 py-3.5">
-            <span class="text-[13px] text-(--mc-text2)">{t.contextBudget}</span>
+            <span class="flex justify-between gap-2 text-[13px] text-(--mc-text2)"><span>{t.contextBudget}</span>{#if orMeta?.contextLength}<span>{t.modelContext.replace('{}', compact(orMeta.contextLength))}</span>{/if}</span>
             <span class="flex h-2.5 overflow-hidden rounded-full" style="background: var(--mc-line);" aria-hidden="true">
-                <span style="width: {100 - responseShare}%; background: var(--mc-accent);"></span>
+                <span style="width: {100 - responseShare - reserveShare}%; background: var(--mc-accent);"></span>
+                {#if reserve}<span style="width: {reserveShare}%; background: #a855f7;"></span>{/if}
                 <span style="width: {responseShare}%; background: #22c55e;"></span>
             </span>
             <span class="flex flex-wrap gap-x-3.5 gap-y-1 text-[12px]">
-                <span><span style="color: var(--mc-accent);">●</span> {t.budgetPrompt} {Math.max(0, DBState.db.maxContext - DBState.db.maxResponse).toLocaleString()}</span>
+                <span><span style="color: var(--mc-accent);">●</span> {t.budgetPrompt} {Math.max(0, DBState.db.maxContext - DBState.db.maxResponse - reserve).toLocaleString()}</span>
+                {#if reserve}<span><span style="color: #a855f7;">●</span> {t.budgetThinking} {reserve.toLocaleString()}</span>{/if}
                 <span><span style="color: #22c55e;">●</span> {t.budgetResponse} {DBState.db.maxResponse.toLocaleString()}</span>
             </span>
+            {#if tooBig}<span class="text-[12px]" style="color: #f59e0b;">{t.contextTooBig.replace('{}', compact(orMeta?.contextLength ?? 0))}</span>{/if}
         </div>
         <FormStepper label={language.maxContextSize} hint={t.tokens} bind:value={DBState.db.maxContext} min={0} step={1000} />
-        <FormStepper label={language.maxResponseSize} hint={t.tokens} bind:value={DBState.db.maxResponse} min={0} step={100} />
+        <FormStepper label={language.maxResponseSize} hint={openrouter ? t.answerOnly : t.tokens} bind:value={DBState.db.maxResponse} min={0} step={100} />
+        {#if canReason && orx && orx.reasoningMode !== 'off'}
+            <FormStepper label={t.thinkingBudget} hint={orx.reasoningMode === 'budget' ? t.thinkingCapHint : t.thinkingReserveHint} bind:value={orx.reasoningBudget} min={0} step={1000} />
+        {/if}
     </FormGroup>
 
+    {#if canReason && orx}
+        <FormGroup label={t.reasoning}>
+            <FormSegmented label={t.reasoningMode} bind:value={orx.reasoningMode} options={[{ value: 'auto', label: t.modeAuto }, { value: 'off', label: t.off }, { value: 'effort', label: 'Effort' }, { value: 'budget', label: t.modeBudget }]} />
+            {#if orx.reasoningMode === 'effort'}
+                <FormSegmented label="Effort" bind:value={orx.reasoningEffort} options={[{ value: 'minimal', label: 'Min' }, { value: 'low', label: 'Low' }, { value: 'medium', label: 'Med' }, { value: 'high', label: 'High' }, { value: 'max', label: 'Max' }]} />
+            {/if}
+            {#if orx.reasoningMode !== 'off'}
+                <FormToggle label={t.hideReasoning} hint={t.hideReasoningHint} bind:checked={orx.hideReasoning} />
+            {/if}
+        </FormGroup>
+    {/if}
+
     {@render dataGroup(t.reasoning, REASONING)}
-    {@render dataGroup(t.sampling, SAMPLING)}
-    {@render dataGroup('', OTHER)}
+    {@render dataGroup(openrouter && orMeta ? `${t.sampling} · ${DBState.db.openrouterRequestModel.split('/').pop()}` : t.sampling, sampling)}
+    {@render dataGroup('', other)}
+    {#if hiddenSamplers.length}
+        <span class="-mt-2 px-2 text-[12px] text-(--mc-text2)">{t.hiddenSamplers.replace('{}', hiddenSamplers.join(', '))}</span>
+    {/if}
 
     {#if providerSliders.length > 0}
         <FormGroup label={t.providerParams}>
@@ -154,7 +198,6 @@
     {#if DBState.db.aiModel.startsWith('openrouter')}
         {@const routed = DBState.db.openrouterProvider}
         <FormGroup label="OpenRouter">
-            <FormToggle label={t.orFallback} hint={t.orFallbackHint} bind:checked={DBState.db.openrouterFallback} />
             <FormToggle label={t.orMiddleOut} hint={t.orMiddleOutHint} bind:checked={DBState.db.openrouterMiddleOut} />
             <FormToggle label={t.orInstruct} hint={t.orInstructHint} bind:checked={DBState.db.useInstructPrompt} />
             <FormNav label={t.page_routing} value={routingSummary(routed)} onclick={() => { botPage.current = 'routing' }} />

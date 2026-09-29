@@ -1,151 +1,96 @@
 <script lang="ts">
-    import { CheckIcon, GripVerticalIcon, PlusIcon, SearchIcon, XIcon } from '@lucide/svelte'
+    import { PlusIcon, Trash2Icon } from '@lucide/svelte'
     import { language } from 'src/lang'
-    import Sheet from 'src/lib/MobileChat/Sheet.svelte'
-    import { getOpenRouterProviders } from 'src/ts/model/openrouter'
+    import FormGroup from 'src/lib/MobileChat/Form/FormGroup.svelte'
+    import FormNav from 'src/lib/MobileChat/Form/FormNav.svelte'
+    import FormSegmented from 'src/lib/MobileChat/Form/FormSegmented.svelte'
+    import FormStepper from 'src/lib/MobileChat/Form/FormStepper.svelte'
+    import FormToggle from 'src/lib/MobileChat/Form/FormToggle.svelte'
+    import { getOpenRouterModels, toModelGridItem } from 'src/ts/model/openrouter'
     import { DBState } from 'src/ts/stores.svelte'
+    import ModelGridPicker from './ModelGridPicker.svelte'
+    import { botPage } from './botPage.svelte'
 
-    // OpenRouter provider routing (mockup "Маршрутизация провайдеров"): the order, only and
-    // ignore lists of OpenrouterSettings.svelte. The order list is dragged by its grip;
-    // providers are added from a searchable sheet that also takes a custom slug.
+    // Mockup "Маршрутизация и приватность": how OpenRouter picks a provider, privacy,
+    // quantization, a price ceiling, its own model fallbacks and web search. The
+    // order / only / ignore lists live one level down.
 
-    type ListKey = 'order' | 'only' | 'ignore'
     const t = $derived(language.mobileBot)
+    let x = $derived(DBState.db.openrouterExtras)
+    const QUANTS = ['fp32', 'bf16', 'fp16', 'fp8', 'fp6', 'int8', 'fp4', 'int4']
 
-    let tab: ListKey = $state('order')
-    let adding = $state(false)
-    let query = $state('')
-    let providers: { name: string; slug: string }[] = $state([])
-    getOpenRouterProviders().then((list) => { providers = list })
-
-    let lists = $derived(DBState.db.openrouterProvider)
-    let current = $derived(lists[tab].filter(Boolean))
-    const nameOf = (slug: string) => providers.find((p) => p.slug === slug)?.name ?? slug
-    const hints = $derived({ order: t.orOrderHint, only: t.orOnlyHint, ignore: t.orIgnoreHint })
-
-    function add(slug: string) {
-        slug = slug.trim()
-        if (!slug) return
-        const list = lists[tab].filter(Boolean)
-        if (!list.includes(slug)) lists[tab] = [...list, slug]
-        adding = false
-        query = ''
+    function toggleQuant(q: string) {
+        x.quantizations = x.quantizations.includes(q) ? x.quantizations.filter((v) => v !== q) : [...x.quantizations, q]
     }
 
-    function remove(slug: string) {
-        lists[tab] = lists[tab].filter((s) => s && s !== slug)
+    function priceInput(key: 'maxPricePrompt' | 'maxPriceCompletion', raw: string) {
+        const n = parseFloat(raw.replace(',', '.'))
+        x[key] = raw.trim() === '' || !Number.isFinite(n) ? null : n
     }
 
-    let found = $derived.by(() => {
-        const q = query.trim().toLowerCase()
-        return q ? providers.filter((p) => p.name.toLowerCase().includes(q) || p.slug.includes(q)) : providers
+    let listsSummary = $derived.by(() => {
+        const p = DBState.db.openrouterProvider
+        const parts = ([[t.orOrder, p.order], [t.orOnly, p.only], [t.orIgnore, p.ignore]] as const)
+            .map(([label, list]) => [label, list.filter(Boolean).length] as const).filter(([, n]) => n > 0)
+            .map(([label, n]) => `${label.toLowerCase()} ${n}`)
+        return parts.join(' · ') || t.orAuto
     })
-
-    function stateOf(slug: string): 'here' | ListKey | '' {
-        if (lists[tab].includes(slug)) return 'here'
-        for (const key of ['order', 'only', 'ignore'] as const) if (lists[key].includes(slug)) return key
-        return ''
-    }
-
-    // Drag to reorder (order tab), as in the prompt block list.
-    let listEl: HTMLElement | null = $state(null)
-    let drag: { from: number; to: number; startY: number; dy: number; centers: number[]; height: number } | null = $state(null)
-
-    function dragStart(e: PointerEvent, i: number) {
-        if (!listEl) return
-        e.preventDefault()
-        ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
-        const rects = (Array.from(listEl.children) as HTMLElement[]).slice(0, current.length).map((r) => r.getBoundingClientRect())
-        drag = { from: i, to: i, startY: e.clientY, dy: 0, centers: rects.map((r) => r.top + r.height / 2), height: rects[i].height }
-    }
-    function dragMove(e: PointerEvent) {
-        if (!drag) return
-        drag.dy = e.clientY - drag.startY
-        const center = drag.centers[drag.from] + drag.dy
-        let to = drag.from
-        while (to < drag.centers.length - 1 && center > drag.centers[to + 1]) to++
-        while (to > 0 && center < drag.centers[to - 1]) to--
-        drag.to = to
-    }
-    function dragEnd() {
-        if (!drag) return
-        const { from, to } = drag
-        drag = null
-        if (from === to) return
-        const list = [...current]
-        const [moved] = list.splice(from, 1)
-        list.splice(to, 0, moved)
-        lists.order = list
-    }
-    function shift(i: number): number {
-        if (!drag || i === drag.from) return drag?.dy ?? 0
-        if (drag.from < drag.to && i > drag.from && i <= drag.to) return -drag.height
-        if (drag.from > drag.to && i < drag.from && i >= drag.to) return drag.height
-        return 0
-    }
+    let models = getOpenRouterModels()
 </script>
 
-<div class="flex flex-col gap-4">
-    <div role="tablist" aria-label={t.page_routing} class="grid grid-cols-3 gap-1 rounded-xl p-1" style="background: var(--mc-surface);">
-        {#each [['order', t.orOrder], ['only', t.orOnly], ['ignore', t.orIgnore]] as [key, label] (key)}
-            <button type="button" role="tab" aria-selected={tab === key} class="flex min-h-9 items-center justify-center gap-1.5 rounded-lg text-[13px] font-semibold" style={tab === key ? 'background: var(--mc-line); color: var(--mc-text);' : 'color: var(--mc-text2);'} onclick={() => { tab = key as ListKey }}>
-                {label}<span class="text-[11px] text-(--mc-text2)">{lists[key as ListKey].filter(Boolean).length}</span>
-            </button>
-        {/each}
-    </div>
-    <span class="px-2 text-[13px] leading-[18px] text-(--mc-text2)">{hints[tab]}</span>
+{#if x}
+    <div class="flex flex-col gap-4">
+        <FormGroup label={t.providerChoice}>
+            <FormSegmented label={t.sortBy} bind:value={x.sort} options={[{ value: '', label: t.modeAuto }, { value: 'price', label: t.sortPrice }, { value: 'throughput', label: t.sortSpeed }, { value: 'latency', label: t.sortLatency }]} />
+            <FormToggle label={t.orFallback} hint={t.orFallbackHint} bind:checked={x.allowFallbacks} />
+            <FormToggle label={t.requireParams} hint={t.requireParamsHint} bind:checked={x.requireParameters} />
+            <FormNav label={t.page_routingLists} value={listsSummary} onclick={() => { botPage.current = 'routingLists' }} />
+        </FormGroup>
 
-    <div bind:this={listEl} class="risu-mc-routing flex flex-col overflow-hidden rounded-2xl" style="background: var(--mc-group);">
-        {#each current as slug, i (slug)}
-            <div class="relative flex min-h-14 items-center gap-2.5 pr-1.5" class:pl-4={tab !== 'order'} style="transform: translateY({tab === 'order' ? shift(i) : 0}px); transition: {drag && i !== drag.from ? 'transform 150ms' : 'none'}; z-index: {drag?.from === i ? 2 : 1}; background: var(--mc-group);">
-                {#if tab === 'order'}
-                    <button type="button" class="flex h-14 w-9 shrink-0 touch-none items-center justify-center text-(--mc-text2) opacity-60" aria-label={t.dragBlock} onpointerdown={(e) => dragStart(e, i)} onpointermove={dragMove} onpointerup={dragEnd} onpointercancel={dragEnd}><GripVerticalIcon size={18} /></button>
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold" style="background: var(--mc-line);">{i + 1}</span>
-                {/if}
-                <span class="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span class="truncate text-[15px] font-semibold">{nameOf(slug)}</span>
-                    <span class="truncate font-mono text-[12px] text-(--mc-text2)">{slug}</span>
-                </span>
-                <button type="button" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style="color: var(--mc-danger);" aria-label={t.remove} onclick={() => remove(slug)}><XIcon size={18} /></button>
+        <FormGroup label={t.privacy}>
+            <FormToggle label={t.denyData} hint={t.denyDataHint} bind:checked={x.denyDataCollection} />
+            <FormToggle label={t.zdr} hint={t.zdrHint} bind:checked={x.zdr} />
+        </FormGroup>
+
+        <FormGroup label={t.quantization}>
+            <div class="flex flex-wrap gap-1.5 px-4 py-3">
+                {#each QUANTS as q (q)}
+                    {@const on = x.quantizations.includes(q)}
+                    <button type="button" aria-pressed={on} class="h-8 rounded-full px-3 text-[13px] font-semibold" style={on ? 'background: var(--mc-text); color: var(--mc-bg);' : 'background: var(--mc-line); color: var(--mc-text2);'} onclick={() => toggleQuant(q)}>{q}</button>
+                {/each}
             </div>
-        {/each}
-        <button type="button" class="flex min-h-[52px] w-full items-center gap-2 px-4 text-[15px] font-semibold" style="color: var(--mc-accent);" onclick={() => { adding = true }}><PlusIcon size={18} />{t.orAddProvider}</button>
-    </div>
-</div>
+        </FormGroup>
+        <span class="-mt-2 px-2 text-[12px] text-(--mc-text2)">{t.quantHint}</span>
 
-<Sheet open={adding} label={t.orAddTo} onclose={() => { adding = false }} class="h-[80dvh]">
-    <div class="flex shrink-0 items-center gap-2 px-1">
-        <span class="flex-1 text-[18px] font-bold">{t.orAddTo.replace('{}', { order: t.orOrder, only: t.orOnly, ignore: t.orIgnore }[tab])}</span>
-        <button type="button" class="flex h-8 w-8 items-center justify-center rounded-full" style="background: var(--mc-line);" aria-label={t.close} onclick={() => { adding = false }}><XIcon size={16} /></button>
-    </div>
-    <form class="flex h-[42px] shrink-0 items-center gap-2.5 rounded-full px-3.5" style="background: var(--mc-line);" onsubmit={(e) => { e.preventDefault(); add(query) }}>
-        <SearchIcon size={18} class="shrink-0 text-(--mc-text2)" />
-        <input type="search" bind:value={query} placeholder={t.orSearch} aria-label={t.orSearch} autocapitalize="off" class="min-w-0 flex-1 border-0 bg-transparent text-base outline-none" style="color: var(--mc-text);" />
-    </form>
-    {#if query.trim() && !providers.some((p) => p.slug === query.trim())}
-        <button type="button" class="flex min-h-[52px] shrink-0 items-center gap-2 rounded-2xl px-4 text-left text-[15px]" style="background: var(--mc-group);" onclick={() => add(query)}>
-            <PlusIcon size={18} style="color: var(--mc-accent);" /><span>{t.orCustomSlug} <b class="font-mono">{query.trim()}</b></span>
-        </button>
-    {/if}
-    <div class="risu-mc-routing flex shrink-0 flex-col overflow-hidden rounded-2xl" style="background: var(--mc-group);">
-        {#each found as p (p.slug)}
-            {@const state = stateOf(p.slug)}
-            <button type="button" class="flex min-h-[52px] w-full items-center gap-3 px-4 py-1.5 text-left disabled:opacity-60" disabled={state === 'here'} onclick={() => add(p.slug)}>
-                <span class="flex min-w-0 flex-1 flex-col"><span class="truncate text-[15px]">{p.name}</span><span class="truncate font-mono text-[12px] text-(--mc-text2)">{p.slug}</span></span>
-                {#if state === 'here'}
-                    <CheckIcon size={20} style="color: var(--mc-accent);" />
-                {:else if state}
-                    <span class="shrink-0 text-[12px]" style="color: {state === 'ignore' ? 'var(--mc-danger)' : 'var(--mc-text2)'};">{t.orIn.replace('{}', { order: t.orOrder, only: t.orOnly, ignore: t.orIgnore }[state].toLowerCase())}</span>
-                {/if}
-            </button>
-        {:else}
-            <span class="px-4 py-4 text-[15px] text-(--mc-text2)">{providers.length ? language.mobileDialogs.nothingFound : language.loading}</span>
-        {/each}
-    </div>
-</Sheet>
+        <FormGroup label={t.priceCeiling}>
+            {#each [['maxPricePrompt', t.priceIn], ['maxPriceCompletion', t.priceOut]] as const as [key, label] (key)}
+                <label class="flex min-h-[52px] items-center gap-3 px-4">
+                    <span class="flex-1 text-[15px]">{label}</span>
+                    <span class="text-[13px] text-(--mc-text2)">$</span>
+                    <input type="text" inputmode="decimal" value={x[key] ?? ''} placeholder={t.noLimit} oninput={(e) => priceInput(key, (e.currentTarget as HTMLInputElement).value)} class="h-9 w-24 rounded-lg border-0 text-center text-[15px] tabular-nums outline-none" style="background: var(--mc-surface); color: var(--mc-text);" />
+                    <span class="text-[12px] text-(--mc-text2)">/1M</span>
+                </label>
+            {/each}
+        </FormGroup>
 
-<style>
-    .risu-mc-routing > :global(* + *) {
-        border-top: 1px solid var(--mc-line);
-    }
-</style>
+        <FormGroup label={t.fallbackModels}>
+            {#await models then list}
+                {#each x.fallbackModels as _, i (i)}
+                    <div class="flex items-center">
+                        <div class="min-w-0 flex-1"><ModelGridPicker label="{t.fallbackN} {i + 1}" bind:value={x.fallbackModels[i]} items={(list ?? []).map(toModelGridItem)} /></div>
+                        <button type="button" class="mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style="color: var(--mc-danger);" aria-label={t.remove} onclick={() => { x.fallbackModels.splice(i, 1) }}><Trash2Icon size={18} /></button>
+                    </div>
+                {/each}
+            {/await}
+            <button type="button" class="flex min-h-[52px] w-full items-center gap-2 px-4 text-[15px] font-medium" style="color: var(--mc-accent);" onclick={() => { x.fallbackModels.push('') }}><PlusIcon size={18} />{t.addModel}</button>
+        </FormGroup>
+        <span class="-mt-2 px-2 text-[12px] text-(--mc-text2)">{t.fallbackModelsHint}</span>
+
+        <FormGroup label={t.webSearch}>
+            <FormToggle label={t.webSearch} hint={t.webSearchOrHint} bind:checked={x.webSearch} />
+            {#if x.webSearch}
+                <FormStepper label={t.webResults} bind:value={x.webMaxResults} min={1} max={10} />
+            {/if}
+        </FormGroup>
+    </div>
+{/if}

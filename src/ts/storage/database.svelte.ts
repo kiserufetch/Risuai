@@ -1,3 +1,4 @@
+import { defaultOpenRouterExtras, type OpenRouterExtras } from '../model/openrouterExtrasDefaults'
 import { get } from 'svelte/store';
 import { checkNullish, decryptBuffer, encryptBuffer, selectSingleFile } from '../util';
 import { changeLanguage, language } from '../../lang';
@@ -450,6 +451,7 @@ export function setDatabase(data:Database){
     data.promptSettings.maxThoughtTagDepth ??= -1
     data.openrouterFallback ??= true
     data.openrouterMiddleOut ??= false
+    data.openrouterExtras = { ...defaultOpenRouterExtras(), ...(data.openrouterExtras ?? {}) }
     data.removePunctuationHypa ??= true
     data.memoryLimitThickness ??= 1
     data.modules ??= []
@@ -1049,6 +1051,7 @@ export interface Database{
     customTokenizer:string
     instructChatTemplate:string
     JinjaTemplate:string
+    openrouterExtras: OpenRouterExtras
     openrouterProvider: {
         order: string[]
         only: string[]
@@ -1642,6 +1645,7 @@ export interface botPreset{
     repetition_penalty?:number
     min_p?:number
     top_a?:number
+    openrouterExtras?: OpenRouterExtras
     openrouterProvider?: {
         order: string[]
         only: string[]
@@ -1881,6 +1885,8 @@ export interface Message{
 
 export interface MessageGenerationInfo{
     model?: string
+    /** Usage OpenRouter reports for this reply (cost in USD). */
+    openrouter?: { cost?: number; promptTokens?: number; completionTokens?: number; reasoningTokens?: number; cachedTokens?: number; finishReason?: string }
     generationId?: string
     inputTokens?: number
     outputTokens?: number
@@ -2103,6 +2109,7 @@ export function saveCurrentPreset(){
         min_p: db.min_p,
         top_a: db.top_a,
         openrouterProvider: db.openrouterProvider,
+        openrouterExtras: db.openrouterExtras,
         useInstructPrompt: db.useInstructPrompt,
         customPromptTemplateToggle: db.customPromptTemplateToggle ?? "",
         templateDefaultVariables: db.templateDefaultVariables ?? "",
@@ -2229,6 +2236,7 @@ export function setPreset(db:Database, newPres: botPreset){
     db.min_p = newPres.min_p
     db.top_a = newPres.top_a
     db.openrouterProvider = newPres.openrouterProvider
+    db.openrouterExtras = { ...defaultOpenRouterExtras(), ...(newPres.openrouterExtras ?? db.openrouterExtras ?? {}) }
     db.useInstructPrompt = newPres.useInstructPrompt ?? false
     db.customPromptTemplateToggle = newPres.customPromptTemplateToggle ?? ''
     db.templateDefaultVariables = newPres.templateDefaultVariables ?? ''

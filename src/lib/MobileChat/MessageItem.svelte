@@ -20,6 +20,7 @@
     import ActionBar from './ActionBar.svelte'
     import CustomHtmlMessage from './CustomHtmlMessage.svelte'
     import MessageActionsSheet from './MessageActionsSheet.svelte'
+    import ReplyMeta from './ReplyMeta.svelte'
     import type { EditRequest } from './editRequest'
 
     // One feed entry (spec §4.2, §6.4, §7.2): .chat-message-container > .risu-chat.
@@ -204,6 +205,9 @@
                     <div class="min-w-0">
                         {@render body()}
                     </div>
+                    {#if message && !greeting}
+                        <ReplyMeta {message} {isLatest} {streaming} />
+                    {/if}
                 {/if}
                 {#if message?.disabled}
                     <span class="mt-1 flex items-center gap-1 text-[12px] text-(--mc-text2)" class:self-end={isUser}>

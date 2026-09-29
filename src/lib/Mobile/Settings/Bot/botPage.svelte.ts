@@ -5,12 +5,12 @@ import { language } from 'src/lang'
 
 export type BotPage =
     | 'root' | 'model' | 'params' | 'separate' | 'prompt' | 'promptItem' | 'promptSettings'
-    | 'routing' | 'aux' | 'more' | 'bias' | 'additional' | 'flags' | 'regex' | 'regexEntry' | 'module' | 'fallback'
+    | 'routing' | 'routingLists' | 'aux' | 'more' | 'bias' | 'additional' | 'flags' | 'regex' | 'regexEntry' | 'module' | 'fallback'
 
 export const botPage = $state({ current: 'root' as BotPage, promptIndex: 0, regexIndex: 0 })
 
 const PARENT: Record<Exclude<BotPage, 'root'>, BotPage> = {
-    model: 'root', params: 'root', separate: 'params', routing: 'params', prompt: 'root', promptItem: 'prompt', promptSettings: 'prompt',
+    model: 'root', params: 'root', separate: 'params', routing: 'params', routingLists: 'routing', prompt: 'root', promptItem: 'prompt', promptSettings: 'prompt',
     aux: 'root', more: 'root', bias: 'more', additional: 'more', flags: 'more', regex: 'more', regexEntry: 'regex',
     module: 'more', fallback: 'more',
 }

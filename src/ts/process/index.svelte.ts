@@ -1,3 +1,4 @@
+import { openRouterReasoningReserve } from "./request/openrouterExtras"
 import { get, writable } from "svelte/store";
 import { type character, type MessageGenerationInfo, type Chat, type MessagePresetInfo, changeToPreset, setCurrentChat, type Message, type StreamingDisplayOptimizationMode } from "../storage/database.svelte";
 import { DBState } from '../stores.svelte';
@@ -611,7 +612,7 @@ export async function sendChat(chatProcessIndex = -1,arg:{
     }
 
     //await tokenize currernt
-    let currentTokens = DBState.db.maxResponse
+    let currentTokens = DBState.db.maxResponse + openRouterReasoningReserve()
     let supaMemoryCardUsed = false
     
     //for unexpected error
