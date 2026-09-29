@@ -6,6 +6,7 @@
     import type { Message } from 'src/ts/storage/database.svelte'
     import { DBState } from 'src/ts/stores.svelte'
     import { doingChat } from 'src/ts/process/index.svelte'
+    import { usageLine } from 'src/ts/chatCore/usageLine'
 
     // Under a reply (mockup "Чат · стоимость и пустой ответ"): what OpenRouter reported for
     // it, and a way out when the model spent the whole limit thinking and gave no answer.
@@ -21,18 +22,7 @@
     )
     let thinkingBudget = $derived(DBState.db.aiModel === 'openrouter' && DBState.db.openrouterExtras?.reasoningMode !== 'off')
 
-    const compact = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1)}k` : String(n))
-    let line = $derived.by(() => {
-        if (!usage) return ''
-        const parts: string[] = []
-        if (typeof usage.cost === 'number') parts.push(usage.cost > 0 && usage.cost < 0.0001 ? '<$0.0001' : `$${usage.cost.toFixed(4)}`)
-        if (usage.promptTokens) parts.push(`${t.usageIn} ${compact(usage.promptTokens)}`)
-        const reasoning = usage.reasoningTokens ?? 0
-        if (reasoning) parts.push(`${t.usageThinking} ${compact(reasoning)}`)
-        if (usage.completionTokens !== undefined) parts.push(`${t.usageAnswer} ${compact(Math.max(0, usage.completionTokens - reasoning))}`)
-        if (usage.finishReason === 'length') parts.push(t.usageCut)
-        return parts.join(' · ')
-    })
+    let line = $derived(usageLine(usage))
 
     function raiseAndRetry() {
         if (thinkingBudget && DBState.db.openrouterExtras) {

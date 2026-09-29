@@ -2652,6 +2652,9 @@ export const languageRussian = {
         linkNotFound: "По этой ссылке персонаж не найден",
     },
     mobileChat: {
+        modelInfo: "Модель ответа",
+        moreDetails: "Подробнее",
+        thoughtFor: "мышление {} с",
         stepOne: "шаг",
         stepFew: "шага",
         stepMany: "шагов",

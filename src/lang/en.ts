@@ -2670,6 +2670,9 @@ export const languageEnglish = {
         linkNotFound: "No character found for this link",
     },
     mobileChat: {
+        modelInfo: "Model of this reply",
+        moreDetails: "More details",
+        thoughtFor: "thought {} s",
         stepOne: "step",
         stepFew: "steps",
         stepMany: "steps",

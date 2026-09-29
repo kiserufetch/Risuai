@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { BotIcon, EyeOffIcon, GitBranchIcon } from '@lucide/svelte'
+    import { EyeOffIcon, GitBranchIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { getCharImage } from 'src/ts/characters'
     import { aiLawApplies, changeChatTo, foldChatToMessage } from 'src/ts/globalApi.svelte'
@@ -14,13 +14,14 @@
     import * as session from 'src/ts/chatCore/session.svelte'
     import { handleScriptedClick } from 'src/ts/chatCore/scriptedClicks'
     import { getTranslationCacheKey, isBlankMessage, prepareDisplayText } from 'src/ts/chatCore/messageRender'
-    import { removeMessage, showGenerationInfo, speakMessage } from 'src/ts/chatCore/messageActions.svelte'
+    import { removeMessage, speakMessage } from 'src/ts/chatCore/messageActions.svelte'
     import { copyMessage } from 'src/ts/chatCore/copyMessage'
     import MessageBody from './MessageBody.svelte'
     import ActionBar from './ActionBar.svelte'
     import CustomHtmlMessage from './CustomHtmlMessage.svelte'
     import MessageActionsSheet from './MessageActionsSheet.svelte'
     import ReplyMeta from './ReplyMeta.svelte'
+    import ModelBadge from './ModelBadge.svelte'
     import { doingChat } from 'src/ts/process/index.svelte'
     import { extractReasoning, hasAnswer, thinkingFinished, thinkingStarted, type ThoughtsInfo } from 'src/ts/chatCore/thinking'
     import { onDestroy } from 'svelte'
@@ -166,10 +167,7 @@
 
 {#snippet modelBadge()}
     {#if showModelBadge}
-        <button type="button" class="ml-auto flex h-7 items-center gap-1 rounded-full px-2.5 text-[12px] text-(--mc-text2)" style="background: var(--mc-surface);" onclick={() => showGenerationInfo(idx, generationInfo)}>
-            <BotIcon size={13} />
-            {capitalize(modelShortName)}
-        </button>
+        <ModelBadge {idx} info={generationInfo} label={capitalize(modelShortName)} />
     {/if}
 {/snippet}
 
