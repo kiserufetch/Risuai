@@ -117,8 +117,14 @@
             return
         }
         applied = request
+        // Re-rendering replaces the markup; keep spoilers (the reasoning block while it
+        // streams) open or closed as the reader left them, by position.
+        const opened = Array.from(bodyRoot?.querySelectorAll('details') ?? [], (d) => d.open)
         html = finalizeHtml(markdown, modelShortName)
         await tick()
+        bodyRoot?.querySelectorAll('details').forEach((d, i) => {
+            if (i < opened.length) d.open = opened[i]
+        })
         await fixAssetImages(bodyRoot)
     }
 
