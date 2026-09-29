@@ -945,6 +945,7 @@ export const languageRussian = {
     account: "Аккаунт",
     remove: "Удалить",
     able: "Включить",
+    close: "Закрыть",
     assetWidth: "Макс. ширина изображений-ассетов",
     animationSpeed: "Скорость анимации",
     screenshot: "Скриншот",
