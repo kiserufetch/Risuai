@@ -1,6 +1,8 @@
 <script lang="ts">
+    import { effectiveTemperature, getOverrides } from 'src/ts/chatCore/chatOverrides'
+    import ChatGenSheet from './ChatGenSheet.svelte'
     import { tick } from 'svelte'
-    import { ArrowUpIcon, LanguagesIcon, PlusIcon, SquareIcon, XIcon } from '@lucide/svelte'
+    import { ArrowUpIcon, LanguagesIcon, PlusIcon, SlidersHorizontalIcon, SquareIcon, XIcon } from '@lucide/svelte'
     import { language } from 'src/lang'
     import { alertError } from 'src/ts/alert'
     import { haptic } from 'src/ts/gui/haptics'
@@ -178,6 +180,12 @@
             })
         }
     }
+
+    // One-tap chat generation settings (mockup "Вход B", minimal): the chip shows the
+    // temperature the next reply will use and opens the per-chat overrides.
+    let genOpen = $state(false)
+    let genOverridden = $derived(!!getOverrides(session.getChat())?.enabled)
+    let genTemperature = $derived(effectiveTemperature(session.getChat()))
 </script>
 
 <div
@@ -234,6 +242,11 @@
             ></textarea>
         </label>
     {/if}
+    <div class="flex">
+        <button type="button" class="flex h-[26px] items-center gap-1.5 rounded-full border px-2.5 text-[12px] font-semibold tabular-nums" style={genOverridden ? 'background: var(--mc-accent-soft); border-color: color-mix(in oklab, var(--mc-accent) 35%, transparent); color: var(--mc-accent);' : 'background: var(--mc-surface); border-color: var(--mc-line); color: var(--mc-text2);'} aria-label={language.mobileChat.chatSettings} onclick={() => { genOpen = true }}>
+            <SlidersHorizontalIcon size={13} />t {Number.isNaN(genTemperature) ? '—' : genTemperature.toFixed(2)}
+        </button>
+    </div>
     <div class="flex items-end gap-1 rounded-[28px] border p-1 shadow-lg" style="background: var(--mc-surface); border-color: var(--mc-line);">
         <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-(--mc-text2) active:scale-95" aria-label={language.mobileChat.tools} onclick={() => { haptic(4); onplus() }}>
             <PlusIcon size={22} />
@@ -263,6 +276,8 @@
         {/if}
     </div>
 </div>
+
+<ChatGenSheet open={genOpen} onclose={() => { genOpen = false }} />
 
 <style>
     .ring {

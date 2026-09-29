@@ -11,6 +11,7 @@ import { ConnectionOpenStore } from 'src/ts/sync/multiuser'
 import { recordGeneration, resetAlternatives } from './alternatives.svelte'
 import { beginGeneration, endGeneration, generationStatus } from './generationStatus.svelte'
 import * as session from './session.svelte'
+import { applyChatOverrides } from './chatOverrides'
 
 // Sending and generating exactly like DefaultChatScreen.svelte (sendMain, sendChatMain,
 // abortChat, runAutoMode, runAutoReply), without the component state.
@@ -57,12 +58,15 @@ export async function generate(options: { continueResponse?: boolean } = {}): Pr
         const previousLength = chatOf(charIndex, chatPage).message.length
         abortController = new AbortController()
         beginGeneration({ charIndex, retry: () => generate(options), chatKey })
+        const undoOverrides = applyChatOverrides(chatOf(charIndex, chatPage))
         try {
             await sendChat(-1, { signal: abortController.signal, continue: options.continueResponse ?? false })
             recordGeneration(chatKey, chatOf(charIndex, chatPage).message, previousLength)
         } catch (error) {
             console.error(error)
             alertError(error)
+        } finally {
+            undoOverrides()
         }
         endGeneration()
         doingChat.set(false)
