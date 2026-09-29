@@ -8,15 +8,18 @@
         hint?: string
         secret?: boolean
         mono?: boolean
+        /** Runs after the bound value has updated. */
+        oninput?: () => void
     }
 
-    let { label, value = $bindable(), placeholder = '', hint = '', secret = false, mono = false }: Props = $props()
+    let { label, value = $bindable(), placeholder = '', hint = '', secret = false, mono = false, oninput }: Props = $props()
 </script>
 
 <label class="flex flex-col gap-1 px-4 py-2.5">
     <span class="text-[12px] text-(--mc-text2)">{label}</span>
     <input
         bind:value
+        oninput={() => queueMicrotask(() => oninput?.())}
         type={secret ? 'password' : 'text'}
         {placeholder}
         autocomplete="off"

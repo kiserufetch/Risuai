@@ -26,6 +26,8 @@
     import PromptSettings from '../../Setting/Pages/PromptSettings.svelte'
     import ModuleSettings from '../../Setting/Pages/Module/ModuleSettings.svelte'
     import MobileSettingsList from './MobileSettingsList.svelte'
+    import DisplaySettings from './Display/DisplaySettings.svelte'
+    import { displayPage, displayPageTitle } from './Display/displayPage.svelte'
 
     // "Настройки" tab (mockups "Мобильные настройки"): a grouped hub with search, the
     // data-driven pages drawn natively, the rest of the pages in the new frame for now.
@@ -75,7 +77,7 @@
 
     let root: HTMLElement | null = $state(null)
     let query = $state('')
-    let displayTab = $state(0)
+    let pageScroll: HTMLElement | null = $state(null)
 
     $effect(() => {
         if (!root) return
@@ -89,15 +91,37 @@
     let inPage = $derived($SettingsMenuIndex !== -1)
     let release: (() => void) | null = null
 
-    function onSystemBack() {
-        release = null
+    /** One level up: a Display sub-page or the prompt template first, then the hub. Returns true while still inside a page. */
+    function stepBack(): boolean {
         if ($SettingsMenuIndex === 13) {
             SettingsMenuIndex.set(1)
+            return true
+        }
+        if ($SettingsMenuIndex === 3 && displayPage.current !== 'root') {
+            displayPage.current = 'root'
+            return true
+        }
+        SettingsMenuIndex.set(-1)
+        return false
+    }
+
+    function onSystemBack() {
+        release = null
+        if (stepBack()) {
             release = pushBackHandler(onSystemBack)
-        } else {
-            SettingsMenuIndex.set(-1)
         }
     }
+
+    // Display always opens on its root; sub-pages open scrolled to the top.
+    $effect(() => {
+        if ($SettingsMenuIndex !== 3) {
+            displayPage.current = 'root'
+        }
+    })
+    $effect(() => {
+        void displayPage.current
+        if (pageScroll) pageScroll.scrollTop = 0
+    })
 
     $effect(() => {
         if (!inPage) return
@@ -203,20 +227,15 @@
         </div>
     {:else}
         <header class="flex h-14 shrink-0 items-center gap-1 px-1.5" style="margin-top: var(--safe-top, 0px);">
-            <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" aria-label={language.goback} onclick={() => SettingsMenuIndex.set($SettingsMenuIndex === 13 ? 1 : -1)}>
+            <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full" aria-label={language.goback} onclick={stepBack}>
                 <ChevronLeftIcon size={24} />
             </button>
-            <span class="min-w-0 flex-1 truncate text-[17px] font-semibold">{TITLES[$SettingsMenuIndex]?.() ?? ''}</span>
+            <span class="min-w-0 flex-1 truncate text-[17px] font-semibold">{$SettingsMenuIndex === 3 ? displayPageTitle(displayPage.current) : TITLES[$SettingsMenuIndex]?.() ?? ''}</span>
         </header>
-        <div class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pt-1">
+        <div bind:this={pageScroll} class="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pt-1">
             {#key $SettingsMenuIndex}
                 {#if $SettingsMenuIndex === 3}
-                    <div role="tablist" aria-label={language.display} class="mb-4 grid grid-cols-3 gap-1 rounded-[14px] p-1" style="background: var(--mc-surface);">
-                        {#each [language.theme, language.sizeAndSpeed, language.others] as label, i (i)}
-                            <button type="button" role="tab" aria-selected={displayTab === i} class="h-9 truncate rounded-[10px] px-1 text-[14px] font-semibold" style={displayTab === i ? 'background: var(--mc-line); color: var(--mc-text);' : 'color: var(--mc-text2);'} onclick={() => { displayTab = i }}>{label}</button>
-                        {/each}
-                    </div>
-                    <MobileSettingsList items={[displayThemeSettingsItems, displaySizeSettingsItems, displayOtherSettingsItems][displayTab]} />
+                    <DisplaySettings />
                 {:else if $SettingsMenuIndex === 10}
                     <MobileSettingsList items={languageSettingsItems} />
                 {:else if $SettingsMenuIndex === 11}
