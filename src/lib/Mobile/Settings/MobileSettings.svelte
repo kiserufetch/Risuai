@@ -17,11 +17,9 @@
     import { getFullSettingsData, getLabel } from 'src/ts/setting/utils'
     import { additionalSettingsMenu, DBState, easyPanelStore, SettingsMenuIndex } from 'src/ts/stores.svelte'
     import PluginDefinedIcon from '../../Others/PluginDefinedIcon.svelte'
-    import PluginSettings from '../../Setting/Pages/PluginSettings.svelte'
     import UserSettings from '../../Setting/Pages/UserSettings.svelte'
     import ThanksPage from '../../Setting/Pages/ThanksPage.svelte'
     import PromptSettings from '../../Setting/Pages/PromptSettings.svelte'
-    import ModuleSettings from '../../Setting/Pages/Module/ModuleSettings.svelte'
     import MobileSettingsList from './MobileSettingsList.svelte'
     import DisplaySettings from './Display/DisplaySettings.svelte'
     import { displayPage, displayPageTitle } from './Display/displayPage.svelte'
@@ -29,6 +27,10 @@
     import { botBack, botPage, botPageTitle } from './Bot/botPage.svelte'
     import PersonaSettingsMobile from './Persona/PersonaSettingsMobile.svelte'
     import OtherSettingsMobile from './Other/OtherSettingsMobile.svelte'
+    import ModulesSettingsMobile from './Modules/ModulesSettingsMobile.svelte'
+    import { moduleBack, modulePage, modulePageTitle } from './Modules/modulePage.svelte'
+    import PluginsSettingsMobile from './Plugins/PluginsSettingsMobile.svelte'
+    import { pluginBack, pluginPage, pluginPageTitle } from './Plugins/pluginPage.svelte'
     import { otherBack, otherPage, otherPageTitle } from './Other/otherPage.svelte'
     import { getField, personaPage } from './Persona/personas.svelte'
 
@@ -110,6 +112,12 @@
         if ($SettingsMenuIndex === 2 && otherBack()) {
             return true
         }
+        if ($SettingsMenuIndex === 14 && moduleBack()) {
+            return true
+        }
+        if ($SettingsMenuIndex === 4 && pluginBack()) {
+            return true
+        }
         if ($SettingsMenuIndex === 12 && personaPage.current !== 'list') {
             personaPage.current = 'list'
             return true
@@ -139,6 +147,12 @@
         if ($SettingsMenuIndex !== 2) {
             otherPage.current = 'root'
         }
+        if ($SettingsMenuIndex !== 14) {
+            modulePage.current = 'list'
+        }
+        if ($SettingsMenuIndex !== 4) {
+            pluginPage.current = 'list'
+        }
     })
     $effect(() => {
         void displayPage.current
@@ -146,6 +160,8 @@
         void botPage.promptIndex
         void personaPage.current
         void otherPage.current
+        void modulePage.current
+        void pluginPage.current
         if (pageScroll) pageScroll.scrollTop = 0
     })
 
@@ -153,6 +169,8 @@
         if (index === 3) return displayPageTitle(displayPage.current)
         if (index === 1) return botPageTitle(botPage.current)
         if (index === 2) return otherPageTitle(otherPage.current)
+        if (index === 14) return modulePageTitle()
+        if (index === 4) return pluginPageTitle()
         if (index === 12 && personaPage.current === 'edit') return getField(personaPage.index, 'name') || 'User'
         return TITLES[index]?.() ?? ''
     }
@@ -276,6 +294,10 @@
                     <PersonaSettingsMobile />
                 {:else if $SettingsMenuIndex === 2}
                     <OtherSettingsMobile />
+                {:else if $SettingsMenuIndex === 14}
+                    <ModulesSettingsMobile />
+                {:else if $SettingsMenuIndex === 4}
+                    <PluginsSettingsMobile />
                 {:else if $SettingsMenuIndex === 10}
                     <MobileSettingsList items={languageSettingsItems} />
                 {:else if $SettingsMenuIndex === 11}
@@ -288,10 +310,6 @@
                             <UserSettings />
                         {:else if $SettingsMenuIndex === 13}
                             <PromptSettings onGoBack={() => SettingsMenuIndex.set(1)} />
-                        {:else if $SettingsMenuIndex === 4}
-                            <PluginSettings />
-                        {:else if $SettingsMenuIndex === 14}
-                            <ModuleSettings />
                         {:else if $SettingsMenuIndex === 77}
                             <ThanksPage />
                         {/if}

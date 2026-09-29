@@ -9,6 +9,7 @@
     import type { character, loreBook } from 'src/ts/storage/database.svelte'
     import { DBState } from 'src/ts/stores.svelte'
     import * as session from 'src/ts/chatCore/session.svelte'
+    import { addLoreEntry, addLoreFolder, exportLoreList, importLoreList } from 'src/ts/chatCore/loreList'
     import Sheet from '../Sheet.svelte'
     import SheetRow from '../SheetRow.svelte'
     import SheetGroup from '../SheetGroup.svelte'
@@ -17,7 +18,8 @@
     // same data as LoreBookSetting/LoreBookList: character globalLore, chat localLore,
     // folders as mode 'folder' entries whose key the children reference in `folder`.
 
-    let { onopen }: { onopen: (book: loreBook, list: loreBook[]) => void } = $props()
+    // `external` edits a plain list instead (a module's lorebook): no tabs, no chat parts.
+    let { onopen, external }: { onopen: (book: loreBook, list: loreBook[]) => void; external?: loreBook[] } = $props()
 
     let tab: 0 | 1 | 2 = $state(0)
     let query = $state('')
@@ -28,7 +30,7 @@
 
     let char = $derived(session.getCharacter())
     let chat = $derived(session.getChat())
-    let list = $derived((tab === 0 ? char?.globalLore : chat?.localLore) ?? [])
+    let list = $derived(external ?? (tab === 0 ? char?.globalLore : chat?.localLore) ?? [])
     let settingsChar = $derived(char as character | undefined)
     let lorePlus = $derived(tab === 0 && !!(char as character | undefined)?.lorePlus)
     let search = $derived(query.trim().toLocaleLowerCase())
@@ -64,6 +66,10 @@
     }
 
     function addEntry() {
+        if (external) {
+            onopen(addLoreEntry(external), external)
+            return
+        }
         addLorebook(tab)
         const target = tab === 0 ? char?.globalLore : chat?.localLore
         const book = target?.at(-1)
@@ -88,7 +94,7 @@
         if (index !== -1) {
             list.splice(index, 1)
         }
-        if (book.mode !== 'child') {
+        if (book.mode !== 'child' && !external) {
             removeLocalChild(book)
         }
     }
@@ -134,7 +140,9 @@
         }
         folderFor = null
         const kept = list.filter((b) => b !== folder && b.folder !== folder.key)
-        if (tab === 0 && char) {
+        if (external) {
+            external.splice(0, external.length, ...kept)
+        } else if (tab === 0 && char) {
             char.globalLore = kept
         } else if (chat) {
             chat.localLore = kept
@@ -172,6 +180,7 @@
     </li>
 {/snippet}
 
+{#if !external}
 <div class="sticky top-0 z-10 -mx-4 mb-3 px-4 pb-1 pt-1" style="background: var(--mc-bg);">
     <div role="tablist" aria-label={language.mobileProfile.lorebook} class="grid grid-cols-3 gap-1 rounded-[14px] p-1" style="background: var(--mc-surface);">
         {#each [[0, char?.type === 'group' ? language.mobileLore.tabGroup : language.mobileLore.tabCharacter], [1, language.mobileLore.tabChat], [2, language.mobileLore.tabSettings]] as [key, label] (key)}
@@ -179,11 +188,12 @@
         {/each}
     </div>
 </div>
+{/if}
 
 {#if tab !== 2}
     <div class="flex flex-col gap-3">
         <div class="flex items-start gap-2 px-1">
-            <span class="flex-1 text-[13px] leading-[18px] text-(--mc-text2)">{tab === 0 ? (char?.type === 'group' ? language.groupLoreInfo : language.globalLoreInfo) : language.localLoreInfo}</span>
+            <span class="flex-1 text-[13px] leading-[18px] text-(--mc-text2)">{external ? language.mobileModules.loreInfo : tab === 0 ? (char?.type === 'group' ? language.groupLoreInfo : language.globalLoreInfo) : language.localLoreInfo}</span>
             <button type="button" class="-mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-(--mc-text2)" aria-label={language.mobileLore.more} onclick={() => { moreOpen = true }}><EllipsisIcon size={20} /></button>
         </div>
         <div class="flex gap-2">
@@ -280,9 +290,9 @@
 {#if moreOpen}
     <Sheet open={true} label={language.mobileLore.listActions} onclose={() => { moreOpen = false }}>
         <SheetGroup label={language.mobileLore.listActions}>
-            <SheetRow label={language.mobileLore.newFolder} onclick={() => { moreOpen = false; addLorebookFolder(tab) }}><FolderPlusIcon size={19} /></SheetRow>
-            <SheetRow label={language.mobileLore.import} onclick={() => { moreOpen = false; importLoreBook(tab === 0 ? 'global' : 'local') }}><UploadIcon size={19} /></SheetRow>
-            <SheetRow label={language.mobileLore.export} onclick={() => { moreOpen = false; exportLoreBook(tab === 0 ? 'global' : 'local') }}><DownloadIcon size={19} /></SheetRow>
+            <SheetRow label={language.mobileLore.newFolder} onclick={() => { moreOpen = false; if (external) addLoreFolder(external); else addLorebookFolder(tab) }}><FolderPlusIcon size={19} /></SheetRow>
+            <SheetRow label={language.mobileLore.import} onclick={() => { moreOpen = false; if (external) importLoreList(external); else importLoreBook(tab === 0 ? 'global' : 'local') }}><UploadIcon size={19} /></SheetRow>
+            <SheetRow label={language.mobileLore.export} onclick={() => { moreOpen = false; if (external) exportLoreList(external); else exportLoreBook(tab === 0 ? 'global' : 'local') }}><DownloadIcon size={19} /></SheetRow>
         </SheetGroup>
         {#if DBState.db.bulkEnabling}
             <SheetGroup>
