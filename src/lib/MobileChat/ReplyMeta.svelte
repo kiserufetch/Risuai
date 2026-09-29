@@ -5,6 +5,7 @@
     import { generate } from 'src/ts/chatCore/sendPipeline'
     import type { Message } from 'src/ts/storage/database.svelte'
     import { DBState } from 'src/ts/stores.svelte'
+    import { doingChat } from 'src/ts/process/index.svelte'
 
     // Under a reply (mockup "Чат · стоимость и пустой ответ"): what OpenRouter reported for
     // it, and a way out when the model spent the whole limit thinking and gave no answer.
@@ -12,9 +13,11 @@
     let { message, isLatest, streaming }: { message: Message; isLatest: boolean; streaming: boolean } = $props()
 
     const t = $derived(language.mobileChat)
+    // `streaming` is false when stream display is off, so the send flow's flag decides.
+    let busy = $derived(streaming || (isLatest && $doingChat))
     let usage = $derived(message.generationInfo?.openrouter)
     let thoughtsOnly = $derived(
-        isLatest && !streaming && message.data.includes('<Thoughts>') && !message.data.replace(/<Thoughts>[\s\S]*?<\/Thoughts>/g, '').trim(),
+        isLatest && !busy && message.data.includes('<Thoughts>') && !message.data.replace(/<Thoughts>[\s\S]*?<\/Thoughts>/g, '').trim(),
     )
     let thinkingBudget = $derived(DBState.db.aiModel === 'openrouter' && DBState.db.openrouterExtras?.reasoningMode !== 'off')
 
@@ -50,6 +53,6 @@
         </span>
     </div>
 {/if}
-{#if line && !streaming}
+{#if line && !busy}
     <span class="mt-1.5 block text-[11px] tabular-nums text-(--mc-text2) opacity-80">{line}</span>
 {/if}
