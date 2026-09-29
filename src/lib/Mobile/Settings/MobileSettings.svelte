@@ -17,7 +17,6 @@
     import { getFullSettingsData, getLabel } from 'src/ts/setting/utils'
     import { additionalSettingsMenu, DBState, easyPanelStore, SettingsMenuIndex } from 'src/ts/stores.svelte'
     import PluginDefinedIcon from '../../Others/PluginDefinedIcon.svelte'
-    import OtherBotSettings from '../../Setting/Pages/OtherBotSettings.svelte'
     import PluginSettings from '../../Setting/Pages/PluginSettings.svelte'
     import UserSettings from '../../Setting/Pages/UserSettings.svelte'
     import ThanksPage from '../../Setting/Pages/ThanksPage.svelte'
@@ -29,6 +28,8 @@
     import BotSettingsMobile from './Bot/BotSettingsMobile.svelte'
     import { botBack, botPage, botPageTitle } from './Bot/botPage.svelte'
     import PersonaSettingsMobile from './Persona/PersonaSettingsMobile.svelte'
+    import OtherSettingsMobile from './Other/OtherSettingsMobile.svelte'
+    import { otherBack, otherPage, otherPageTitle } from './Other/otherPage.svelte'
     import { getField, personaPage } from './Persona/personas.svelte'
 
     // "Настройки" tab (mockups "Мобильные настройки"): a grouped hub with search, the
@@ -106,6 +107,9 @@
         if ($SettingsMenuIndex === 1 && botBack()) {
             return true
         }
+        if ($SettingsMenuIndex === 2 && otherBack()) {
+            return true
+        }
         if ($SettingsMenuIndex === 12 && personaPage.current !== 'list') {
             personaPage.current = 'list'
             return true
@@ -132,18 +136,23 @@
         if ($SettingsMenuIndex !== 12) {
             personaPage.current = 'list'
         }
+        if ($SettingsMenuIndex !== 2) {
+            otherPage.current = 'root'
+        }
     })
     $effect(() => {
         void displayPage.current
         void botPage.current
         void botPage.promptIndex
         void personaPage.current
+        void otherPage.current
         if (pageScroll) pageScroll.scrollTop = 0
     })
 
     function pageTitle(index: number): string {
         if (index === 3) return displayPageTitle(displayPage.current)
         if (index === 1) return botPageTitle(botPage.current)
+        if (index === 2) return otherPageTitle(otherPage.current)
         if (index === 12 && personaPage.current === 'edit') return getField(personaPage.index, 'name') || 'User'
         return TITLES[index]?.() ?? ''
     }
@@ -265,6 +274,8 @@
                     <BotSettingsMobile />
                 {:else if $SettingsMenuIndex === 12}
                     <PersonaSettingsMobile />
+                {:else if $SettingsMenuIndex === 2}
+                    <OtherSettingsMobile />
                 {:else if $SettingsMenuIndex === 10}
                     <MobileSettingsList items={languageSettingsItems} />
                 {:else if $SettingsMenuIndex === 11}
@@ -277,8 +288,6 @@
                             <UserSettings />
                         {:else if $SettingsMenuIndex === 13}
                             <PromptSettings onGoBack={() => SettingsMenuIndex.set(1)} />
-                        {:else if $SettingsMenuIndex === 2}
-                            <OtherBotSettings />
                         {:else if $SettingsMenuIndex === 4}
                             <PluginSettings />
                         {:else if $SettingsMenuIndex === 14}
